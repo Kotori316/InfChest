@@ -2,6 +2,8 @@ package com.kotori316.infchest.tiles;
 
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,11 +33,13 @@ public class TileInfChest extends TileEntity implements HasInv {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
     private BigInteger count = BigInteger.ZERO;
     private String customName;
-    private static final String NBT_ITEM = "item";
-    private static final String NBT_COUNT = "count";
+    public static final String NBT_ITEM = "item";
+    public static final String NBT_COUNT = "count";
     private static final String NBT_CUSTOM_NAME = "custom_name";
+    public static final String NBT_BLOCK_TAG = "BlockEntityTag";
     private static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private InfItemHandler itemHandler = new InfItemHandler(this);
+    public static final Predicate<TileInfChest> IS_EMPTY = TileInfChest::isEmpty;
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
@@ -78,12 +82,18 @@ public class TileInfChest extends TileEntity implements HasInv {
 
     @Override
     public NBTTagCompound getUpdateTag() {
-        return writeToNBT(new NBTTagCompound());
+        return serializeNBT();
+    }
+
+    public NBTTagCompound getBlockTag() {
+        NBTTagCompound nbtTagCompound = serializeNBT();
+        Stream.of("x", "y", "z", "id").forEach(nbtTagCompound::removeTag);
+        return nbtTagCompound;
     }
 
     @Override
     public String getName() {
-        return InfChest.modID + ":tile." + BlockInfChest.name;
+        return hasCustomName() ? customName : InfChest.modID + ":tile." + BlockInfChest.name;
     }
 
     @Override
@@ -91,9 +101,13 @@ public class TileInfChest extends TileEntity implements HasInv {
         return customName != null;
     }
 
+    public void setCustomName(String name) {
+        this.customName = name;
+    }
+
     @Override
     public ITextComponent getDisplayName() {
-        return hasCustomName() ? new TextComponentString(customName) : null;
+        return hasCustomName() ? new TextComponentString(getName()) : null;
     }
 
     @Override
@@ -103,7 +117,7 @@ public class TileInfChest extends TileEntity implements HasInv {
 
     @Override
     public boolean isEmpty() {
-        return inventory.isEmpty() && holding.isEmpty();
+        return inventory.stream().allMatch(ItemStack::isEmpty) && holding.isEmpty();
     }
 
     @Override

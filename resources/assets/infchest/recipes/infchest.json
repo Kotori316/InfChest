@@ -1,0 +1,54 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "eqe",
+    "ibi",
+    "sis"
+  ],
+  "key": {
+    "e": {
+      "type": "forge:ore_dict",
+      "ore": "chestEnder"
+    },
+    "i": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "ingotIron"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "ingotGold"
+      }
+    ],
+    "q": {
+      "type": "forge:ore_dict",
+      "ore": "blockQuartz"
+    },
+    "b": {
+      "item": "minecraft:beacon"
+    },
+    "s": [
+      {"item": "minecraft:white_shulker_box"},
+      {"item": "minecraft:orange_shulker_box"},
+      {"item": "minecraft:magenta_shulker_box"},
+      {"item": "minecraft:light_blue_shulker_box"},
+      {"item": "minecraft:yellow_shulker_box"},
+      {"item": "minecraft:lime_shulker_box"},
+      {"item": "minecraft:pink_shulker_box"},
+      {"item": "minecraft:gray_shulker_box"},
+      {"item": "minecraft:silver_shulker_box"},
+      {"item": "minecraft:cyan_shulker_box"},
+      {"item": "minecraft:purple_shulker_box"},
+      {"item": "minecraft:blue_shulker_box"},
+      {"item": "minecraft:brown_shulker_box"},
+      {"item": "minecraft:green_shulker_box"},
+      {"item": "minecraft:red_shulker_box"},
+      {"item": "minecraft:black_shulker_box"}
+    ]
+  },
+  "result": {
+    "item": "infchest:infchest",
+    "count": 1,
+    "data": 0
+  }
+}
