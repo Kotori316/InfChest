@@ -1,0 +1,145 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: "com.matthewprenger.cursegradle"
+//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
+
+version = getProperty("modversion")
+group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "InfChest"
+
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+minecraft {
+    version = "1.12.2-14.23.5.2768"
+    runDir = "Minecraft"
+
+    // the mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   snapshot are built nightly.
+    // stable_#            stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // simply re-run your setup task after changing the mappings to update your workspace.
+    mappings = "snapshot_20171003"
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    replace "\${version}", project.version
+    replace '@FINGERPRINT@', project.hasProperty('signSHA1') ? project.getProperty('signSHA1') : ""
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'scala'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+}
+
+repositories {
+    maven {
+        name "BuildCraft"
+        url = "https://mod-buildcraft.com/maven"
+    }
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "http://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        name = "Hwyla"
+        url "http://tehnut.info/maven"
+    }
+    maven { // The One Probe
+        name 'tterrag maven'
+        url "https://maven.tterrag.com/"
+    }
+}
+
+dependencies {
+    //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
+    //deobfCompile "appeng:appliedenergistics2:rv6-stable-4"
+    //deobfCompile "mcp.mobius.waila:Hwyla:1.8.26-B41_1.12.2"
+   // deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.23-16"
+}
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+
+    // Skips if the keyStore property is missing.
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+
+    // findProperty allows us to reference the property without it existing.
+    // Using project.propName would cause the script to fail validation if
+    // the property did not exist.
+    keyStore = project.hasProperty('keyStore') ? project.getProperty("keyStore") : ""
+    alias = project.hasProperty('keyStore') ? project.getProperty('keyStoreAlias') : ""
+    storePass = project.hasProperty('keyStore') ? project.getProperty('keyStorePass') : ""
+    keyPass = project.hasProperty('keyStore') ? project.getProperty('keyStoreKeyPass') : ""
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+// Runs this task automatically when build is ran.
+build.dependsOn signJar
+
+task srcJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+// Tell the artifact system about our extra jars
+artifacts {
+    archives srcJar, deobfJar
+}
+
+curseforge {
+    apiKey = ""//project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    project {
+        id = '291006'
+        changelogType = 'markdown'
+        changelog = '[See GitHub commits.](https://github.com/Kotori316/FluidTank)'
+        releaseType = 'release'
+        mainArtifact jar
+        addArtifact srcJar
+        addArtifact deobfJar
+        afterEvaluate {
+            gameVersionStrings.remove('Java 8')
+            gameVersionStrings.remove('Java 9')
+        }
+    }
+}

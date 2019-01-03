@@ -1,0 +1,25 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cube",
+    "textures": {
+      "particle": "minecraft:blocks/dirt",
+      "down": "minecraft:blocks/dirt",
+      "up": "minecraft:blocks/dirt",
+      "north": "minecraft:blocks/dirt",
+      "east": "minecraft:blocks/dirt",
+      "south": "minecraft:blocks/dirt",
+      "west": "minecraft:blocks/dirt"
+    },
+    "uvlock": true,
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ]
+  }
+}
