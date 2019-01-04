@@ -1,6 +1,8 @@
 package com.kotori316.infchest.tiles;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -40,6 +42,11 @@ public class TileInfChest extends TileEntity implements HasInv {
     private static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private InfItemHandler itemHandler = new InfItemHandler(this);
     public static final Predicate<TileInfChest> IS_EMPTY = TileInfChest::isEmpty;
+    public List<Runnable> consumers = new ArrayList<>();
+
+    public TileInfChest() {
+        consumers.add(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
+    }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
@@ -149,37 +156,60 @@ public class TileInfChest extends TileEntity implements HasInv {
             addStack(insert);
         }
         ItemStack out = getStackInSlot(1);
-        if (out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
+        // Make sure out item is equal to holding.
+        boolean outFlag = out.isEmpty() || ItemStack.areItemsEqual(holding, out) && ItemStack.areItemStackTagsEqual(holding, out);
+        if (outFlag && out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
             int sub = out.getMaxStackSize() - out.getCount();
             if (gt(count, sub)) { //count > sub
                 ItemStack itemStack = copyAmount(holding, out.getMaxStackSize());
                 count = count.subtract(BigInteger.valueOf(sub));
                 inventory.set(1, itemStack); // Don't need to call markDirty() more.
             } else {
+                // count <= sub
                 ItemStack itemStack = copyAmount(holding, out.getCount() + count.intValueExact());
                 count = BigInteger.ZERO;
                 holding = ItemStack.EMPTY;
                 inventory.set(1, itemStack); // Don't need to call markDirty() more.
             }
         }
-        if (!world.isRemote)
-            PacketHandler.sendToPoint(new ItemCountMessage(this, count));
+        if (!world.isRemote) {
+            consumers.forEach(Runnable::run);
+        }
     }
 
     void addStack(ItemStack insert) {
-        count = count.add(BigInteger.valueOf(insert.getCount()));
+        addStack(insert, BigInteger.valueOf(insert.getCount()));
+    }
+
+    public void addStack(ItemStack insert, BigInteger add) {
+        count = count.add(add);
         if (holding.isEmpty())
             holding = copyAmount(insert, 1);
         inventory.set(0, ItemStack.EMPTY);
     }
 
-    ItemStack getStack() {
+    /**
+     * @param subs must be less than getCount().
+     * @throws IllegalArgumentException if subs > count.
+     */
+    public void decrStack(BigInteger subs) {
+        if (subs.compareTo(count) > 0) {
+            // subs > count
+            throw new IllegalArgumentException("subs > count");
+        }
+        count = count.subtract(subs);
+        if (count.equals(BigInteger.ZERO)) {
+            holding = ItemStack.EMPTY;
+        }
+    }
+
+    public ItemStack getStack() {
         int amount = INT_MAX.min(count).intValueExact();
         return copyAmount(holding, amount);
     }
 
-    public String itemCount() {
-        return count.toString();
+    public BigInteger itemCount() {
+        return count;
     }
 
     @SideOnly(Side.CLIENT)
