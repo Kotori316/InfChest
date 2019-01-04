@@ -31,7 +31,7 @@ public class InfItemHandler implements IItemHandlerModifiable {
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (slot == 0 && isItemValid(slot, stack)) {
+        if (isItemValid(0, stack)) {
             if (!simulate) {
                 infChest.addStack(stack);
                 infChest.markDirty();

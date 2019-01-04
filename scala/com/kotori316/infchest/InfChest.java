@@ -2,10 +2,12 @@ package com.kotori316.infchest;
 
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -34,6 +36,9 @@ public class InfChest {
     public static final InfChest instance;
 
     public static final BlockInfChest CHEST = new BlockInfChest();
+    public static final Predicate<TileInfChest> CHEST_IS_EMPTY = TileInfChest::isEmpty;
+    public static final Predicate<ItemStack> STACK_NON_EMPTY = ((Predicate<ItemStack>) ItemStack::isEmpty).negate();
+    public static final Predicate<String> STRING_EMPTY = String::isEmpty;
 
     static {
         instance = new InfChest();

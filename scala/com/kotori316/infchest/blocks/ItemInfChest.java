@@ -2,7 +2,6 @@ package com.kotori316.infchest.blocks;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -25,9 +24,6 @@ import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 class ItemInfChest extends ItemBlock {
-
-    private static final Predicate<ItemStack> STACK_EMPTY = ItemStack::isEmpty;
-    private static final Predicate<String> STRING_EMPTY = String::isEmpty;
 
     ItemInfChest(Block block) {
         super(block);
@@ -71,9 +67,9 @@ class ItemInfChest extends ItemBlock {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         NBTTagCompound n = stack.getSubCompound(TileInfChest.NBT_BLOCK_TAG);
         if (n != null) {
-            Optional.of(new ItemStack(n.getCompoundTag(TileInfChest.NBT_ITEM))).filter(STACK_EMPTY.negate())
+            Optional.of(new ItemStack(n.getCompoundTag(TileInfChest.NBT_ITEM))).filter(InfChest.STACK_NON_EMPTY)
                     .map(ItemStack::getItem).map(Item::getRegistryName).map(ResourceLocation::toString).ifPresent(tooltip::add);
-            Optional.of(n.getString(TileInfChest.NBT_COUNT)).filter(STRING_EMPTY.negate()).map(s -> s + " items").ifPresent(tooltip::add);
+            Optional.of(n.getString(TileInfChest.NBT_COUNT)).filter(InfChest.STRING_EMPTY.negate()).map(s -> s + " items").ifPresent(tooltip::add);
         }
     }
 }

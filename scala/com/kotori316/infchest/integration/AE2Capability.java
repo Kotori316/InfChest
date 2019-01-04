@@ -29,7 +29,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
+
+import static com.kotori316.infchest.tiles.TileInfChest.INT_MAX;
 
 public class AE2Capability implements ICapabilityProvider {
     private static final ResourceLocation LOCATION = new ResourceLocation(AE2.modID, "attach_ae2");
@@ -102,24 +105,51 @@ public class AE2Capability implements ICapabilityProvider {
         public IAEItemStack extractItems(IAEItemStack iaeItemStack, Actionable actionable, IActionSource iActionSource) {
             ItemStack definition = iaeItemStack.getDefinition();
             ItemStack holding = chest.getStack();
+            ItemStack out = chest.getStackInSlot(1);
+            BigInteger requestSize = BigInteger.valueOf(iaeItemStack.getStackSize());
             if (ItemStack.areItemsEqual(holding, definition) && ItemStack.areItemStackTagsEqual(holding, definition)) {
-                BigInteger subs = chest.itemCount().min(BigInteger.valueOf(iaeItemStack.getStackSize()));
+                BigInteger subs = chest.itemCount().min(requestSize);
                 if (actionable == Actionable.MODULATE) {
                     // do subtract.
                     chest.decrStack(subs);
                     chest.markDirty();
                 }
+                if (subs.compareTo(requestSize) < 0) {
+                    if (ItemStack.areItemsEqual(out, definition) && ItemStack.areItemStackTagsEqual(out, definition)) {
+                        ItemStack decrStackSize;
+                        if (actionable == Actionable.MODULATE) {
+                            decrStackSize = chest.decrStackSize(1, (requestSize.subtract(subs)).min(BigInteger.valueOf(definition.getMaxStackSize())).intValueExact());
+                        } else {
+                            decrStackSize = out.copy();
+                            decrStackSize.setCount((requestSize.subtract(subs)).min(BigInteger.valueOf(decrStackSize.getCount())).intValueExact());
+                        }
+                        subs = subs.add(BigInteger.valueOf(decrStackSize.getCount()));
+                    }
+                }
                 IAEItemStack stack = iaeItemStack.copy();
                 stack.setStackSize(subs.min(LONG_MAX).longValueExact());
                 return stack;
+            } else if (ItemStack.areItemsEqual(out, definition) && ItemStack.areItemStackTagsEqual(out, definition)) {
+                BigInteger subs = BigInteger.valueOf(out.getCount()).min(requestSize);
+                ItemStack decrStackSize;
+                if (actionable == Actionable.MODULATE) {
+                    decrStackSize = chest.decrStackSize(1, subs.min(INT_MAX).intValueExact());
+                } else {
+                    decrStackSize = out.copy();
+                    decrStackSize.setCount(subs.min(BigInteger.valueOf(decrStackSize.getCount())).intValueExact());
+                }
+                return getChannel().createStack(decrStackSize);
             }
             return getChannel().createStack(ItemStack.EMPTY);
         }
 
         @Override
         public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> iItemList) {
-            Optional.ofNullable(getChannel().createStack(chest.getStack()))
+            Optional.of(chest.getStack()).filter(InfChest.STACK_NON_EMPTY).map(getChannel()::createStack)
                 .map(s -> s.setStackSize(chest.itemCount().min(LONG_MAX).longValueExact()))
+                .ifPresent(iItemList::add);
+            Optional.of(chest.getStackInSlot(1)).filter(InfChest.STACK_NON_EMPTY)
+                .map(getChannel()::createStack)
                 .ifPresent(iItemList::add);
             return iItemList;
         }

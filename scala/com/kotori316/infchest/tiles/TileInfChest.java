@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
@@ -39,9 +38,8 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     public static final String NBT_COUNT = "count";
     private static final String NBT_CUSTOM_NAME = "custom_name";
     public static final String NBT_BLOCK_TAG = "BlockEntityTag";
-    private static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
+    public static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private InfItemHandler itemHandler = new InfItemHandler(this);
-    public static final Predicate<TileInfChest> IS_EMPTY = TileInfChest::isEmpty;
     private List<Runnable> updateRunnable = new ArrayList<>();
 
     public TileInfChest() {

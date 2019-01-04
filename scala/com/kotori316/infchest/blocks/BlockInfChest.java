@@ -99,12 +99,12 @@ public class BlockInfChest extends BlockContainer {
             NonNullList<ItemStack> drops = NonNullList.create();
             ItemStack chestStack = new ItemStack(this);
             saveChestNbtToStack(te, chestStack);
+            saveCustomName(te, chestStack);
             drops.add(chestStack);
             float chance = ForgeEventFactory.fireBlockHarvesting(drops, worldIn, pos, state, fortune, 1.0f, false, harvesters.get());
 
             for (ItemStack drop : drops) {
                 if (worldIn.rand.nextFloat() <= chance) {
-                    saveCustomName(te, drop);
                     spawnAsEntity(worldIn, pos, drop);
                 }
             }
@@ -123,7 +123,7 @@ public class BlockInfChest extends BlockContainer {
         Optional.ofNullable(entity)
                 .filter(TileInfChest.class::isInstance)
                 .map(TileInfChest.class::cast)
-                .filter(TileInfChest.IS_EMPTY.negate())
+            .filter(InfChest.CHEST_IS_EMPTY.negate())
                 .map(TileInfChest::getBlockTag)
                 .ifPresent(tag -> stack.setTagInfo(TileInfChest.NBT_BLOCK_TAG, tag));
     }
