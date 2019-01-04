@@ -28,8 +28,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import com.kotori316.infchest.tiles.TileInfChest;
 
@@ -62,7 +60,7 @@ public class AE2Capability implements ICapabilityProvider {
         if (capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
             if (inv == null) {
                 inv = new AEInfChestInv();
-                this.chest.consumers.add(() -> inv.postChange());
+                this.chest.addUpdate(() -> inv.postChange());
             }
             return Capabilities.STORAGE_MONITORABLE_ACCESSOR.cast(inv);
         }
@@ -86,23 +84,18 @@ public class AE2Capability implements ICapabilityProvider {
 
         @Override
         public IAEItemStack injectItems(IAEItemStack iaeItemStack, Actionable actionable, IActionSource iActionSource) {
-            IItemHandler handler = chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-            if (handler != null) {
-                ItemStack definition = iaeItemStack.getDefinition();
-                if (chest.isItemValidForSlot(0, definition)) {
-                    if (actionable == Actionable.MODULATE) {
-                        // do fill
-                        chest.addStack(definition, BigInteger.valueOf(iaeItemStack.getStackSize()));
-                        chest.markDirty();
-                    }
-                    return getChannel().createStack(ItemStack.EMPTY);
-                } else {
-                    // Not acceptable.
-                    return iaeItemStack;
+            ItemStack definition = iaeItemStack.getDefinition();
+            if (chest.isItemValidForSlot(0, definition)) {
+                if (actionable == Actionable.MODULATE) {
+                    // do fill
+                    chest.addStack(definition, BigInteger.valueOf(iaeItemStack.getStackSize()));
+                    chest.markDirty();
                 }
-
+                return getChannel().createStack(ItemStack.EMPTY);
+            } else {
+                // Not acceptable.
+                return iaeItemStack;
             }
-            return iaeItemStack;
         }
 
         @Override

@@ -29,7 +29,7 @@ import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.packets.ItemCountMessage;
 import com.kotori316.infchest.packets.PacketHandler;
 
-public class TileInfChest extends TileEntity implements HasInv {
+public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
 
     private ItemStack holding = ItemStack.EMPTY;
     private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
@@ -42,10 +42,10 @@ public class TileInfChest extends TileEntity implements HasInv {
     private static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private InfItemHandler itemHandler = new InfItemHandler(this);
     public static final Predicate<TileInfChest> IS_EMPTY = TileInfChest::isEmpty;
-    public List<Runnable> consumers = new ArrayList<>();
+    private List<Runnable> updateRunnables = new ArrayList<>();
 
     public TileInfChest() {
-        consumers.add(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
+        addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
     }
 
     @Override
@@ -173,7 +173,7 @@ public class TileInfChest extends TileEntity implements HasInv {
             }
         }
         if (!world.isRemote) {
-            consumers.forEach(Runnable::run);
+            runUpdates();
         }
     }
 
@@ -266,5 +266,15 @@ public class TileInfChest extends TileEntity implements HasInv {
      */
     private static boolean gt(BigInteger bigInteger, int i) {
         return bigInteger.compareTo(BigInteger.valueOf(i)) > 0;
+    }
+
+    @Override
+    public void addUpdate(Runnable runnable) {
+        updateRunnables.add(runnable);
+    }
+
+    @Override
+    public List<Runnable> getUpdates() {
+        return updateRunnables;
     }
 }
