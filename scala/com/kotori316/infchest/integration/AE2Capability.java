@@ -45,7 +45,7 @@ public class AE2Capability implements ICapabilityProvider {
     private final TileInfChest chest;
     private AEInfChestInv inv;
 
-    public AE2Capability(TileInfChest chest) {
+    private AE2Capability(TileInfChest chest) {
         this.chest = chest;
     }
 
@@ -105,7 +105,7 @@ public class AE2Capability implements ICapabilityProvider {
             if (ItemStack.areItemsEqual(holding, definition) && ItemStack.areItemStackTagsEqual(holding, definition)) {
                 BigInteger subs = chest.itemCount().min(BigInteger.valueOf(iaeItemStack.getStackSize()));
                 if (actionable == Actionable.MODULATE) {
-                    // do substract.
+                    // do subtract.
                     chest.decrStack(subs);
                     chest.markDirty();
                 }
@@ -134,7 +134,7 @@ public class AE2Capability implements ICapabilityProvider {
             return monitorable;
         }
 
-        public void postChange() {
+        private void postChange() {
             mePassThrough.postChange(mePassThrough, mePassThrough.getStorageList(), new BaseActionSource());
         }
     }

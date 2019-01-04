@@ -42,7 +42,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     private static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private InfItemHandler itemHandler = new InfItemHandler(this);
     public static final Predicate<TileInfChest> IS_EMPTY = TileInfChest::isEmpty;
-    private List<Runnable> updateRunnables = new ArrayList<>();
+    private List<Runnable> updateRunnable = new ArrayList<>();
 
     public TileInfChest() {
         addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
@@ -270,11 +270,11 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
 
     @Override
     public void addUpdate(Runnable runnable) {
-        updateRunnables.add(runnable);
+        updateRunnable.add(runnable);
     }
 
     @Override
     public List<Runnable> getUpdates() {
-        return updateRunnables;
+        return updateRunnable;
     }
 }

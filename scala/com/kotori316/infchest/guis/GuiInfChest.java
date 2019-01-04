@@ -24,7 +24,9 @@ public class GuiInfChest extends GuiContainer {
         String format = I18n.format(s);
         this.fontRenderer.drawString(format, this.xSize / 2 - this.fontRenderer.getStringWidth(format) / 2, 6, 4210752);
         this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
-        this.fontRenderer.drawString("Item: " + infChest.itemCount(), 64, 35, 0x404040);
+        String itemName = infChest.getStack().getDisplayName();
+        this.fontRenderer.drawString(itemName, this.xSize / 2 - this.fontRenderer.getStringWidth(itemName) / 2, 35, 0x404040);
+        this.fontRenderer.drawString("Item: " + infChest.itemCount(), 8, 60, 0x404040);
     }
 
     @Override

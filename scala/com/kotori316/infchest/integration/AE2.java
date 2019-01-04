@@ -13,8 +13,8 @@ import com.kotori316.infchest.InfChest;
     dependencies = "required-after:infchest;")
 public class AE2 {
     public static final String modID = "infchest_ae2";
-    public static final String Mod_Name = "InfChest_AE2";
-    public static final String AE2_modID = "appliedenergistics2";
+    static final String Mod_Name = "InfChest_AE2";
+    private static final String AE2_modID = "appliedenergistics2";
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -28,7 +28,7 @@ public class AE2 {
             try {
                 MinecraftForge.EVENT_BUS.register(Class.forName("com.kotori316.infchest.integration.AE2Capability"));
             } catch (ClassNotFoundException e) {
-                InfChest.LOGGER.error("AE2Capability not found.", e);
+                InfChest.LOGGER.error(Mod_Name + ": AE2Capability not found.", e);
             }
         }
     }

@@ -56,7 +56,6 @@ public class ItemCountMessage implements IMessage {
             TileInfChest chest = (TileInfChest) entity;
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> chest.setCount(new BigInteger(bytes)));
         }
-
         return null;
     }
 }

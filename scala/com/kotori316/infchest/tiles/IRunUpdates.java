@@ -6,8 +6,15 @@ public interface IRunUpdates {
 
     void addUpdate(Runnable runnable);
 
+    /**
+     * Read only.
+     * @return the list of actions done.
+     */
     Collection<Runnable> getUpdates();
 
+    /**
+     * Called in markDirty().
+     */
     default void runUpdates() {
         getUpdates().forEach(Runnable::run);
     }

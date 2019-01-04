@@ -73,4 +73,8 @@ public class InfChest {
                 Objects.requireNonNull(CHEST.getRegistryName()), "inventory"));
     }
 
+    /*
+    Test command
+    /give @p infchest:infchest 1 0 {BlockEntityTag:{item:{id:"minecraft:stone",Count:1b,Damage:0s},count:"250000000000000000000",Items:[{Slot:1b,id:"minecraft:stone",Count:64b,Damage:0s}]}}
+     */
 }
