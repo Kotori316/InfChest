@@ -94,7 +94,7 @@ public class BlockInfChest extends BlockContainer {
         player.addExhaustion(0.005F);
         harvesters.set(player);
         if (!worldIn.isRemote && !worldIn.restoringBlockSnapshots) {
-            // do not drop items while restoring blockstates, prevents item dupe
+            // do not drop items while restoring blockStates, prevents item dupe
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
             NonNullList<ItemStack> drops = NonNullList.create();
             ItemStack chestStack = new ItemStack(this);
