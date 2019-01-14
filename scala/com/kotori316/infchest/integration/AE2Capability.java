@@ -116,14 +116,14 @@ public class AE2Capability implements ICapabilityProvider {
                 }
                 if (subs.compareTo(requestSize) < 0) {
                     if (ItemStack.areItemsEqual(out, definition) && ItemStack.areItemStackTagsEqual(out, definition)) {
-                        ItemStack decrStackSize;
+                        ItemStack decreased;
                         if (actionable == Actionable.MODULATE) {
-                            decrStackSize = chest.decrStackSize(1, (requestSize.subtract(subs)).min(BigInteger.valueOf(definition.getMaxStackSize())).intValueExact());
+                            decreased = chest.decrStackSize(1, (requestSize.subtract(subs)).min(BigInteger.valueOf(definition.getMaxStackSize())).intValueExact());
                         } else {
-                            decrStackSize = out.copy();
-                            decrStackSize.setCount((requestSize.subtract(subs)).min(BigInteger.valueOf(decrStackSize.getCount())).intValueExact());
+                            decreased = out.copy();
+                            decreased.setCount((requestSize.subtract(subs)).min(BigInteger.valueOf(decreased.getCount())).intValueExact());
                         }
-                        subs = subs.add(BigInteger.valueOf(decrStackSize.getCount()));
+                        subs = subs.add(BigInteger.valueOf(decreased.getCount()));
                     }
                 }
                 IAEItemStack stack = iaeItemStack.copy();
@@ -131,14 +131,14 @@ public class AE2Capability implements ICapabilityProvider {
                 return stack;
             } else if (ItemStack.areItemsEqual(out, definition) && ItemStack.areItemStackTagsEqual(out, definition)) {
                 BigInteger subs = BigInteger.valueOf(out.getCount()).min(requestSize);
-                ItemStack decrStackSize;
+                ItemStack decreased;
                 if (actionable == Actionable.MODULATE) {
-                    decrStackSize = chest.decrStackSize(1, subs.min(INT_MAX).intValueExact());
+                    decreased = chest.decrStackSize(1, subs.min(INT_MAX).intValueExact());
                 } else {
-                    decrStackSize = out.copy();
-                    decrStackSize.setCount(subs.min(BigInteger.valueOf(decrStackSize.getCount())).intValueExact());
+                    decreased = out.copy();
+                    decreased.setCount(subs.min(BigInteger.valueOf(decreased.getCount())).intValueExact());
                 }
-                return getChannel().createStack(decrStackSize);
+                return getChannel().createStack(decreased);
             }
             return getChannel().createStack(ItemStack.EMPTY);
         }
