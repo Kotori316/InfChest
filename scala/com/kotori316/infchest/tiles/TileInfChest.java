@@ -202,7 +202,10 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     }
 
     public ItemStack getStack() {
-        int amount = INT_MAX.min(count).intValueExact();
+        return getStack(INT_MAX.min(count).intValueExact());
+    }
+
+    public ItemStack getStack(int amount) {
         return copyAmount(holding, amount);
     }
 
