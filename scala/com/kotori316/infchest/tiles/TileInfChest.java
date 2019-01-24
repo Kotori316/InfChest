@@ -92,7 +92,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
 
     public NBTTagCompound getBlockTag() {
         NBTTagCompound nbtTagCompound = serializeNBT();
-        Stream.of("x", "y", "z", "id").forEach(nbtTagCompound::removeTag);
+        Stream.of("x", "y", "z", "id", "ForgeCaps", "ForgeData").forEach(nbtTagCompound::removeTag);
         return nbtTagCompound;
     }
 

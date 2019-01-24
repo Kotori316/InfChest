@@ -73,9 +73,9 @@ public class BlockInfChest extends BlockContainer {
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
         if (stack.hasDisplayName()) {
             Optional.ofNullable(worldIn.getTileEntity(pos))
-                    .filter(TileInfChest.class::isInstance)
-                    .map(TileInfChest.class::cast)
-                    .ifPresent(chest -> chest.setCustomName(stack.getDisplayName()));
+                .filter(TileInfChest.class::isInstance)
+                .map(TileInfChest.class::cast)
+                .ifPresent(chest -> chest.setCustomName(stack.getDisplayName()));
         }
     }
 
@@ -114,17 +114,17 @@ public class BlockInfChest extends BlockContainer {
 
     private static void saveCustomName(@Nullable TileEntity te, ItemStack drop) {
         Optional.ofNullable(te).filter(TileInfChest.class::isInstance).map(TileInfChest.class::cast)
-                .filter(TileInfChest::hasCustomName)
-                .map(TileInfChest::getName)
-                .ifPresent(drop::setStackDisplayName);
+            .filter(TileInfChest::hasCustomName)
+            .map(TileInfChest::getName)
+            .ifPresent(drop::setStackDisplayName);
     }
 
     private static void saveChestNbtToStack(@Nullable TileEntity entity, ItemStack stack) {
         Optional.ofNullable(entity)
-                .filter(TileInfChest.class::isInstance)
-                .map(TileInfChest.class::cast)
+            .filter(TileInfChest.class::isInstance)
+            .map(TileInfChest.class::cast)
             .filter(InfChest.CHEST_IS_EMPTY.negate())
-                .map(TileInfChest::getBlockTag)
-                .ifPresent(tag -> stack.setTagInfo(TileInfChest.NBT_BLOCK_TAG, tag));
+            .map(TileInfChest::getBlockTag)
+            .ifPresent(tag -> stack.setTagInfo(TileInfChest.NBT_BLOCK_TAG, tag));
     }
 }
