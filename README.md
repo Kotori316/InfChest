@@ -6,6 +6,7 @@ Copyright (c) 2019 Kotori316
 This mod adds a chest that can hold "infinite" items, not limited up to 2,147,483,647 (Max of Int) or 9,223,372,036,854,775,807 (Max of Long).
 
 ### Download
+Minecraft CurseForge - https://minecraft.curseforge.com/projects/infchest  
 Jar files are on [release page](https://github.com/Kotori316/InfChest/releases). Download jar file whose name is **InfChest-{version}.jar** and put it into mods folder.
 
 ### APIs
