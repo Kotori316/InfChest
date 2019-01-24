@@ -145,10 +145,11 @@ public class AE2Capability implements ICapabilityProvider {
 
         @Override
         public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> iItemList) {
+            ItemStack inSlot = chest.getStackInSlot(1);
             Optional.of(chest.getStack()).filter(InfChest.STACK_NON_EMPTY).map(getChannel()::createStack)
-                .map(s -> s.setStackSize(chest.itemCount().min(LONG_MAX).longValueExact()))
+                .map(s -> s.setStackSize(chest.itemCount().min(LONG_MAX.subtract(BigInteger.valueOf(inSlot.getCount()))).longValueExact()))
                 .ifPresent(iItemList::add);
-            Optional.of(chest.getStackInSlot(1)).filter(InfChest.STACK_NON_EMPTY)
+            Optional.of(inSlot).filter(InfChest.STACK_NON_EMPTY)
                 .map(getChannel()::createStack)
                 .ifPresent(iItemList::add);
             return iItemList;
