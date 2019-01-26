@@ -128,11 +128,11 @@ artifacts {
 }
 
 curseforge {
-    apiKey = ""//project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
     project {
-        id = '291006'
+        id = '312222'
         changelogType = 'markdown'
-        changelog = '[See GitHub commits.](https://github.com/Kotori316/FluidTank)'
+        changelog = new File("temp_changelog.md")
         releaseType = 'release'
         mainArtifact jar
         addArtifact srcJar
