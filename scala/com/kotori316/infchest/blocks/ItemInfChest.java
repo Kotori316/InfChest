@@ -63,9 +63,9 @@ class ItemInfChest extends ItemBlock {
     }
 
     @Override
-    public void addInformation(ItemStack chstStack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(chstStack, worldIn, tooltip, flagIn);
-        NBTTagCompound n = chstStack.getSubCompound(TileInfChest.NBT_BLOCK_TAG);
+    public void addInformation(ItemStack chestStack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(chestStack, worldIn, tooltip, flagIn);
+        NBTTagCompound n = chestStack.getSubCompound(TileInfChest.NBT_BLOCK_TAG);
         if (n != null) {
             Optional<ItemStack> stack = Optional.of(new ItemStack(n.getCompoundTag(TileInfChest.NBT_ITEM)))
                 .filter(InfChest.STACK_NON_EMPTY);
@@ -76,7 +76,7 @@ class ItemInfChest extends ItemBlock {
             stack.map(ItemStack::getDisplayName)
                 .ifPresent(tooltip::add);
             Optional.of(n.getString(TileInfChest.NBT_COUNT))
-                .filter(InfChest.STRING_EMPTY.negate())
+                .filter(InfChest.STRING_NON_EMPTY)
                 .map(ItemInfChest::addPostfix)
                 .ifPresent(tooltip::add);
         }

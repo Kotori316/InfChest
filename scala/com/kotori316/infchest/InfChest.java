@@ -36,9 +36,9 @@ public class InfChest {
     public static final InfChest instance;
 
     public static final BlockInfChest CHEST = new BlockInfChest();
-    public static final Predicate<TileInfChest> CHEST_IS_EMPTY = TileInfChest::isEmpty;
+    public static final Predicate<TileInfChest> CHEST_NOT_EMPTY = ((Predicate<TileInfChest>) TileInfChest::isEmpty).negate();
     public static final Predicate<ItemStack> STACK_NON_EMPTY = ((Predicate<ItemStack>) ItemStack::isEmpty).negate();
-    public static final Predicate<String> STRING_EMPTY = String::isEmpty;
+    public static final Predicate<String> STRING_NON_EMPTY = ((Predicate<String>) String::isEmpty).negate();
 
     static {
         instance = new InfChest();
@@ -75,7 +75,7 @@ public class InfChest {
     @SideOnly(Side.CLIENT)
     public void registerModels(ModelRegistryEvent event) {
         ModelLoader.setCustomModelResourceLocation(CHEST.itemBlock, 0, new ModelResourceLocation(
-                Objects.requireNonNull(CHEST.getRegistryName()), "inventory"));
+            Objects.requireNonNull(CHEST.getRegistryName()), "inventory"));
     }
 
     /*

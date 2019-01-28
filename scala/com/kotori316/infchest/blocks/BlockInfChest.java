@@ -123,7 +123,7 @@ public class BlockInfChest extends BlockContainer {
         Optional.ofNullable(entity)
             .filter(TileInfChest.class::isInstance)
             .map(TileInfChest.class::cast)
-            .filter(InfChest.CHEST_IS_EMPTY.negate())
+            .filter(InfChest.CHEST_NOT_EMPTY)
             .map(TileInfChest::getBlockTag)
             .ifPresent(tag -> stack.setTagInfo(TileInfChest.NBT_BLOCK_TAG, tag));
     }
