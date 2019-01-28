@@ -63,13 +63,26 @@ class ItemInfChest extends ItemBlock {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        NBTTagCompound n = stack.getSubCompound(TileInfChest.NBT_BLOCK_TAG);
+    public void addInformation(ItemStack chstStack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(chstStack, worldIn, tooltip, flagIn);
+        NBTTagCompound n = chstStack.getSubCompound(TileInfChest.NBT_BLOCK_TAG);
         if (n != null) {
-            Optional.of(new ItemStack(n.getCompoundTag(TileInfChest.NBT_ITEM))).filter(InfChest.STACK_NON_EMPTY)
-                    .map(ItemStack::getItem).map(Item::getRegistryName).map(ResourceLocation::toString).ifPresent(tooltip::add);
-            Optional.of(n.getString(TileInfChest.NBT_COUNT)).filter(InfChest.STRING_EMPTY.negate()).map(s -> s + " items").ifPresent(tooltip::add);
+            Optional<ItemStack> stack = Optional.of(new ItemStack(n.getCompoundTag(TileInfChest.NBT_ITEM)))
+                .filter(InfChest.STACK_NON_EMPTY);
+            stack.map(ItemStack::getItem)
+                .map(Item::getRegistryName)
+                .map(ResourceLocation::toString)
+                .ifPresent(tooltip::add);
+            stack.map(ItemStack::getDisplayName)
+                .ifPresent(tooltip::add);
+            Optional.of(n.getString(TileInfChest.NBT_COUNT))
+                .filter(InfChest.STRING_EMPTY.negate())
+                .map(ItemInfChest::addPostfix)
+                .ifPresent(tooltip::add);
         }
+    }
+
+    private static String addPostfix(String s) {
+        return s + " items";
     }
 }
