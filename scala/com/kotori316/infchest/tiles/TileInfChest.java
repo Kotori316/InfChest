@@ -157,9 +157,9 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         // Make sure out item is equal to holding.
         boolean outFlag = out.isEmpty() || ItemStack.areItemsEqual(holding, out) && ItemStack.areItemStackTagsEqual(holding, out);
         if (outFlag && out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
-            int sub = out.getMaxStackSize() - out.getCount();
+            int sub = holding.getMaxStackSize() - out.getCount();
             if (gt(count, sub)) { //count > sub
-                ItemStack itemStack = copyAmount(holding, out.getMaxStackSize());
+                ItemStack itemStack = copyAmount(holding, holding.getMaxStackSize());
                 count = count.subtract(BigInteger.valueOf(sub));
                 inventory.set(1, itemStack); // Don't need to call markDirty() more.
             } else {
