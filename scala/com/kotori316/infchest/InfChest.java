@@ -23,9 +23,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kotori316.infchest.blocks.BlockDeque;
 import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.guis.GuiHandler;
 import com.kotori316.infchest.packets.PacketHandler;
+import com.kotori316.infchest.tiles.TileDeque;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 @Mod(name = InfChest.MOD_NAME, modid = InfChest.modID, version = "${version}", certificateFingerprint = "@FINGERPRINT@")
@@ -36,6 +38,7 @@ public class InfChest {
     public static final InfChest instance;
 
     public static final BlockInfChest CHEST = new BlockInfChest();
+    public static final BlockDeque DEQUE = new BlockDeque();
     public static final Predicate<TileInfChest> CHEST_NOT_EMPTY = ((Predicate<TileInfChest>) TileInfChest::isEmpty).negate();
     public static final Predicate<ItemStack> STACK_NON_EMPTY = ((Predicate<ItemStack>) ItemStack::isEmpty).negate();
     public static final Predicate<String> STRING_NON_EMPTY = ((Predicate<String>) String::isEmpty).negate();
@@ -62,13 +65,14 @@ public class InfChest {
 
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(CHEST);
+        event.getRegistry().registerAll(CHEST, DEQUE);
         TileEntity.register(modID + ":tile." + BlockInfChest.name, TileInfChest.class);
+        TileEntity.register(modID + ":tile." + BlockDeque.name, TileDeque.class);
     }
 
     @SubscribeEvent
     public void registerItem(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(CHEST.itemBlock);
+        event.getRegistry().registerAll(CHEST.itemBlock, DEQUE.itemBlock);
     }
 
     @SubscribeEvent
@@ -76,6 +80,8 @@ public class InfChest {
     public void registerModels(ModelRegistryEvent event) {
         ModelLoader.setCustomModelResourceLocation(CHEST.itemBlock, 0, new ModelResourceLocation(
             Objects.requireNonNull(CHEST.getRegistryName()), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(DEQUE.itemBlock, 0, new ModelResourceLocation(
+            Objects.requireNonNull(DEQUE.getRegistryName()), "inventory"));
     }
 
     /*

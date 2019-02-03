@@ -85,7 +85,7 @@ public interface HasInv extends net.minecraft.inventory.IInventory {
 
     @Override
     default boolean isItemValidForSlot(int index, ItemStack stack) {
-        return false;
+        return true;
     }
 
     @Override

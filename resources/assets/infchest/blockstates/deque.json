@@ -1,0 +1,25 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cube",
+    "textures": {
+      "particle": "infchest:blocks/deque",
+      "down": "infchest:blocks/deque",
+      "up": "infchest:blocks/deque",
+      "north": "infchest:blocks/deque",
+      "east": "infchest:blocks/deque",
+      "south": "infchest:blocks/deque",
+      "west": "infchest:blocks/deque"
+    },
+    "uvlock": true,
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ]
+  }
+}
