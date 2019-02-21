@@ -62,7 +62,7 @@ public class TileDeque extends TileEntity implements HasInv {
 
     @Override
     public int getSizeInventory() {
-        return inventory.size() + 1;
+        return Math.min(inventory.size() + 1, MAX_COUNT);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TileDeque extends TileEntity implements HasInv {
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        if (index == inventory.size()) {
+        if (index >= inventory.size()) {
             return ItemStack.EMPTY; // Prevent hopper from stopping its work.
         }
         return inventory.get(index);
@@ -80,17 +80,18 @@ public class TileDeque extends TileEntity implements HasInv {
 
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        return ItemStackHelper.getAndSplit(inventory, index, count);
+        return ItemStackHelper.getAndSplit(inventory, index, count); // range check is done inside the method.
     }
 
     @Override
     public ItemStack removeStackFromSlot(int index) {
-        return ItemStackHelper.getAndRemove(inventory, index);
+        return ItemStackHelper.getAndRemove(inventory, index); // range check is done inside the method.
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        inventory.set(index, stack);
+        if (0 <= index && index < inventory.size())
+            inventory.set(index, stack);
     }
 
     @Override
