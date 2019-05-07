@@ -55,7 +55,7 @@ class DequeItemHandler implements IItemHandlerModifiable {
             } else {
                 // split stack
                 if (!simulate) {
-                    return peek.splitStack(amount);
+                    return peek.split(amount);
                 } else {
                     ItemStack t = peek.copy();
                     t.setCount(amount);
@@ -69,5 +69,10 @@ class DequeItemHandler implements IItemHandlerModifiable {
     @Override
     public int getSlotLimit(int slot) {
         return deque.getInventoryStackLimit();
+    }
+
+    @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        return true;
     }
 }

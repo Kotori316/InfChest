@@ -50,7 +50,7 @@ public class InfItemHandler implements IItemHandlerModifiable {
                 infChest.markDirty();
                 return stack;
             } else {
-                return infChest.getStack().splitStack(amount);
+                return infChest.getStack().split(amount);
             }
         }
         return ItemStack.EMPTY;

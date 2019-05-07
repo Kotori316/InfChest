@@ -1,19 +1,31 @@
 package com.kotori316.infchest.packets;
 
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import java.util.function.Predicate;
+
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import com.kotori316.infchest.InfChest;
 
 public class PacketHandler {
-    private static final SimpleNetworkWrapper WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(InfChest.MOD_NAME);
+    public static final String PROTOCOL = "1";
+    private static final SimpleChannel WRAPPER = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(InfChest.modID, "main"))
+        .networkProtocolVersion(() -> PROTOCOL)
+        .clientAcceptedVersions(Predicate.isEqual(PROTOCOL))
+        .serverAcceptedVersions(Predicate.isEqual(PROTOCOL))
+        .simpleChannel();
 
     public static void init() {
-        WRAPPER.registerMessage(ItemCountMessage::onReceive, ItemCountMessage.class, 0, Side.CLIENT);
+        WRAPPER.registerMessage(0, ItemCountMessage.class, ItemCountMessage::toBytes, ItemCountMessage::fromBytes, ItemCountMessage::onReceive);
+//        WRAPPER.registerMessage(ItemCountMessage::onReceive, ItemCountMessage.class, 0, Side.CLIENT);
     }
 
     public static void sendToPoint(ItemCountMessage message) {
-        WRAPPER.sendToAllAround(message, new NetworkRegistry.TargetPoint(message.dim, message.pos.getX(), message.pos.getY(), message.pos.getZ(), 16));
+        WRAPPER.send(PacketDistributor.NEAR.with(() ->
+                new PacketDistributor.TargetPoint(message.pos.getX(), message.pos.getY(), message.pos.getZ(), 16, DimensionType.getById(message.dim))),
+            message);
     }
 }

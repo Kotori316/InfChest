@@ -1,25 +1,20 @@
 package com.kotori316.infchest;
 
 
-import java.util.Objects;
 import java.util.function.Predicate;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,58 +25,44 @@ import com.kotori316.infchest.packets.PacketHandler;
 import com.kotori316.infchest.tiles.TileDeque;
 import com.kotori316.infchest.tiles.TileInfChest;
 
-@Mod(name = InfChest.MOD_NAME, modid = InfChest.modID, version = "${version}", certificateFingerprint = "@FINGERPRINT@")
+@Mod(InfChest.modID)
 public class InfChest {
     public static final String MOD_NAME = "InfChest";
     public static final String modID = "infchest";
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
-    public static final InfChest instance;
 
     public static final BlockInfChest CHEST = new BlockInfChest();
     public static final BlockDeque DEQUE = new BlockDeque();
+    public static final TileEntityType<TileInfChest> INF_CHEST_TYPE = TileEntityType.Builder.create(TileInfChest::new).build(null);
+    public static final TileEntityType<TileDeque> DEQUE_TYPE = TileEntityType.Builder.create(TileDeque::new).build(null);
     public static final Predicate<TileInfChest> CHEST_NOT_EMPTY = ((Predicate<TileInfChest>) TileInfChest::isEmpty).negate();
     public static final Predicate<ItemStack> STACK_NON_EMPTY = ((Predicate<ItemStack>) ItemStack::isEmpty).negate();
     public static final Predicate<String> STRING_NON_EMPTY = ((Predicate<String>) String::isEmpty).negate();
 
-    static {
-        instance = new InfChest();
+    public InfChest() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+        MinecraftForge.EVENT_BUS.addListener(this::registerBlocks);
+        MinecraftForge.EVENT_BUS.addListener(this::registerItem);
+        MinecraftForge.EVENT_BUS.addListener(this::registerTiles);
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::getClientGuiElement);
     }
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(instance);
-        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void preInit(FMLCommonSetupEvent event) {
+//        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
         PacketHandler.init();
     }
 
-    @Mod.InstanceFactory
-    public static InfChest getInstance() {
-        return instance;
-    }
-
-    @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(CHEST, DEQUE);
-        TileEntity.register(modID + ":tile." + BlockInfChest.name, TileInfChest.class);
-        TileEntity.register(modID + ":tile." + BlockDeque.name, TileDeque.class);
     }
 
-    @SubscribeEvent
     public void registerItem(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(CHEST.itemBlock, DEQUE.itemBlock);
     }
 
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void registerModels(ModelRegistryEvent event) {
-        ModelLoader.setCustomModelResourceLocation(CHEST.itemBlock, 0, new ModelResourceLocation(
-            Objects.requireNonNull(CHEST.getRegistryName()), "inventory"));
-        ModelLoader.setCustomModelResourceLocation(DEQUE.itemBlock, 0, new ModelResourceLocation(
-            Objects.requireNonNull(DEQUE.getRegistryName()), "inventory"));
+    public void registerTiles(RegistryEvent.Register<TileEntityType<?>> event) {
+        event.getRegistry().register(INF_CHEST_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockInfChest.name)));
+        event.getRegistry().register(DEQUE_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockDeque.name)));
     }
 
     /*

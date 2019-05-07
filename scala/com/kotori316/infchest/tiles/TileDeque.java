@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -13,8 +14,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -30,34 +33,33 @@ public class TileDeque extends TileEntity implements HasInv {
     private final IItemHandler handler;
 
     public TileDeque() {
+        super(InfChest.DEQUE_TYPE);
         handler = new DequeItemHandler(this);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-        inventory = StreamSupport.stream(compound.getTagList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).spliterator(), false)
+    public void read(NBTTagCompound compound) {
+        super.read(compound);
+        inventory = StreamSupport.stream(compound.getList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).spliterator(), false)
             .map(NBTTagCompound.class::cast)
-            .map(ItemStack::new)
+            .map(ItemStack::read)
             .filter(InfChest.STACK_NON_EMPTY)
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public NBTTagCompound write(NBTTagCompound compound) {
         NBTTagList list1 = inventory.stream()
             .filter(InfChest.STACK_NON_EMPTY)
             .map(ItemStack::serializeNBT)
-            .collect(NBTTagList::new,
-                NBTTagList::appendTag,
-                (nbtBases, nbtBases2) -> nbtBases2.iterator().forEachRemaining(nbtBases::appendTag));
+            .collect(Collectors.toCollection(NBTTagList::new));
         compound.setTag(NBT_ITEMS, list1);
-        return super.writeToNBT(compound);
+        return super.write(compound);
     }
 
     @Override
-    public String getName() {
-        return InfChest.modID + ":tile." + BlockDeque.name;
+    public ITextComponent getName() {
+        return new TextComponentTranslation(InfChest.modID + ":tile." + BlockDeque.name);
     }
 
     @Override
@@ -102,7 +104,13 @@ public class TileDeque extends TileEntity implements HasInv {
 
     @Override
     public ITextComponent getDisplayName() {
-        return super.getDisplayName();
+        return this.getName();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getCustomName() {
+        return null;
     }
 
     @Override
@@ -119,17 +127,13 @@ public class TileDeque extends TileEntity implements HasInv {
             .collect(Collectors.toList());
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> handler));
+        }
+        return super.getCapability(cap, side);
     }
 
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(handler);
-        }
-        return super.getCapability(capability, facing);
-    }
 }

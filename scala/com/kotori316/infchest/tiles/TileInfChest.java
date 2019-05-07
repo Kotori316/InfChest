@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ItemStackHelper;
@@ -18,9 +19,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import com.kotori316.infchest.InfChest;
@@ -33,32 +36,33 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     private ItemStack holding = ItemStack.EMPTY;
     private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
     private BigInteger count = BigInteger.ZERO;
-    private String customName;
+    private ITextComponent customName;
     public static final String NBT_ITEM = "item";
     public static final String NBT_COUNT = "count";
     private static final String NBT_CUSTOM_NAME = "custom_name";
     public static final String NBT_BLOCK_TAG = "BlockEntityTag";
     public static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
-    private InfItemHandler itemHandler = new InfItemHandler(this);
+    private InfItemHandler handler = new InfItemHandler(this);
     private List<Runnable> updateRunnable = new ArrayList<>();
 
     public TileInfChest() {
+        super(InfChest.INF_CHEST_TYPE);
         addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public NBTTagCompound write(NBTTagCompound compound) {
         compound.setTag(NBT_ITEM, holding.serializeNBT());
         compound.setString(NBT_COUNT, count.toString());
-        Optional.ofNullable(customName).ifPresent(s -> compound.setString(NBT_CUSTOM_NAME, s));
+        Optional.ofNullable(customName).map(ITextComponent.Serializer::toJson).ifPresent(s -> compound.setString(NBT_CUSTOM_NAME, s));
         ItemStackHelper.saveAllItems(compound, inventory);
-        return super.writeToNBT(compound);
+        return super.write(compound);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-        holding = new ItemStack(compound.getCompoundTag(NBT_ITEM));
+    public void read(NBTTagCompound compound) {
+        super.read(compound);
+        holding = ItemStack.read(compound.getCompound(NBT_ITEM));
         if (compound.hasKey(NBT_COUNT)) {
             try {
                 count = new BigInteger(compound.getString(NBT_COUNT));
@@ -70,7 +74,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
             count = BigInteger.ZERO;
         }
         if (compound.hasKey(NBT_CUSTOM_NAME))
-            customName = compound.getString(NBT_CUSTOM_NAME);
+            customName = ITextComponent.Serializer.fromJson(compound.getString(NBT_CUSTOM_NAME));
         ItemStackHelper.loadAllItems(compound, inventory);
     }
 
@@ -97,8 +101,8 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     }
 
     @Override
-    public String getName() {
-        return hasCustomName() ? customName : InfChest.modID + ":tile." + BlockInfChest.name;
+    public ITextComponent getName() {
+        return hasCustomName() ? customName : new TextComponentTranslation(InfChest.modID + ":tile." + BlockInfChest.name);
     }
 
     @Override
@@ -107,12 +111,18 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     }
 
     public void setCustomName(String name) {
-        this.customName = name;
+        this.customName = new TextComponentString(name);
     }
 
     @Override
     public ITextComponent getDisplayName() {
-        return hasCustomName() ? new TextComponentString(getName()) : null;
+        return hasCustomName() ? getCustomName() : getName();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getCustomName() {
+        return hasCustomName() ? customName : null;
     }
 
     @Override
@@ -213,14 +223,14 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         return count;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void setCount(BigInteger count) {
         this.count = count;
     }
 
     @Override
     public boolean isUsableByPlayer(EntityPlayer player) {
-        return getWorld().getTileEntity(getPos()) == this && player.getDistanceSq(getPos()) <= 64;
+        return world.getTileEntity(getPos()) == this && player.getDistanceSq(getPos()) <= 64;
     }
 
     @Override
@@ -242,18 +252,13 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         count = BigInteger.ZERO;
     }
 
+    @Nonnull
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
-    }
-
-    @Nullable
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemHandler);
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> handler));
         }
-        return super.getCapability(capability, facing);
+        return super.getCapability(cap, side);
     }
 
     private static ItemStack copyAmount(ItemStack stack, int amount) {

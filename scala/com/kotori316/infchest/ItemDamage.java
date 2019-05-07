@@ -10,13 +10,11 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public final class ItemDamage {
     private final Item item;
-    private final int damage;
     private final NBTTagCompound compound;
 
     public ItemDamage(ItemStack stack) {
         item = stack.getItem();
-        damage = stack.getItemDamage();
-        compound = stack.getTagCompound();
+        compound = stack.getTag();
     }
 
     @Override
@@ -24,19 +22,18 @@ public final class ItemDamage {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemDamage that = (ItemDamage) o;
-        return damage == that.damage &&
-            item.equals(that.item) &&
+        return item.equals(that.item) &&
             Objects.equals(compound, that.compound);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(item, damage, compound);
+        return Objects.hash(item, compound);
     }
 
     public ItemStack toStack(int count) {
-        ItemStack stack = new ItemStack(item, count, damage);
-        stack.setTagCompound(compound);
+        ItemStack stack = new ItemStack(item, count);
+        stack.setTag(compound);
         return stack;
     }
 

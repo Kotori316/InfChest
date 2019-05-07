@@ -23,12 +23,13 @@ public class GuiInfChest extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String s = infChest.hasCustomName() ? infChest.getName() : InfChest.CHEST.getUnlocalizedName() + ".name";
+        String s = infChest.hasCustomName() ? infChest.getName() : InfChest.CHEST.getTranslationKey();
         String format = I18n.format(s);
         this.fontRenderer.drawString(format, this.xSize / 2 - this.fontRenderer.getStringWidth(format) / 2, 6, 4210752);
         this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
         Optional.of(infChest.getStack()).filter(InfChest.STACK_NON_EMPTY).map(ItemStack::getDisplayName).ifPresent(itemName -> {
-                this.fontRenderer.drawString(itemName, this.xSize / 2 - this.fontRenderer.getStringWidth(itemName) / 2, 35, 0x404040);
+                String s1 = itemName.getFormattedText();
+                this.fontRenderer.drawString(s1, this.xSize / 2 - this.fontRenderer.getStringWidth(s1) / 2, 35, 0x404040);
                 this.fontRenderer.drawString("Item: " + infChest.itemCount(), 8, 60, 0x404040);
             }
         );
@@ -44,9 +45,9 @@ public class GuiInfChest extends GuiContainer {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 }

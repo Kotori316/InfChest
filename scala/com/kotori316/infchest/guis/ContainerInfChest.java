@@ -16,15 +16,15 @@ public class ContainerInfChest extends Container {
         this.infChest = infChest;
         int oneBox = 18;
 
-        addSlotToContainer(new LimitSlot(infChest, 0, 31, 35));
-        addSlotToContainer(new LimitSlot(infChest, 1, 127, 35));
+        addSlot(new LimitSlot(infChest, 0, 31, 35));
+        addSlot(new LimitSlot(infChest, 1, 127, 35));
 
         for (int h = 0; h < 3; ++h)
             for (int v = 0; v < 9; ++v)
-                addSlotToContainer(new Slot(player.inventory, 9 + h * 9 + v, 8 + oneBox * v, 84 + oneBox * h));
+                addSlot(new Slot(player.inventory, 9 + h * 9 + v, 8 + oneBox * v, 84 + oneBox * h));
 
         for (int v = 0; v < 9; ++v)
-            addSlotToContainer(new Slot(player.inventory, v, 8 + oneBox * v, 142));
+            addSlot(new Slot(player.inventory, v, 8 + oneBox * v, 142));
     }
 
     @Override
