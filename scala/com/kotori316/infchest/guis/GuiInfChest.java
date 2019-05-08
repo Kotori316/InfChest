@@ -23,7 +23,7 @@ public class GuiInfChest extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String s = infChest.hasCustomName() ? infChest.getName() : InfChest.CHEST.getTranslationKey();
+        String s = infChest.hasCustomName() ? infChest.getName().getFormattedText() : InfChest.CHEST.getTranslationKey();
         String format = I18n.format(s);
         this.fontRenderer.drawString(format, this.xSize / 2 - this.fontRenderer.getStringWidth(format) / 2, 6, 4210752);
         this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);

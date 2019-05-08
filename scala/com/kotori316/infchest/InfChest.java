@@ -8,8 +8,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -41,9 +41,6 @@ public class InfChest {
 
     public InfChest() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-        MinecraftForge.EVENT_BUS.addListener(this::registerBlocks);
-        MinecraftForge.EVENT_BUS.addListener(this::registerItem);
-        MinecraftForge.EVENT_BUS.addListener(this::registerTiles);
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> GuiHandler::getClientGuiElement);
     }
 
@@ -52,21 +49,27 @@ public class InfChest {
         PacketHandler.init();
     }
 
-    public void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(CHEST, DEQUE);
-    }
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class Register {
+        @SubscribeEvent
+        public static void registerBlocks(RegistryEvent.Register<Block> event) {
+            event.getRegistry().registerAll(CHEST, DEQUE);
+        }
 
-    public void registerItem(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(CHEST.itemBlock, DEQUE.itemBlock);
-    }
+        @SubscribeEvent
+        public static void registerItem(RegistryEvent.Register<Item> event) {
+            event.getRegistry().registerAll(CHEST.itemBlock, DEQUE.itemBlock);
+        }
 
-    public void registerTiles(RegistryEvent.Register<TileEntityType<?>> event) {
-        event.getRegistry().register(INF_CHEST_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockInfChest.name)));
-        event.getRegistry().register(DEQUE_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockDeque.name)));
+        @SubscribeEvent
+        public static void registerTiles(RegistryEvent.Register<TileEntityType<?>> event) {
+            event.getRegistry().register(INF_CHEST_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockInfChest.name)));
+            event.getRegistry().register(DEQUE_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockDeque.name)));
+        }
     }
 
     /*
     Test command
-    /give @p infchest:infchest 1 0 {BlockEntityTag:{item:{id:"minecraft:stone",Count:1b,Damage:0s},count:"250000000000444465416531514645000000000",Items:[{Slot:1b,id:"minecraft:stone",Count:64b,Damage:0s}]}}
+    /give @p infchest:infchest{BlockEntityTag:{item:{id:"minecraft:stone",Count:1b},count:"250000000000444465416531514645000000000",Items:[{Slot:1b,id:"minecraft:stone",Count:64b}]}} 1
      */
 }

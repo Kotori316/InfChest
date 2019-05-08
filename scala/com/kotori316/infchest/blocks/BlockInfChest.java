@@ -3,14 +3,17 @@ package com.kotori316.infchest.blocks;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -22,12 +25,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.guis.GuiHandler;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 public class BlockInfChest extends BlockContainer {
@@ -35,37 +39,40 @@ public class BlockInfChest extends BlockContainer {
     public final ItemBlock itemBlock;
 
     public BlockInfChest() {
-        super(Material.IRON);
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(1.0f));
         setRegistryName(InfChest.modID, name);
-        setUnlocalizedName(InfChest.modID + "." + name);
-        setHardness(1.0f);
-        setCreativeTab(CreativeTabs.DECORATIONS);
         itemBlock = new ItemInfChest(this);
     }
 
+    @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileInfChest();
+    public TileEntity createNewTileEntity(IBlockReader worldIn) {
+        return InfChest.INF_CHEST_TYPE.create();
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @Override
-    public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, EntityLiving.SpawnPlacementType type) {
+    public boolean canCreatureSpawn(IBlockState state, IWorldReaderBase world, BlockPos pos,
+                                    EntitySpawnPlacementRegistry.SpawnPlacementType type, @Nullable EntityType<? extends EntityLiving> entityType) {
         return false;
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-                                    EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!playerIn.isSneaking()) {
-            playerIn.openGui(InfChest.getInstance(), GuiHandler.CHEST_GUI_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+    @SuppressWarnings("deprecation")
+    public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (!player.isSneaking()) {
+            if (!worldIn.isRemote) {
+                Optional.ofNullable(((TileInfChest) worldIn.getTileEntity(pos))).ifPresent(t ->
+                    NetworkHooks.openGui(((EntityPlayerMP) player), t, pos));
+            }
             return true;
         }
-        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+        return super.onBlockActivated(state, worldIn, pos, player, hand, side, hitX, hitY, hitZ);
     }
 
     @Override
@@ -80,7 +87,7 @@ public class BlockInfChest extends BlockContainer {
     }
 
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, EntityPlayer player) {
         ItemStack pickBlock = super.getPickBlock(state, target, world, pos, player);
         saveChestNbtToStack(world.getTileEntity(pos), pickBlock);
         saveCustomName(world.getTileEntity(pos), pickBlock);
@@ -90,7 +97,7 @@ public class BlockInfChest extends BlockContainer {
     @Override
     public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
 
-        Optional.ofNullable(StatList.getBlockStats(this)).ifPresent(player::addStat);
+        player.addStat(StatList.BLOCK_MINED.get(this));
         player.addExhaustion(0.005F);
         harvesters.set(player);
         if (!worldIn.isRemote && !worldIn.restoringBlockSnapshots) {
@@ -116,7 +123,7 @@ public class BlockInfChest extends BlockContainer {
         Optional.ofNullable(te).filter(TileInfChest.class::isInstance).map(TileInfChest.class::cast)
             .filter(TileInfChest::hasCustomName)
             .map(TileInfChest::getName)
-            .ifPresent(drop::setStackDisplayName);
+            .ifPresent(drop::setDisplayName);
     }
 
     private static void saveChestNbtToStack(@Nullable TileEntity entity, ItemStack stack) {

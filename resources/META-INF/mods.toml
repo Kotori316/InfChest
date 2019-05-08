@@ -3,7 +3,7 @@ loaderVersion="[25,)"
 issueTrackerURL="https://github.com/Kotori316/InfChest/issues"
 [[mods]] 
 modId="infchest"
-version="${file.version}"
+version="${file.jarVersion}"
 displayName="InfChest"
 displayURL="https://github.com/Kotori316/InfChest"
 credits="Kotori316" 

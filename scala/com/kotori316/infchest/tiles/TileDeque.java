@@ -3,7 +3,6 @@ package com.kotori316.infchest.tiles;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,7 +39,7 @@ public class TileDeque extends TileEntity implements HasInv {
     @Override
     public void read(NBTTagCompound compound) {
         super.read(compound);
-        inventory = StreamSupport.stream(compound.getList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).spliterator(), false)
+        inventory = compound.getList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).stream()
             .map(NBTTagCompound.class::cast)
             .map(ItemStack::read)
             .filter(InfChest.STACK_NON_EMPTY)
@@ -59,7 +58,8 @@ public class TileDeque extends TileEntity implements HasInv {
 
     @Override
     public ITextComponent getName() {
-        return new TextComponentTranslation(InfChest.modID + ":tile." + BlockDeque.name);
+        String name = InfChest.modID + ":tile." + BlockDeque.name;
+        return new TextComponentTranslation(name);
     }
 
     @Override

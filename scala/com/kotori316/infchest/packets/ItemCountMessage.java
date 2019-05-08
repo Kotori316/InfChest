@@ -62,6 +62,7 @@ public class ItemCountMessage {
                 chest.setCount(new BigInteger(bytes));
                 chest.setInventorySlotContents(1, out);
             });
+            ctx.get().setPacketHandled(true);
         }
     }
 }

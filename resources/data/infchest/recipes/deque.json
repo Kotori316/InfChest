@@ -7,8 +7,7 @@
   ],
   "key": {
     "c": {
-      "type": "forge:ore_dict",
-      "ore": "chest"
+      "tag": "forge:chests"
     },
     "d": [
       {"item": "minecraft:dispenser"},
@@ -21,7 +20,6 @@
   },
   "result": {
     "item": "infchest:deque",
-    "count": 1,
-    "data": 0
+    "count": 1
   }
 }

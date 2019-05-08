@@ -7,27 +7,24 @@
   ],
   "key": {
     "e": {
-      "type": "forge:ore_dict",
-      "ore": "chestEnder"
+      "tag": "forge:chests/ender"
     },
     "i": [
       {
-        "type": "forge:ore_dict",
-        "ore": "ingotIron"
+        "tag": "forge:ingots/iron"
       },
       {
-        "type": "forge:ore_dict",
-        "ore": "ingotGold"
+        "tag": "forge:ingots/gold"
       }
     ],
     "q": {
-      "type": "forge:ore_dict",
-      "ore": "blockQuartz"
+      "tag": "forge:storage_blocks/quartz"
     },
     "b": {
       "item": "minecraft:beacon"
     },
     "s": [
+      {"item": "minecraft:shulker_box"},
       {"item": "minecraft:white_shulker_box"},
       {"item": "minecraft:orange_shulker_box"},
       {"item": "minecraft:magenta_shulker_box"},
@@ -36,7 +33,7 @@
       {"item": "minecraft:lime_shulker_box"},
       {"item": "minecraft:pink_shulker_box"},
       {"item": "minecraft:gray_shulker_box"},
-      {"item": "minecraft:silver_shulker_box"},
+      {"item": "minecraft:light_gray_shulker_box"},
       {"item": "minecraft:cyan_shulker_box"},
       {"item": "minecraft:purple_shulker_box"},
       {"item": "minecraft:blue_shulker_box"},
@@ -48,7 +45,6 @@
   },
   "result": {
     "item": "infchest:infchest",
-    "count": 1,
-    "data": 0
+    "count": 1
   }
 }

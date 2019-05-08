@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,8 +20,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -28,10 +30,11 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.blocks.BlockInfChest;
+import com.kotori316.infchest.guis.ContainerInfChest;
 import com.kotori316.infchest.packets.ItemCountMessage;
 import com.kotori316.infchest.packets.PacketHandler;
 
-public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
+public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, IInteractionObject {
 
     private ItemStack holding = ItemStack.EMPTY;
     private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
@@ -110,8 +113,8 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         return customName != null;
     }
 
-    public void setCustomName(String name) {
-        this.customName = new TextComponentString(name);
+    public void setCustomName(ITextComponent name) {
+        this.customName = name;
     }
 
     @Override
@@ -282,5 +285,17 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     @Override
     public List<Runnable> getUpdates() {
         return updateRunnable;
+    }
+
+    @Override
+    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+        return new ContainerInfChest(this, playerIn);
+    }
+
+    public static final String GUI_ID = InfChest.modID + ":gui_" + BlockInfChest.name;
+
+    @Override
+    public String getGuiID() {
+        return GUI_ID;
     }
 }

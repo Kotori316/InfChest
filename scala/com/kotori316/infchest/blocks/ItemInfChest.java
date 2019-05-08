@@ -8,12 +8,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -28,6 +30,18 @@ class ItemInfChest extends ItemBlock {
     ItemInfChest(Block block) {
         super(block, new Item.Properties().group(ItemGroup.DECORATIONS));
         setRegistryName(InfChest.modID, BlockInfChest.name);
+    }
+
+    @Override
+    public EnumActionResult tryPlace(BlockItemUseContext context) {
+        if (Optional.ofNullable(context.getPlayer()).map(p -> p.abilities.isCreativeMode).orElse(Boolean.FALSE)) {
+            int size = context.getItem().getCount();
+            EnumActionResult result = super.tryPlace(context);
+            context.getItem().setCount(size);
+            return result;
+        } else {
+            return super.tryPlace(context);
+        }
     }
 
     @Override

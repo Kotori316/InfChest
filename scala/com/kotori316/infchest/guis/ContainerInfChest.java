@@ -12,7 +12,7 @@ public class ContainerInfChest extends Container {
 
     private final TileInfChest infChest;
 
-    ContainerInfChest(TileInfChest infChest, EntityPlayer player) {
+    public ContainerInfChest(TileInfChest infChest, EntityPlayer player) {
         this.infChest = infChest;
         int oneBox = 18;
 
