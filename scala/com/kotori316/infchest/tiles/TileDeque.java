@@ -52,7 +52,7 @@ public class TileDeque extends TileEntity implements HasInv {
             .filter(InfChest.STACK_NON_EMPTY)
             .map(ItemStack::serializeNBT)
             .collect(Collectors.toCollection(NBTTagList::new));
-        compound.setTag(NBT_ITEMS, list1);
+        compound.put(NBT_ITEMS, list1);
         return super.write(compound);
     }
 

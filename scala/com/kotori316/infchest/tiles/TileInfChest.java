@@ -55,9 +55,9 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, IIn
 
     @Override
     public NBTTagCompound write(NBTTagCompound compound) {
-        compound.setTag(NBT_ITEM, holding.serializeNBT());
-        compound.setString(NBT_COUNT, count.toString());
-        Optional.ofNullable(customName).map(ITextComponent.Serializer::toJson).ifPresent(s -> compound.setString(NBT_CUSTOM_NAME, s));
+        compound.put(NBT_ITEM, holding.serializeNBT());
+        compound.putString(NBT_COUNT, count.toString());
+        Optional.ofNullable(customName).map(ITextComponent.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
         ItemStackHelper.saveAllItems(compound, inventory);
         return super.write(compound);
     }
@@ -66,7 +66,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, IIn
     public void read(NBTTagCompound compound) {
         super.read(compound);
         holding = ItemStack.read(compound.getCompound(NBT_ITEM));
-        if (compound.hasKey(NBT_COUNT)) {
+        if (compound.contains(NBT_COUNT)) {
             try {
                 count = new BigInteger(compound.getString(NBT_COUNT));
             } catch (NumberFormatException e) {
@@ -76,7 +76,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, IIn
         } else {
             count = BigInteger.ZERO;
         }
-        if (compound.hasKey(NBT_CUSTOM_NAME))
+        if (compound.contains(NBT_CUSTOM_NAME))
             customName = ITextComponent.Serializer.fromJson(compound.getString(NBT_CUSTOM_NAME));
         ItemStackHelper.loadAllItems(compound, inventory);
     }
@@ -99,7 +99,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, IIn
 
     public NBTTagCompound getBlockTag() {
         NBTTagCompound nbtTagCompound = serializeNBT();
-        Stream.of("x", "y", "z", "id", "ForgeCaps", "ForgeData").forEach(nbtTagCompound::removeTag);
+        Stream.of("x", "y", "z", "id", "ForgeCaps", "ForgeData").forEach(nbtTagCompound::remove);
         return nbtTagCompound;
     }
 

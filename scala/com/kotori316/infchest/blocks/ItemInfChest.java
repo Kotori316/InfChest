@@ -53,9 +53,9 @@ class ItemInfChest extends ItemBlock {
                 if (world.isRemote || !tileentity.onlyOpsCanSetNbt() || (player != null && player.canUseCommandBlock())) {
                     NBTTagCompound tileNbt = tileentity.write(new NBTTagCompound());
                     tileNbt.merge(nbttagcompound);
-                    tileNbt.setInt("x", pos.getX());
-                    tileNbt.setInt("y", pos.getY());
-                    tileNbt.setInt("z", pos.getZ());
+                    tileNbt.putInt("x", pos.getX());
+                    tileNbt.putInt("y", pos.getY());
+                    tileNbt.putInt("z", pos.getZ());
 
                     tileentity.read(tileNbt);
                     tileentity.markDirty();
