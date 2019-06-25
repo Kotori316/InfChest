@@ -1,47 +1,16 @@
 package com.kotori316.infchest.tiles;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public interface HasInv extends net.minecraft.inventory.IInventory {
 
     @Override
-    default void openInventory(EntityPlayer player) {
+    default void openInventory(PlayerEntity player) {
     }
 
     @Override
-    default void closeInventory(EntityPlayer player) {
-    }
-
-    /**
-     * Send short value to client.
-     *
-     * @param id the index of data. Must be under 256.
-     * @return short value, must be under 2^15.
-     */
-    @Override
-    default int getField(int id) {
-        return 0;
-    }
-
-    /**
-     * Get from server and set value in client side.
-     *
-     * @param id    the index of data. Must be under 256.
-     * @param value value in server side. Should be under 2^15.
-     */
-    @Override
-    default void setField(int id, int value) {
-    }
-
-    @Override
-    default int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    default boolean hasCustomName() {
-        return false;
+    default void closeInventory(PlayerEntity player) {
     }
 
     @Override
@@ -79,7 +48,7 @@ public interface HasInv extends net.minecraft.inventory.IInventory {
     }
 
     @Override
-    default boolean isUsableByPlayer(EntityPlayer player) {
+    default boolean isUsableByPlayer(PlayerEntity player) {
         return true;
     }
 

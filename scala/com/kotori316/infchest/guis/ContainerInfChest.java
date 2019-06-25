@@ -1,19 +1,24 @@
 package com.kotori316.infchest.guis;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 
-import com.kotori316.infchest.tiles.TileInfChest;
+import com.kotori316.infchest.InfChest;
 
 public class ContainerInfChest extends Container {
 
-    private final TileInfChest infChest;
+    final IInventory infChest;
 
-    public ContainerInfChest(TileInfChest infChest, EntityPlayer player) {
+    public ContainerInfChest(int id, IInventory infChest, PlayerInventory playerInventory) {
+        super(InfChest.INF_CHEST_CONTAINER_TYPE, id);
         this.infChest = infChest;
+        infChest.openInventory(playerInventory.player);
         int oneBox = 18;
 
         addSlot(new LimitSlot(infChest, 0, 31, 35));
@@ -21,19 +26,19 @@ public class ContainerInfChest extends Container {
 
         for (int h = 0; h < 3; ++h)
             for (int v = 0; v < 9; ++v)
-                addSlot(new Slot(player.inventory, 9 + h * 9 + v, 8 + oneBox * v, 84 + oneBox * h));
+                addSlot(new Slot(playerInventory, 9 + h * 9 + v, 8 + oneBox * v, 84 + oneBox * h));
 
         for (int v = 0; v < 9; ++v)
-            addSlot(new Slot(player.inventory, v, 8 + oneBox * v, 142));
+            addSlot(new Slot(playerInventory, v, 8 + oneBox * v, 142));
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
+    public boolean canInteractWith(PlayerEntity playerIn) {
         return infChest.isUsableByPlayer(playerIn);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
         Slot from = getSlot(index);
         if (from.getHasStack()) {
             ItemStack current = from.getStack();
@@ -73,5 +78,10 @@ public class ContainerInfChest extends Container {
             return inventory.isItemValidForSlot(getSlotIndex(), stack);
         }
 
+    }
+
+    @SuppressWarnings("unused")
+    public static ContainerInfChest create(int windowId, PlayerInventory inv, PacketBuffer data) {
+        return new ContainerInfChest(windowId, new Inventory(2), inv);
     }
 }

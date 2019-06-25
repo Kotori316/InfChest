@@ -8,12 +8,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,29 +37,28 @@ public class TileDeque extends TileEntity implements HasInv {
     }
 
     @Override
-    public void read(NBTTagCompound compound) {
+    public void read(CompoundNBT compound) {
         super.read(compound);
         inventory = compound.getList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).stream()
-            .map(NBTTagCompound.class::cast)
+            .map(CompoundNBT.class::cast)
             .map(ItemStack::read)
             .filter(InfChest.STACK_NON_EMPTY)
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound compound) {
-        NBTTagList list1 = inventory.stream()
+    public CompoundNBT write(CompoundNBT compound) {
+        ListNBT list1 = inventory.stream()
             .filter(InfChest.STACK_NON_EMPTY)
             .map(ItemStack::serializeNBT)
-            .collect(Collectors.toCollection(NBTTagList::new));
+            .collect(Collectors.toCollection(ListNBT::new));
         compound.put(NBT_ITEMS, list1);
         return super.write(compound);
     }
 
-    @Override
     public ITextComponent getName() {
         String name = InfChest.modID + ":tile." + BlockDeque.name;
-        return new TextComponentTranslation(name);
+        return new TranslationTextComponent(name);
     }
 
     @Override
@@ -103,17 +102,6 @@ public class TileDeque extends TileEntity implements HasInv {
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        return this.getName();
-    }
-
-    @Nullable
-    @Override
-    public ITextComponent getCustomName() {
-        return null;
-    }
-
-    @Override
     public void clear() {
         inventory.clear();
     }
@@ -129,7 +117,7 @@ public class TileDeque extends TileEntity implements HasInv {
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable EnumFacing side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> handler));
         }

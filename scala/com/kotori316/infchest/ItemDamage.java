@@ -6,11 +6,11 @@ import java.util.stream.Stream;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public final class ItemDamage {
     private final Item item;
-    private final NBTTagCompound compound;
+    private final CompoundNBT compound;
 
     public ItemDamage(ItemStack stack) {
         item = stack.getItem();
