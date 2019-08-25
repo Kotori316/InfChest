@@ -1,14 +1,17 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = "https://plugins.gradle.org/m2/" }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'gradle.plugin.com.matthewprenger', name: 'CurseGradle', version: '1.2.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: "com.matthewprenger.cursegradle"
 
 version = getProperty("modversion")
 group = "com.kotori316"
@@ -116,26 +119,30 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
     builtBy 'reobfJar'
 }
 
-/*
-task signJar(type: SignJar, dependsOn: reobfJar) {
-
-    // Skips if the keyStore property is missing.
-    onlyIf {
-        project.hasProperty('keyStore')
+task signJar2() {
+    doLast {
+        ant.signjar(
+                jar: jar.archivePath,
+                alias: project.hasProperty('keyStoreAlias') ? project.getProperty('keyStoreAlias') : "",
+                keystore: project.hasProperty('keyStore') ? project.getProperty("keyStore") : "",
+                storepass: project.hasProperty('keyStorePass') ? project.getProperty('keyStorePass') : "",
+                sigalg: "SHA1withRSA",
+                digestalg: "SHA-256",
+                tsaurl: "http://timestamp.digicert.com"
+        )
+        ant.signjar(
+                jar: deobfJar.archivePath,
+                alias: project.hasProperty('keyStoreAlias') ? project.getProperty('keyStoreAlias') : "",
+                keystore: project.hasProperty('keyStore') ? project.getProperty("keyStore") : "",
+                storepass: project.hasProperty('keyStorePass') ? project.getProperty('keyStorePass') : "",
+                sigalg: "SHA1withRSA",
+                digestalg: "SHA-256",
+                tsaurl: "http://timestamp.digicert.com"
+        )
     }
-
-    // findProperty allows us to reference the property without it existing.
-    // Using project.propName would cause the script to fail validation if
-    // the property did not exist.
-    keyStore = project.hasProperty('keyStore') ? project.getProperty("keyStore") : ""
-    alias = project.hasProperty('keyStore') ? project.getProperty('keyStoreAlias') : ""
-    storePass = project.hasProperty('keyStore') ? project.getProperty('keyStorePass') : ""
-    keyPass = project.hasProperty('keyStore') ? project.getProperty('keyStoreKeyPass') : ""
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-}*/
+}
 // Runs this task automatically when build is ran.
-//build.dependsOn signJar
+assemble.dependsOn(signJar2)
 
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
@@ -151,21 +158,21 @@ task deobfJar(type: Jar) {
 artifacts {
     archives srcJar, deobfJar
 }
-/*
+
 curseforge {
     apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
     project {
         id = '312222'
         changelogType = 'markdown'
         changelog = new File("temp_changelog.md")
+        addGameVersion '1.14.4'
         releaseType = 'release'
         mainArtifact jar
         addArtifact srcJar
         addArtifact deobfJar
-        afterEvaluate {
-            gameVersionStrings.remove('Java 8')
-            gameVersionStrings.remove('Java 9')
-        }
+    }
+    options {
+        debug = false // defaults to false
+        javaVersionAutoDetect = false
     }
 }
-*/
