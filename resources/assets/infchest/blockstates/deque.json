@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "infchest:deque",
+    "model": "infchest:block/deque",
     "uvlock": true,
     "transform": "forge:default-block"
   },

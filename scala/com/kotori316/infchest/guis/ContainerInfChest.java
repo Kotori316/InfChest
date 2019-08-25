@@ -3,21 +3,22 @@ package com.kotori316.infchest.guis;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
 
 import com.kotori316.infchest.InfChest;
+import com.kotori316.infchest.tiles.TileInfChest;
 
 public class ContainerInfChest extends Container {
 
-    final IInventory infChest;
+    final TileInfChest infChest;
 
-    public ContainerInfChest(int id, IInventory infChest, PlayerInventory playerInventory) {
+    public ContainerInfChest(int id, PlayerInventory playerInventory, BlockPos pos) {
         super(InfChest.INF_CHEST_CONTAINER_TYPE, id);
-        this.infChest = infChest;
+        this.infChest = ((TileInfChest) playerInventory.player.getEntityWorld().getTileEntity(pos));
         infChest.openInventory(playerInventory.player);
         int oneBox = 18;
 
@@ -82,6 +83,6 @@ public class ContainerInfChest extends Container {
 
     @SuppressWarnings("unused")
     public static ContainerInfChest create(int windowId, PlayerInventory inv, PacketBuffer data) {
-        return new ContainerInfChest(windowId, new Inventory(2), inv);
+        return new ContainerInfChest(windowId, inv, data.readBlockPos());
     }
 }

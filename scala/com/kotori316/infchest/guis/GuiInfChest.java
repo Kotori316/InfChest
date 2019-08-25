@@ -2,16 +2,13 @@ package com.kotori316.infchest.guis;
 
 import java.util.Optional;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.opengl.GL11;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -22,12 +19,12 @@ public class GuiInfChest extends ContainerScreen<ContainerInfChest> {
 
     public GuiInfChest(ContainerInfChest container, PlayerInventory inventory, ITextComponent component) {
         super(container, inventory, component);
-        this.infChest = container.infChest instanceof TileInfChest ? ((TileInfChest) container.infChest) : null;
+        this.infChest = container.infChest;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String s = title.getFormattedText();
+        String s = Optional.ofNullable(infChest).map(TileInfChest::getDisplayName).map(ITextComponent::getFormattedText).orElse(InfChest.MOD_NAME);
         String format = I18n.format(s);
         this.font.drawString(format, this.xSize / 2 - this.font.getStringWidth(format) / 2, 6, 4210752);
         this.font.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
@@ -41,7 +38,7 @@ public class GuiInfChest extends ContainerScreen<ContainerInfChest> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.getMinecraft().getTextureManager().bindTexture(resourceLocation);
         int k = (this.width - xSize) / 2;
         int l = (this.height - ySize) / 2;

@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -35,7 +34,7 @@ import com.kotori316.infchest.guis.ContainerInfChest;
 import com.kotori316.infchest.packets.ItemCountMessage;
 import com.kotori316.infchest.packets.PacketHandler;
 
-public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INamedContainerProvider, ITickableTileEntity {
+public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INamedContainerProvider {
 
     private ItemStack holding = ItemStack.EMPTY;
     private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
@@ -105,7 +104,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     }
 
     public ITextComponent getName() {
-        return hasCustomName() ? customName : new TranslationTextComponent(InfChest.modID + ":tile." + BlockInfChest.name);
+        return hasCustomName() ? customName : new TranslationTextComponent(InfChest.CHEST.getTranslationKey());
     }
 
     public boolean hasCustomName() {
@@ -169,26 +168,26 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
             if (isItemValidForSlot(0, insert)) {
                 addStack(insert);
             }
-            ItemStack out = getStackInSlot(1);
-            // Make sure out item is equal to holding.
-            boolean outFlag = out.isEmpty() || ItemStack.areItemsEqual(holding, out) && ItemStack.areItemStackTagsEqual(holding, out);
-            if (outFlag && out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
-                int sub = holding.getMaxStackSize() - out.getCount();
-                if (gt(count, sub)) { //count > sub
-                    ItemStack itemStack = copyAmount(holding, holding.getMaxStackSize());
-                    count = count.subtract(BigInteger.valueOf(sub));
-                    inventory.set(1, itemStack); // Don't need to call markDirty() more.
-                } else {
-                    // count <= sub
-                    ItemStack itemStack = copyAmount(holding, out.getCount() + count.intValueExact());
-                    count = BigInteger.ZERO;
-                    holding = ItemStack.EMPTY;
-                    inventory.set(1, itemStack); // Don't need to call markDirty() more.
-                }
+        }
+        ItemStack out = getStackInSlot(1);
+        // Make sure out item is equal to holding.
+        boolean outFlag = out.isEmpty() || ItemStack.areItemsEqual(holding, out) && ItemStack.areItemStackTagsEqual(holding, out);
+        if (outFlag && out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
+            int sub = holding.getMaxStackSize() - out.getCount();
+            if (gt(count, sub)) { //count > sub
+                ItemStack itemStack = copyAmount(holding, holding.getMaxStackSize());
+                count = count.subtract(BigInteger.valueOf(sub));
+                inventory.set(1, itemStack); // Don't need to call markDirty() more.
+            } else {
+                // count <= sub
+                ItemStack itemStack = copyAmount(holding, out.getCount() + count.intValueExact());
+                count = BigInteger.ZERO;
+                holding = ItemStack.EMPTY;
+                inventory.set(1, itemStack); // Don't need to call markDirty() more.
             }
-            if (!world.isRemote) {
-                runUpdates();
-            }
+        }
+        if (!world.isRemote) {
+            runUpdates();
         }
     }
 
@@ -242,14 +241,10 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        switch (index) {
-            case 0:
-                return holding.isEmpty() || (ItemStack.areItemsEqual(holding, stack) && ItemStack.areItemStackTagsEqual(holding, stack));
-            case 1:
-                return false;
-            default:
-                return false;
+        if (index == 0) {
+            return holding.isEmpty() || (ItemStack.areItemsEqual(holding, stack) && ItemStack.areItemStackTagsEqual(holding, stack));
         }
+        return false;
     }
 
     @Override
@@ -293,14 +288,9 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
 
     public static final String GUI_ID = InfChest.modID + ":gui_" + BlockInfChest.name;
 
-    @Nullable
     @Override
     public Container createMenu(int containerID, PlayerInventory inventory, PlayerEntity player) {
-        return new ContainerInfChest(containerID, this, inventory);
+        return new ContainerInfChest(containerID, inventory, pos);
     }
 
-    @Override
-    public void tick() {
-        updateInv();
-    }
 }
