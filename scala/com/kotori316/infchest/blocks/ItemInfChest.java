@@ -8,9 +8,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,7 +34,7 @@ class ItemInfChest extends BlockItem {
 
     @Override
     public ActionResultType tryPlace(BlockItemUseContext context) {
-        if (Optional.ofNullable(context.getPlayer()).map(p -> p.abilities.isCreativeMode).orElse(Boolean.FALSE)) {
+        if (Optional.ofNullable(context.getPlayer()).map(PlayerEntity::isCreative).orElse(Boolean.FALSE)) {
             int size = context.getItem().getCount();
             ActionResultType result = super.tryPlace(context);
             context.getItem().setCount(size);
