@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.kotori316.infchest.blocks.BlockDeque;
 import com.kotori316.infchest.blocks.BlockInfChest;
+import com.kotori316.infchest.blocks.ContentInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
 import com.kotori316.infchest.guis.GuiInfChest;
 import com.kotori316.infchest.packets.PacketHandler;
@@ -51,9 +53,10 @@ public class InfChest {
     public void preInit(FMLCommonSetupEvent event) {
 //        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
         PacketHandler.init();
+        LootFunctionManager.registerFunction(new ContentInfChest.Serializer());
     }
 
-    public void clientInit(FMLClientSetupEvent event){
+    public void clientInit(FMLClientSetupEvent event) {
         ScreenManager.registerFactory(INF_CHEST_CONTAINER_TYPE, GuiInfChest::new);
     }
 

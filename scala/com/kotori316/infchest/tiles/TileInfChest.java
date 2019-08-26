@@ -19,6 +19,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.INameable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -34,7 +35,7 @@ import com.kotori316.infchest.guis.ContainerInfChest;
 import com.kotori316.infchest.packets.ItemCountMessage;
 import com.kotori316.infchest.packets.PacketHandler;
 
-public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INamedContainerProvider {
+public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INamedContainerProvider, INameable {
 
     private ItemStack holding = ItemStack.EMPTY;
     private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
@@ -103,10 +104,12 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         return nbtTagCompound;
     }
 
+    @Override
     public ITextComponent getName() {
         return hasCustomName() ? customName : new TranslationTextComponent(InfChest.CHEST.getTranslationKey());
     }
 
+    @Override
     public boolean hasCustomName() {
         return customName != null;
     }
@@ -120,6 +123,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         return hasCustomName() ? getCustomName() : getName();
     }
 
+    @Override
     @Nullable
     public ITextComponent getCustomName() {
         return hasCustomName() ? customName : null;

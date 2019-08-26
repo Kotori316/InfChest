@@ -87,39 +87,14 @@ public class BlockInfChest extends ContainerBlock {
         return pickBlock;
     }
 
-    /*@Override
-    public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
-
-        player.addStat(Stats.BLOCK_MINED.get(this));
-        player.addExhaustion(0.005F);
-        harvesters.set(player);
-        if (!worldIn.isRemote && !worldIn.restoringBlockSnapshots) {
-            // do not drop items while restoring blockStates, prevents item dupe
-            int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
-            NonNullList<ItemStack> drops = NonNullList.create();
-            ItemStack chestStack = new ItemStack(this);
-            saveChestNbtToStack(te, chestStack);
-            saveCustomName(te, chestStack);
-            drops.add(chestStack);
-            float chance = ForgeEventFactory.fireBlockHarvesting(drops, worldIn, pos, state, fortune, 1.0f, false, harvesters.get());
-
-            for (ItemStack drop : drops) {
-                if (worldIn.rand.nextFloat() <= chance) {
-                    spawnAsEntity(worldIn, pos, drop);
-                }
-            }
-        }
-        harvesters.set(null);
-    }*/
-
-    private static void saveCustomName(@Nullable TileEntity te, ItemStack drop) {
+    public static void saveCustomName(@Nullable TileEntity te, ItemStack drop) {
         Optional.ofNullable(te).filter(TileInfChest.class::isInstance).map(TileInfChest.class::cast)
             .filter(TileInfChest::hasCustomName)
             .map(TileInfChest::getName)
             .ifPresent(drop::setDisplayName);
     }
 
-    private static void saveChestNbtToStack(@Nullable TileEntity entity, ItemStack stack) {
+    public static void saveChestNbtToStack(@Nullable TileEntity entity, ItemStack stack) {
         Optional.ofNullable(entity)
             .filter(TileInfChest.class::isInstance)
             .map(TileInfChest.class::cast)

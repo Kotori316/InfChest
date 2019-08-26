@@ -6,7 +6,12 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "infchest:infchest"
+          "name": "infchest:infchest",
+          "functions": [
+            {
+              "function": "infchest:content_infchest"
+            }
+          ]
         }
       ],
       "conditions": [
