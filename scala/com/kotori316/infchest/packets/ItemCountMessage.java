@@ -53,7 +53,6 @@ public class ItemCountMessage {
         p.writeByteArray(bytes).writeItemStack(out);
     }
 
-    @OnlyIn(Dist.CLIENT)
     void onReceive(Supplier<NetworkEvent.Context> ctx) {
         TileEntity entity = Minecraft.getInstance().world.getTileEntity(pos);
         if (Minecraft.getInstance().world.getDimension().getType().getId() == dim && entity instanceof TileInfChest) {
