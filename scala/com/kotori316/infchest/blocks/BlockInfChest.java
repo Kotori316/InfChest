@@ -16,6 +16,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -37,7 +38,6 @@ public class BlockInfChest extends ContainerBlock {
         itemBlock = new ItemInfChest(this);
     }
 
-    @Nullable
     @Override
     public TileEntity createNewTileEntity(IBlockReader worldIn) {
         return InfChest.Register.INF_CHEST_TYPE.create();
@@ -56,16 +56,16 @@ public class BlockInfChest extends ContainerBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos,
-                                    PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
-        if (!player.isSneaking()) {
+    public ActionResultType func_225533_a_(BlockState state, World worldIn, BlockPos pos,
+                                           PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+        if (!player.func_225608_bj_()) {
             if (!worldIn.isRemote) {
                 Optional.ofNullable(((TileInfChest) worldIn.getTileEntity(pos))).ifPresent(t ->
                     NetworkHooks.openGui(((ServerPlayerEntity) player), t, pos));
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return super.onBlockActivated(state, worldIn, pos, player, hand, rayTrace);
+        return super.func_225533_a_(state, worldIn, pos, player, hand, rayTrace);
     }
 
     @Override

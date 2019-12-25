@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[25,)"
+loaderVersion="[30,)"
 issueTrackerURL="https://github.com/Kotori316/InfChest/issues"
 [[mods]] 
 modId="infchest"
@@ -13,12 +13,12 @@ Add a infinite capacity chest.'''
 [[dependencies.infchest]]
     modId="forge" 
     mandatory=true 
-    versionRange="[25,)" 
+    versionRange="[30,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.infchest]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.14.2, )"
+    versionRange="[1.15.1, )"
     ordering="NONE"
     side="BOTH"

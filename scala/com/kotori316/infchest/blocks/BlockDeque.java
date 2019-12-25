@@ -40,7 +40,6 @@ public class BlockDeque extends ContainerBlock {
         itemBlock.setRegistryName(InfChest.modID, name);
     }
 
-    @Nullable
     @Override
     public TileEntity createNewTileEntity(IBlockReader worldIn) {
         return InfChest.Register.DEQUE_TYPE.create();
@@ -55,12 +54,6 @@ public class BlockDeque extends ContainerBlock {
     @Override
     public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
         return false;
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean onBlockActivated(BlockState p_220051_1_, World p_220051_2_, BlockPos p_220051_3_, PlayerEntity p_220051_4_, Hand p_220051_5_, BlockRayTraceResult p_220051_6_) {
-        return super.onBlockActivated(p_220051_1_, p_220051_2_, p_220051_3_, p_220051_4_, p_220051_5_, p_220051_6_);
     }
 
     @Override

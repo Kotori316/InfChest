@@ -1,16 +1,5 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "infchest:block/infchest",
-    "uvlock": true,
-    "transform": "forge:default-block"
-  },
   "variants": {
-    "": [
-      {}
-    ]
-  },
-  "inventory": [
-    {}
-  ]
+    "": { "model": "infchest:block/infchest" }
+  }
 }
