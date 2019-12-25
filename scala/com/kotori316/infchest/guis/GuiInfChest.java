@@ -26,11 +26,11 @@ public class GuiInfChest extends ContainerScreen<ContainerInfChest> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String s = Optional.ofNullable(infChest).map(TileInfChest::getDisplayName).map(ITextComponent::getFormattedText).orElse(InfChest.MOD_NAME);
         String format = I18n.format(s);
-        this.font.drawString(format, this.xSize / 2 - this.font.getStringWidth(format) / 2, 6, 4210752);
+        this.font.drawString(format, (this.xSize - this.font.getStringWidth(format)) >> 1, 6, 4210752);
         this.font.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
         Optional.ofNullable(infChest).map(TileInfChest::getStack).filter(InfChest.STACK_NON_EMPTY).map(ItemStack::getDisplayName).ifPresent(itemName -> {
                 String s1 = itemName.getFormattedText();
-                this.font.drawString(s1, this.xSize / 2 - this.font.getStringWidth(s1) / 2, 35, 0x404040);
+            this.font.drawString(s1, (this.xSize - this.font.getStringWidth(s1)) >> 1, 35, 0x404040);
                 this.font.drawString("Item: " + infChest.itemCount(), 8, 60, 0x404040);
             }
         );

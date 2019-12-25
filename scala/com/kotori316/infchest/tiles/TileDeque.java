@@ -32,7 +32,7 @@ public class TileDeque extends TileEntity implements HasInv {
     private final IItemHandler handler;
 
     public TileDeque() {
-        super(InfChest.DEQUE_TYPE);
+        super(InfChest.Register.DEQUE_TYPE);
         handler = new DequeItemHandler(this);
     }
 

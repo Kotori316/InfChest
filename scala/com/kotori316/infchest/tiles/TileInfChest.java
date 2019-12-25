@@ -50,7 +50,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     private List<Runnable> updateRunnable = new ArrayList<>();
 
     public TileInfChest() {
-        super(InfChest.INF_CHEST_TYPE);
+        super(InfChest.Register.INF_CHEST_TYPE);
         addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
     }
 
@@ -106,7 +106,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
 
     @Override
     public ITextComponent getName() {
-        return hasCustomName() ? customName : new TranslationTextComponent(InfChest.CHEST.getTranslationKey());
+        return hasCustomName() ? customName : new TranslationTextComponent(InfChest.Register.CHEST.getTranslationKey());
     }
 
     @Override

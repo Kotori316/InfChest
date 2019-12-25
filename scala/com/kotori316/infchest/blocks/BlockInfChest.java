@@ -40,7 +40,7 @@ public class BlockInfChest extends ContainerBlock {
     @Nullable
     @Override
     public TileEntity createNewTileEntity(IBlockReader worldIn) {
-        return InfChest.INF_CHEST_TYPE.create();
+        return InfChest.Register.INF_CHEST_TYPE.create();
     }
 
     @Override

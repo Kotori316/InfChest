@@ -1,8 +1,8 @@
 package com.kotori316.infchest;
 
-
 import java.util.function.Predicate;
 
+import com.mojang.datafixers.DSL;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
@@ -36,11 +36,6 @@ public class InfChest {
     public static final String modID = "infchest";
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
-    public static final BlockInfChest CHEST = new BlockInfChest();
-    public static final BlockDeque DEQUE = new BlockDeque();
-    public static final TileEntityType<TileInfChest> INF_CHEST_TYPE = TileEntityType.Builder.create(TileInfChest::new, CHEST).build(null);
-    public static final TileEntityType<TileDeque> DEQUE_TYPE = TileEntityType.Builder.create(TileDeque::new, DEQUE).build(null);
-    public static final ContainerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeContainerType.create(ContainerInfChest::create);
     public static final Predicate<TileInfChest> CHEST_NOT_EMPTY = ((Predicate<TileInfChest>) TileInfChest::isEmpty).negate();
     public static final Predicate<ItemStack> STACK_NON_EMPTY = ((Predicate<ItemStack>) ItemStack::isEmpty).negate();
     public static final Predicate<String> STRING_NON_EMPTY = ((Predicate<String>) String::isEmpty).negate();
@@ -57,11 +52,17 @@ public class InfChest {
     }
 
     public void clientInit(FMLClientSetupEvent event) {
-        ScreenManager.registerFactory(INF_CHEST_CONTAINER_TYPE, GuiInfChest::new);
+        ScreenManager.registerFactory(Register.INF_CHEST_CONTAINER_TYPE, GuiInfChest::new);
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class Register {
+        public static final BlockInfChest CHEST = new BlockInfChest();
+        public static final TileEntityType<TileInfChest> INF_CHEST_TYPE = TileEntityType.Builder.create(TileInfChest::new, CHEST).build(DSL.nilType());
+        public static final BlockDeque DEQUE = new BlockDeque();
+        public static final TileEntityType<TileDeque> DEQUE_TYPE = TileEntityType.Builder.create(TileDeque::new, DEQUE).build(DSL.nilType());
+        public static final ContainerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeContainerType.create(ContainerInfChest::create);
+
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
             event.getRegistry().registerAll(CHEST, DEQUE);

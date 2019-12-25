@@ -43,7 +43,7 @@ public class BlockDeque extends ContainerBlock {
     @Nullable
     @Override
     public TileEntity createNewTileEntity(IBlockReader worldIn) {
-        return InfChest.DEQUE_TYPE.create();
+        return InfChest.Register.DEQUE_TYPE.create();
     }
 
     @Override

@@ -17,9 +17,10 @@ public class ContainerInfChest extends Container {
     final TileInfChest infChest;
 
     public ContainerInfChest(int id, PlayerInventory playerInventory, BlockPos pos) {
-        super(InfChest.INF_CHEST_CONTAINER_TYPE, id);
+        super(InfChest.Register.INF_CHEST_CONTAINER_TYPE, id);
         this.infChest = ((TileInfChest) playerInventory.player.getEntityWorld().getTileEntity(pos));
-        infChest.openInventory(playerInventory.player);
+        if (infChest != null)
+            infChest.openInventory(playerInventory.player);
         int oneBox = 18;
 
         addSlot(new LimitSlot(infChest, 0, 31, 35));
