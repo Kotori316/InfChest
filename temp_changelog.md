@@ -1,3 +1,9 @@
+# Version 1.9
+* 1.15.1 porting Kotori316 2019/12/25 16:26
+
+# Version 1.8
+* Fixed crash in server launching Kotori316 2019/10/24 2:13
+
 # Version 1.7
 * Fixed items sent to deque was removed. Kotori316 2019/08/27 2:24
 
