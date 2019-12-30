@@ -1,3 +1,6 @@
+# Version 1.8
+* Fixed crash in server launching Kotori316 2019/10/24 2:13
+
 # Version 1.7
 * Fixed items sent to deque was removed. Kotori316 2019/08/27 2:24
 
