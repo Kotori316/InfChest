@@ -56,16 +56,16 @@ public class BlockInfChest extends ContainerBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType func_225533_a_(BlockState state, World worldIn, BlockPos pos,
-                                           PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
-        if (!player.func_225608_bj_()) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos,
+                                             PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+        if (!player.isCrouching()) {
             if (!worldIn.isRemote) {
                 Optional.ofNullable(((TileInfChest) worldIn.getTileEntity(pos))).ifPresent(t ->
                     NetworkHooks.openGui(((ServerPlayerEntity) player), t, pos));
             }
             return ActionResultType.SUCCESS;
         }
-        return super.func_225533_a_(state, worldIn, pos, player, hand, rayTrace);
+        return super.onBlockActivated(state, worldIn, pos, player, hand, rayTrace);
     }
 
     @Override
