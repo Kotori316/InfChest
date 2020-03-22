@@ -1,3 +1,10 @@
+# Version 2.0
+* Added support for [HWYLA](https://www.curseforge.com/minecraft/mc-mods/hwyla).
+* Added support for [The One Probe](https://www.curseforge.com/minecraft/mc-mods/the-one-probe).
+* Added support for [Storage Box](https://www.curseforge.com/minecraft/mc-mods/break-all-of-the-same-block-and-more/files/2877188).
+
+2020/03/23
+
 # Version 1.9
 * 1.15.1 porting Kotori316 2019/12/25 16:26
 

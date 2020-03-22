@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: "com.matthewprenger.cursegradle"
 
-version = getProperty("modversion")
+version = getProperty("modVersion")
 group = "com.kotori316"
 archivesBaseName = "InfChest"
 
