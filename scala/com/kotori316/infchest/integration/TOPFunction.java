@@ -8,8 +8,8 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -33,15 +33,15 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
         }
 
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player,
-                                 World world, IBlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
+                                 World world, BlockState blockState, IProbeHitData data) {
             final TileEntity entity = world.getTileEntity(data.getPos());
             if (entity instanceof TileInfChest) {
                 TileInfChest chest = (TileInfChest) entity;
                 final ItemStack stack = chest.getStack(1);
                 if (!stack.isEmpty()) {
                     Arrays.asList(
-                        stack.getDisplayName(),
+                        stack.getDisplayName().getFormattedText(),
                         chest.itemCount().toString()
                     ).forEach(probeInfo::text);
                 }

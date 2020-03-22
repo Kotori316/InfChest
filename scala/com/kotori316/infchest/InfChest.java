@@ -26,6 +26,7 @@ import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.blocks.ContentInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
 import com.kotori316.infchest.guis.GuiInfChest;
+import com.kotori316.infchest.integration.TOP;
 import com.kotori316.infchest.packets.PacketHandler;
 import com.kotori316.infchest.tiles.TileDeque;
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -49,6 +50,7 @@ public class InfChest {
 //        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
         PacketHandler.init();
         LootFunctionManager.registerFunction(new ContentInfChest.Serializer());
+        TOP.register();
     }
 
     public void clientInit(FMLClientSetupEvent event) {

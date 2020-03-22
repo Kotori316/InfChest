@@ -190,7 +190,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
                 inventory.set(1, itemStack); // Don't need to call markDirty() more.
             }
         }
-        if (!world.isRemote) {
+        if (world != null && !world.isRemote) {
             runUpdates();
         }
     }
@@ -240,7 +240,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
 
     @Override
     public boolean isUsableByPlayer(PlayerEntity player) {
-        return world.getTileEntity(getPos()) == this && player.getDistanceSq(getPos().getX(), getPos().getY(), getPos().getZ()) <= 64;
+        return world != null && world.getTileEntity(getPos()) == this && player.getDistanceSq(getPos().getX(), getPos().getY(), getPos().getZ()) <= 64;
     }
 
     @Override
