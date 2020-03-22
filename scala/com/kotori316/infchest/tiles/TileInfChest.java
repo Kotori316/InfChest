@@ -32,6 +32,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
+import com.kotori316.infchest.integration.StorageBoxStack;
 import com.kotori316.infchest.packets.ItemCountMessage;
 import com.kotori316.infchest.packets.PacketHandler;
 
@@ -200,10 +201,16 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     }
 
     public void addStack(ItemStack insert, BigInteger add) {
-        count = count.add(add);
-        if (holding.isEmpty())
-            holding = copyAmount(insert, 1);
-        inventory.set(0, ItemStack.EMPTY);
+        if (StorageBoxStack.isStorageBox(insert)) {
+            // holding must not be empty.
+            count = count.add(StorageBoxStack.getCount(insert));
+            inventory.set(0, StorageBoxStack.removeAllItems(insert));
+        } else {
+            count = count.add(add);
+            if (holding.isEmpty())
+                holding = copyAmount(insert, 1);
+            inventory.set(0, ItemStack.EMPTY);
+        }
     }
 
     /**
@@ -219,6 +226,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         if (count.equals(BigInteger.ZERO)) {
             holding = ItemStack.EMPTY;
         }
+        updateInv();
     }
 
     public ItemStack getStack() {
@@ -238,6 +246,11 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         this.count = count;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void setHolding(ItemStack holding) {
+        this.holding = holding;
+    }
+
     @Override
     public boolean isUsableByPlayer(PlayerEntity player) {
         return world != null && world.getTileEntity(getPos()) == this && player.getDistanceSq(getPos().getX(), getPos().getY(), getPos().getZ()) <= 64;
@@ -246,7 +259,9 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         if (index == 0) {
-            return holding.isEmpty() || (ItemStack.areItemsEqual(holding, stack) && ItemStack.areItemStackTagsEqual(holding, stack));
+            return (holding.isEmpty() && !StorageBoxStack.isStorageBox(stack))
+                || (ItemStack.areItemsEqual(holding, stack) && ItemStack.areItemStackTagsEqual(holding, stack))
+                || StorageBoxStack.checkHoldingItem(holding, stack);
         }
         return false;
     }

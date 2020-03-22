@@ -12,8 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -25,7 +23,7 @@ public class ItemCountMessage {
     BlockPos pos;
     int dim;
     private byte[] bytes;
-    private ItemStack out;
+    private ItemStack out, holding;
 
     @SuppressWarnings("unused")
     //Accessed via reflection
@@ -37,6 +35,7 @@ public class ItemCountMessage {
         dim = Optional.ofNullable(chest.getWorld()).map(World::getDimension).map(Dimension::getType).map(DimensionType::getId).orElse(0);
         bytes = integer.toByteArray();
         out = chest.getStackInSlot(1);
+        holding = chest.getStack(1);
     }
 
     public static ItemCountMessage fromBytes(PacketBuffer p) {
@@ -45,21 +44,24 @@ public class ItemCountMessage {
         message.dim = p.readInt();
         message.bytes = p.readByteArray();
         message.out = p.readItemStack();
+        message.holding = p.readItemStack();
         return message;
     }
 
     public void toBytes(PacketBuffer p) {
         p.writeBlockPos(pos).writeInt(dim);
-        p.writeByteArray(bytes).writeItemStack(out);
+        p.writeByteArray(bytes).writeItemStack(out).writeItemStack(holding);
     }
 
     void onReceive(Supplier<NetworkEvent.Context> ctx) {
+        assert Minecraft.getInstance().world != null;
         TileEntity entity = Minecraft.getInstance().world.getTileEntity(pos);
         if (Minecraft.getInstance().world.getDimension().getType().getId() == dim && entity instanceof TileInfChest) {
             TileInfChest chest = (TileInfChest) entity;
             ctx.get().enqueueWork(() -> {
                 chest.setCount(new BigInteger(bytes));
                 chest.setInventorySlotContents(1, out);
+                chest.setHolding(holding);
             });
             ctx.get().setPacketHandled(true);
         }

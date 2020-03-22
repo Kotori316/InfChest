@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import com.kotori316.infchest.InfChest;
+import com.kotori316.infchest.integration.StorageBoxStack;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 public class BlockInfChest extends ContainerBlock {
@@ -60,6 +61,7 @@ public class BlockInfChest extends ContainerBlock {
                                              PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
         if (!player.isCrouching()) {
             if (!worldIn.isRemote) {
+                if (StorageBoxStack.moveToStorage(worldIn, pos, player, hand)) return ActionResultType.SUCCESS;
                 Optional.ofNullable(((TileInfChest) worldIn.getTileEntity(pos))).ifPresent(t ->
                     NetworkHooks.openGui(((ServerPlayerEntity) player), t, pos));
             }

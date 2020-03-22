@@ -7,8 +7,11 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath group: 'gradle.plugin.com.matthewprenger', name: 'CurseGradle', version: '1.2.0'
     }
+}
+plugins {
+    id "com.wynprice.cursemaven" version "2.1.1"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: "com.matthewprenger.cursegradle"
@@ -92,6 +95,7 @@ dependencies {
 //    deobfCompile "appeng:appliedenergistics2:rv6-stable-6"
     implementation fg.deobf("mcp.mobius.waila:Hwyla:" + "1.10.7-B71_1.15.1")
     implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:1.15-2.0.0-3")
+    implementation fg.deobf("curse.maven:break-all-of-the-same-block-and-more:2882056")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
