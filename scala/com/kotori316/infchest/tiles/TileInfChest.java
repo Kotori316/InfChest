@@ -70,8 +70,8 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         holding = ItemStack.read(compound.getCompound(NBT_ITEM));
         if (compound.contains(NBT_COUNT)) {
             try {
-                count = new BigInteger(compound.getString(NBT_COUNT));
-            } catch (NumberFormatException e) {
+                count = new BigDecimal(compound.getString(NBT_COUNT)).toBigIntegerExact();
+            } catch (NumberFormatException | ArithmeticException e) {
                 InfChest.LOGGER.error("TileInfChest loading problem.", e);
                 count = BigInteger.ZERO;
             }
@@ -176,7 +176,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         }
         ItemStack out = getStackInSlot(1);
         // Make sure out item is equal to holding.
-        boolean outFlag = out.isEmpty() || ItemStack.areItemsEqual(holding, out) && ItemStack.areItemStackTagsEqual(holding, out);
+        boolean outFlag = out.isEmpty() || stacksEqual(holding, out);
         if (outFlag && out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
             int sub = holding.getMaxStackSize() - out.getCount();
             if (gt(count, sub)) { //count > sub
@@ -286,6 +286,10 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         ItemStack copy = stack.copy();
         copy.setCount(amount);
         return copy;
+    }
+
+    private static boolean stacksEqual(ItemStack s1, ItemStack s2) {
+        return ItemStack.areItemsEqual(s1, s2) && ItemStack.areItemStackTagsEqual(s1, s2);
     }
 
     /**
