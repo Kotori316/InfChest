@@ -25,7 +25,7 @@ import net.minecraft.world.World;
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
 
-class ItemInfChest extends BlockItem {
+final class ItemInfChest extends BlockItem {
 
     ItemInfChest(Block block) {
         super(block, new Item.Properties().group(ItemGroup.DECORATIONS));
