@@ -1,5 +1,6 @@
 package com.kotori316.infchest.tiles;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
-import com.kotori316.infchest.integration.StorageBoxStack;
 import com.kotori316.infchest.packets.ItemCountMessage;
 import com.kotori316.infchest.packets.PacketHandler;
 
@@ -49,18 +49,27 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     public static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private InfItemHandler handler = new InfItemHandler(this);
     private List<Runnable> updateRunnable = new ArrayList<>();
+    private final InsertingHook hook;
 
     public TileInfChest() {
         super(InfChest.Register.INF_CHEST_TYPE);
         addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
+        this.hook = InsertingHook.getInstance();
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
+        if (stacksEqual(holding, getStackInSlot(1))) {
+            ItemStack temp = removeStackFromSlot(1);
+            ItemStackHelper.saveAllItems(compound, inventory);
+            compound.putString(NBT_COUNT, count.add(BigInteger.valueOf(temp.getCount())).toString());
+            inventory.set(1, temp);
+        } else {
+            compound.putString(NBT_COUNT, count.toString());
+            ItemStackHelper.saveAllItems(compound, inventory);
+        }
         compound.put(NBT_ITEM, holding.serializeNBT());
-        compound.putString(NBT_COUNT, count.toString());
         Optional.ofNullable(customName).map(ITextComponent.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
-        ItemStackHelper.saveAllItems(compound, inventory);
         return super.write(compound);
     }
 
@@ -86,7 +95,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         super.onDataPacket(net, pkt);
-        handleUpdateTag(pkt.getNbtCompound());
+//        handleUpdateTag(pkt.getNbtCompound());
     }
 
     @Override
@@ -201,10 +210,13 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     }
 
     public void addStack(ItemStack insert, BigInteger add) {
-        if (StorageBoxStack.isStorageBox(insert)) {
-            // holding must not be empty.
-            count = count.add(StorageBoxStack.getCount(insert));
-            inventory.set(0, StorageBoxStack.removeAllItems(insert));
+        Optional<InsertingHook.Hook> hookObject = hook.findHookObject(insert);
+        if (hookObject.isPresent()) {
+            hookObject.ifPresent(h -> {
+                // holding must not be empty.
+                count = count.add(h.getCount(insert));
+                inventory.set(0, h.removeAllItems(insert));
+            });
         } else {
             count = count.add(add);
             if (holding.isEmpty())
@@ -259,9 +271,11 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         if (index == 0) {
-            return (holding.isEmpty() && !StorageBoxStack.isStorageBox(stack))
-                || (ItemStack.areItemsEqual(holding, stack) && ItemStack.areItemStackTagsEqual(holding, stack))
-                || StorageBoxStack.checkHoldingItem(holding, stack);
+            Optional<InsertingHook.Hook> hookObject = hook.findHookObject(stack);
+            ItemStack secondStack = getStackInSlot(1);
+            return (holding.isEmpty() && !hookObject.isPresent() && (secondStack.isEmpty() || stacksEqual(secondStack, stack)))
+                || stacksEqual(holding, stack)
+                || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
         }
         return false;
     }

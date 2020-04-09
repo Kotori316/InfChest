@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ObjectHolder;
 
+import com.kotori316.infchest.tiles.InsertingHook;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 /**
@@ -81,12 +82,17 @@ public class StorageBoxStack {
             if (t instanceof TileInfChest) {
                 TileInfChest chest = (TileInfChest) t;
                 if (checkHoldingItem(chest.getStack(1), stack)) {
+                    // flag that checks if the item in second slot of inf check can be inserted to storage box.
+                    boolean flag = checkHoldingItem(chest.getStackInSlot(1), stack);
                     BigInteger need = chest.itemCount().min(BigInteger.valueOf(2_000_000_000L).subtract(getCount(stack)));
                     if (need.compareTo(BigInteger.ZERO) > 0) { // need > 0
                         chest.decrStack(need);
                         CompoundNBT nbt = stack.getOrCreateTag();
-                        nbt.putInt(KEYSIZE, need.add(getCount(stack)).intValueExact());
+                        nbt.putInt(KEYSIZE, need.add(getCount(stack)).add(flag ? BigInteger.valueOf(chest.getStackInSlot(1).getCount()) : BigInteger.ZERO).intValueExact());
                         stack.setTag(nbt);
+                        if (flag) {
+                            chest.setInventorySlotContents(1, ItemStack.EMPTY);
+                        }
                         return true;
                     }
                 }
@@ -109,5 +115,28 @@ public class StorageBoxStack {
                     }))
             .filter(s -> !s.isEmpty())
             .orElse(ItemStack.EMPTY);
+    }
+
+    public static class StorageBoxHook implements InsertingHook.Hook {
+
+        @Override
+        public boolean isHookItem(ItemStack stack) {
+            return StorageBoxStack.isStorageBox(stack);
+        }
+
+        @Override
+        public BigInteger getCount(ItemStack hookItem) {
+            return StorageBoxStack.getCount(hookItem);
+        }
+
+        @Override
+        public ItemStack removeAllItems(ItemStack hookItem) {
+            return StorageBoxStack.removeAllItems(hookItem);
+        }
+
+        @Override
+        public boolean checkItemAcceptable(ItemStack chestContent, ItemStack hookItem) {
+            return StorageBoxStack.checkHoldingItem(chestContent, hookItem);
+        }
     }
 }

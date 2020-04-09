@@ -37,7 +37,7 @@ public class WailaProvider implements IServerDataProvider<TileEntity>, IComponen
                 if (data.contains(NBT_COUNT))
                     integer = new BigInteger(data.getByteArray(NBT_COUNT));
                 else if (data.contains(TileInfChest.NBT_COUNT))
-                    integer = new BigInteger(data.getString(TileInfChest.NBT_COUNT));
+                    integer = new BigInteger(data.getString(TileInfChest.NBT_COUNT)).subtract(BigInteger.valueOf(stack.getMaxStackSize()));
                 else
                     integer = BigInteger.ZERO;
                 tooltip.add(stack.getDisplayName());
