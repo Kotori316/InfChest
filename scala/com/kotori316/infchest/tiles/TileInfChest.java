@@ -90,6 +90,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         if (compound.contains(NBT_CUSTOM_NAME))
             customName = ITextComponent.Serializer.fromJson(compound.getString(NBT_CUSTOM_NAME));
         ItemStackHelper.loadAllItems(compound, inventory);
+        updateInv();
     }
 
     @Override
