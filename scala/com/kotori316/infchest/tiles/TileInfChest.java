@@ -1,5 +1,6 @@
 package com.kotori316.infchest.tiles;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,17 +42,26 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     public static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private InfItemHandler itemHandler = new InfItemHandler(this);
     private List<Runnable> updateRunnable = new ArrayList<>();
+    private final InsertingHook hook;
 
     public TileInfChest() {
         addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
+        this.hook = InsertingHook.getInstance();
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        if (stacksEqual(holding, getStackInSlot(1))) {
+            ItemStack temp = removeStackFromSlot(1);
+            ItemStackHelper.saveAllItems(compound, inventory);
+            compound.setString(NBT_COUNT, count.add(BigInteger.valueOf(temp.getCount())).toString());
+            inventory.set(1, temp);
+        } else {
+            compound.setString(NBT_COUNT, count.toString());
+            ItemStackHelper.saveAllItems(compound, inventory);
+        }
         compound.setTag(NBT_ITEM, holding.serializeNBT());
-        compound.setString(NBT_COUNT, count.toString());
         Optional.ofNullable(customName).ifPresent(s -> compound.setString(NBT_CUSTOM_NAME, s));
-        ItemStackHelper.saveAllItems(compound, inventory);
         return super.writeToNBT(compound);
     }
 
@@ -61,8 +71,8 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         holding = new ItemStack(compound.getCompoundTag(NBT_ITEM));
         if (compound.hasKey(NBT_COUNT)) {
             try {
-                count = new BigInteger(compound.getString(NBT_COUNT));
-            } catch (NumberFormatException e) {
+                count = new BigDecimal(compound.getString(NBT_COUNT)).toBigIntegerExact();
+            } catch (NumberFormatException | ArithmeticException e) {
                 InfChest.LOGGER.error("TileInfChest loading problem.", e);
                 count = BigInteger.ZERO;
             }
@@ -72,12 +82,13 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         if (compound.hasKey(NBT_CUSTOM_NAME))
             customName = compound.getString(NBT_CUSTOM_NAME);
         ItemStackHelper.loadAllItems(compound, inventory);
+        updateInv();
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         super.onDataPacket(net, pkt);
-        handleUpdateTag(pkt.getNbtCompound());
+//        handleUpdateTag(pkt.getNbtCompound());
     }
 
     @Override
@@ -149,13 +160,19 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     @Override
     public void markDirty() {
         super.markDirty();
+        updateInv();
+    }
+
+    public void updateInv() {
         ItemStack insert = getStackInSlot(0);
-        if (isItemValidForSlot(0, insert)) {
-            addStack(insert);
+        if (!insert.isEmpty()) {
+            if (isItemValidForSlot(0, insert)) {
+                addStack(insert);
+            }
         }
         ItemStack out = getStackInSlot(1);
         // Make sure out item is equal to holding.
-        boolean outFlag = out.isEmpty() || ItemStack.areItemsEqual(holding, out) && ItemStack.areItemStackTagsEqual(holding, out);
+        boolean outFlag = out.isEmpty() || stacksEqual(holding, out);
         if (outFlag && out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
             int sub = holding.getMaxStackSize() - out.getCount();
             if (gt(count, sub)) { //count > sub
@@ -170,7 +187,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
                 inventory.set(1, itemStack); // Don't need to call markDirty() more.
             }
         }
-        if (!world.isRemote) {
+        if (world != null && !world.isRemote) {
             runUpdates();
         }
     }
@@ -180,10 +197,19 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
     }
 
     public void addStack(ItemStack insert, BigInteger add) {
-        count = count.add(add);
-        if (holding.isEmpty())
-            holding = copyAmount(insert, 1);
-        inventory.set(0, ItemStack.EMPTY);
+        Optional<InsertingHook.Hook> hookObject = hook.findHookObject(insert);
+        if (hookObject.isPresent()) {
+            hookObject.ifPresent(h -> {
+                // holding must not be empty.
+                count = count.add(h.getCount(insert));
+                inventory.set(0, h.removeAllItems(insert));
+            });
+        } else {
+            count = count.add(add);
+            if (holding.isEmpty())
+                holding = copyAmount(insert, 1);
+            inventory.set(0, ItemStack.EMPTY);
+        }
     }
 
     /**
@@ -199,6 +225,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         if (count.equals(BigInteger.ZERO)) {
             holding = ItemStack.EMPTY;
         }
+        updateInv();
     }
 
     public ItemStack getStack() {
@@ -218,6 +245,11 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         this.count = count;
     }
 
+    @SideOnly(Side.CLIENT)
+    public void setHolding(ItemStack holding) {
+        this.holding = holding;
+    }
+
     @Override
     public boolean isUsableByPlayer(EntityPlayer player) {
         return getWorld().getTileEntity(getPos()) == this && player.getDistanceSq(getPos()) <= 64;
@@ -225,14 +257,14 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        switch (index) {
-            case 0:
-                return holding.isEmpty() || (ItemStack.areItemsEqual(holding, stack) && ItemStack.areItemStackTagsEqual(holding, stack));
-            case 1:
-                return false;
-            default:
-                return false;
+        if (index == 0) {
+            Optional<InsertingHook.Hook> hookObject = hook.findHookObject(stack);
+            ItemStack secondStack = getStackInSlot(1);
+            return (holding.isEmpty() && !hookObject.isPresent() && (secondStack.isEmpty() || stacksEqual(secondStack, stack)))
+                || stacksEqual(holding, stack)
+                || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
         }
+        return false;
     }
 
     @Override
@@ -260,6 +292,10 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates {
         ItemStack copy = stack.copy();
         copy.setCount(amount);
         return copy;
+    }
+
+    private static boolean stacksEqual(ItemStack s1, ItemStack s2) {
+        return ItemStack.areItemsEqual(s1, s2) && ItemStack.areItemStackTagsEqual(s1, s2);
     }
 
     /**

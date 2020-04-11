@@ -25,7 +25,7 @@ public class ItemCountMessage implements IMessage {
     BlockPos pos;
     int dim;
     private byte[] bytes;
-    private ItemStack out;
+    private ItemStack out, holding;
 
     @SuppressWarnings("unused")
     //Accessed via reflection
@@ -37,6 +37,7 @@ public class ItemCountMessage implements IMessage {
         dim = chest.getWorld().provider.getDimension();
         bytes = integer.toByteArray();
         out = chest.getStackInSlot(1);
+        holding = chest.getStack(1);
     }
 
     @Override
@@ -47,9 +48,11 @@ public class ItemCountMessage implements IMessage {
         bytes = p.readByteArray();
         try {
             out = p.readItemStack();
+            holding = p.readItemStack();
         } catch (IOException e) {
             InfChest.LOGGER.error("ItemStack reading.", e);
             out = ItemStack.EMPTY;
+            holding = ItemStack.EMPTY;
         }
     }
 
@@ -57,7 +60,7 @@ public class ItemCountMessage implements IMessage {
     public void toBytes(ByteBuf buf) {
         PacketBuffer p = new PacketBuffer(buf);
         p.writeBlockPos(pos).writeInt(dim);
-        p.writeByteArray(bytes).writeItemStack(out);
+        p.writeByteArray(bytes).writeItemStack(out).writeItemStack(holding);
     }
 
     @SideOnly(Side.CLIENT)
@@ -68,6 +71,7 @@ public class ItemCountMessage implements IMessage {
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> {
                 chest.setCount(new BigInteger(bytes));
                 chest.setInventorySlotContents(1, out);
+                chest.setHolding(holding);
             });
         }
         return null;

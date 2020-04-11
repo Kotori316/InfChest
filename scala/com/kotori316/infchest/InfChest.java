@@ -86,6 +86,7 @@ public class InfChest {
 
     /*
     Test command
-    /give @p infchest:infchest 1 0 {BlockEntityTag:{item:{id:"minecraft:stone",Count:1b,Damage:0s},count:"250000000000444465416531514645000000000",Items:[{Slot:1b,id:"minecraft:stone",Count:64b,Damage:0s}]}}
+    /give @p infchest:infchest 1 0 {BlockEntityTag:{item:{id:"minecraft:stone",Count:1b,Damage:0s},count:"250000000000444465416531514645000000064"}}
+    /give @p infchest:infchest 1 0 {BlockEntityTag:{item:{id:"minecraft:stone",Count:1b,Damage:0s},count:"1e50"}}
      */
 }
