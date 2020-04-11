@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import com.kotori316.infchest.tiles.TileInfChest;
 
@@ -30,9 +31,19 @@ public class WailaProvider implements IWailaDataProvider {
         TileEntity t = accessor.getTileEntity();
         if (t instanceof TileInfChest) {
             NBTTagCompound data = accessor.getNBTData();
-            ItemStack stack = new ItemStack(data.getCompoundTag(NBT_ITEM));
+            ItemStack stack;
+            if (data.hasKey(NBT_ITEM, Constants.NBT.TAG_COMPOUND))
+                stack = new ItemStack(data.getCompoundTag(NBT_ITEM));
+            else
+                stack = new ItemStack(data.getCompoundTag(TileInfChest.NBT_ITEM));
             if (!stack.isEmpty()) {
-                BigInteger integer = new BigInteger(data.getByteArray(NBT_COUNT));
+                BigInteger integer;
+                if (data.hasKey(NBT_COUNT, Constants.NBT.TAG_BYTE_ARRAY))
+                    integer = new BigInteger(data.getByteArray(NBT_COUNT));
+                else if (data.hasKey(TileInfChest.NBT_COUNT, Constants.NBT.TAG_STRING))
+                    integer = new BigInteger(data.getString(TileInfChest.NBT_COUNT));
+                else
+                    integer = BigInteger.ZERO;
                 tooltip.add(stack.getDisplayName());
                 tooltip.add(integer.toString());
             }
