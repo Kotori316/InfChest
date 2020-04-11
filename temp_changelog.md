@@ -1,3 +1,10 @@
+# Version 1.3.1
+* Added Deque.
+* Improved waila tooltip.
+* Support of combining chests.
+  * Put InfChest to the left slot. Then items are moved.
+  * You can move items in [Storage Box](https://www.curseforge.com/minecraft/mc-mods/break-all-of-the-same-block-and-more/files/2740442), too.
+
 # Version 1.3
 * Show display name of stack on tooltip.
 * Added support for TOP, just showing stack's display name and item count.
