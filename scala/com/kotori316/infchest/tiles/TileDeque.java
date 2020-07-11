@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -37,8 +38,8 @@ public class TileDeque extends TileEntity implements HasInv {
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void func_230337_a_(BlockState state, CompoundNBT compound) {
+        super.func_230337_a_(state, compound);
         inventory = compound.getList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).stream()
             .map(CompoundNBT.class::cast)
             .map(ItemStack::read)

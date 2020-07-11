@@ -3,7 +3,6 @@ package com.kotori316.infchest.packets;
 import java.util.function.Predicate;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -25,7 +24,7 @@ public class PacketHandler {
 
     public static void sendToPoint(ItemCountMessage message) {
         WRAPPER.send(PacketDistributor.NEAR.with(() ->
-                new PacketDistributor.TargetPoint(message.pos.getX(), message.pos.getY(), message.pos.getZ(), 16, DimensionType.getById(message.dim))),
+                new PacketDistributor.TargetPoint(message.pos.getX(), message.pos.getY(), message.pos.getZ(), 16, message.dim)),
             message);
     }
 }

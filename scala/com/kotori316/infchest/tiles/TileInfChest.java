@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -39,7 +40,7 @@ import com.kotori316.infchest.packets.PacketHandler;
 public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INamedContainerProvider, INameable {
 
     private ItemStack holding = ItemStack.EMPTY;
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
     private BigInteger count = BigInteger.ZERO;
     private ITextComponent customName;
     public static final String NBT_ITEM = "item";
@@ -47,8 +48,8 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     private static final String NBT_CUSTOM_NAME = "custom_name";
     public static final String NBT_BLOCK_TAG = "BlockEntityTag";
     public static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
-    private InfItemHandler handler = new InfItemHandler(this);
-    private List<Runnable> updateRunnable = new ArrayList<>();
+    private final InfItemHandler handler = new InfItemHandler(this);
+    private final List<Runnable> updateRunnable = new ArrayList<>();
     private final InsertingHook hook;
 
     public TileInfChest() {
@@ -74,8 +75,8 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     }
 
     @Override
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void func_230337_a_(BlockState state, CompoundNBT compound) {
+        super.func_230337_a_(state, compound);
         holding = ItemStack.read(compound.getCompound(NBT_ITEM));
         if (compound.contains(NBT_COUNT)) {
             try {
@@ -88,7 +89,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
             count = BigInteger.ZERO;
         }
         if (compound.contains(NBT_CUSTOM_NAME))
-            customName = ITextComponent.Serializer.fromJson(compound.getString(NBT_CUSTOM_NAME));
+            customName = ITextComponent.Serializer.func_240644_b_(compound.getString(NBT_CUSTOM_NAME));
         ItemStackHelper.loadAllItems(compound, inventory);
         updateInv();
     }

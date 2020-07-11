@@ -1,5 +1,5 @@
 package com.kotori316.infchest.integration;
-
+/*
 import java.math.BigInteger;
 import java.util.List;
 
@@ -56,3 +56,4 @@ public class WailaProvider implements IServerDataProvider<TileEntity>, IComponen
     }
 
 }
+*/

@@ -3,12 +3,13 @@ package com.kotori316.infchest.blocks;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
 
 import com.kotori316.infchest.InfChest;
 
@@ -27,10 +28,14 @@ public class ContentInfChest extends LootFunction {
         return stack;
     }
 
+    @Override
+    public LootFunctionType func_230425_b_() {
+        return InfChest.Register.CHEST_FUNCTION;
+    }
+
     public static class Serializer extends LootFunction.Serializer<ContentInfChest> {
 
         public Serializer() {
-            super(ContentInfChest.LOCATION, ContentInfChest.class);
         }
 
         @Override

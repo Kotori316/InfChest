@@ -8,9 +8,10 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootFunctionType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -49,7 +50,6 @@ public class InfChest {
     public void preInit(FMLCommonSetupEvent event) {
 //        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
         PacketHandler.init();
-        LootFunctionManager.registerFunction(new ContentInfChest.Serializer());
         TOP.register();
     }
 
@@ -60,10 +60,12 @@ public class InfChest {
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class Register {
         public static final BlockInfChest CHEST = new BlockInfChest();
-        public static final TileEntityType<TileInfChest> INF_CHEST_TYPE = TileEntityType.Builder.create(TileInfChest::new, CHEST).build(DSL.nilType());
+        public static final TileEntityType<TileInfChest> INF_CHEST_TYPE = TileEntityType.Builder.create(TileInfChest::new, CHEST).build(DSL.emptyPartType());
         public static final BlockDeque DEQUE = new BlockDeque();
-        public static final TileEntityType<TileDeque> DEQUE_TYPE = TileEntityType.Builder.create(TileDeque::new, DEQUE).build(DSL.nilType());
+        public static final TileEntityType<TileDeque> DEQUE_TYPE = TileEntityType.Builder.create(TileDeque::new, DEQUE).build(DSL.emptyPartType());
         public static final ContainerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeContainerType.create(ContainerInfChest::create);
+        public static final LootFunctionType CHEST_FUNCTION = Registry.register(Registry.field_239694_aZ_, ContentInfChest.LOCATION,
+            new LootFunctionType(new ContentInfChest.Serializer()));
 
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {

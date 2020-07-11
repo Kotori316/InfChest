@@ -2,9 +2,9 @@ package com.kotori316.infchest.guis;
 
 import java.util.Optional;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +15,7 @@ import com.kotori316.infchest.tiles.TileInfChest;
 
 public class GuiInfChest extends ContainerScreen<ContainerInfChest> {
     private final TileInfChest infChest;
-    private final static ResourceLocation resourceLocation = new ResourceLocation(InfChest.modID, "textures/gui/infchest.png");
+    private final static ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "textures/gui/infchest.png");
 
     public GuiInfChest(ContainerInfChest container, PlayerInventory inventory, ITextComponent component) {
         super(container, inventory, component);
@@ -23,32 +23,27 @@ public class GuiInfChest extends ContainerScreen<ContainerInfChest> {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String s = Optional.ofNullable(infChest).map(TileInfChest::getDisplayName).map(ITextComponent::getFormattedText).orElse(InfChest.MOD_NAME);
-        String format = I18n.format(s);
-        this.font.drawString(format, (this.xSize - this.font.getStringWidth(format)) >> 1, 6, 4210752);
-        this.font.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
+    protected void func_230451_b_(MatrixStack matrixStack, final int mouseX, final int mouseY) {
+        super.func_230451_b_(matrixStack, mouseX, mouseY);
         Optional.ofNullable(infChest).map(TileInfChest::getStack).filter(InfChest.STACK_NON_EMPTY).map(ItemStack::getDisplayName).ifPresent(itemName -> {
-                String s1 = itemName.getFormattedText();
-                this.font.drawString(s1, (this.xSize - this.font.getStringWidth(s1)) >> 1, 35, 0x404040);
-                this.font.drawString("Item: " + infChest.itemCount(), 8, 60, 0x404040);
+                this.field_230712_o_.func_238422_b_(matrixStack, itemName, (xSize - this.field_230712_o_.func_238414_a_(itemName)) / (float) 2, 35, 0x404040);
+                this.field_230712_o_.func_238421_b_(matrixStack, "Item: " + infChest.itemCount(), 8, 60, 0x404040);
             }
         );
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    @SuppressWarnings("deprecation")
+    protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-        int k = (this.width - xSize) / 2;
-        int l = (this.height - ySize) / 2;
-        this.blit(k, l, 0, 0, xSize, ySize);
+        this.getMinecraft().getTextureManager().bindTexture(LOCATION);
+        this.func_238474_b_(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+    public void func_230430_a_(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.func_230446_a_(matrixStack);// back ground
+        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+        this.func_230459_a_(matrixStack, mouseX, mouseY); // render tooltip
     }
 }

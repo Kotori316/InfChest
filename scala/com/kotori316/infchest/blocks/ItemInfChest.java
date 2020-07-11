@@ -45,7 +45,7 @@ final class ItemInfChest extends BlockItem {
     }
 
     @Override
-    protected boolean onBlockPlaced(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState p_195943_5_) {
+    protected boolean onBlockPlaced(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
         if (world.getServer() != null) {
             CompoundNBT tag = stack.getChildTag(TileInfChest.NBT_BLOCK_TAG);
             TileEntity tileentity = world.getTileEntity(pos);
@@ -57,7 +57,7 @@ final class ItemInfChest extends BlockItem {
                     tileNbt.putInt("y", pos.getY());
                     tileNbt.putInt("z", pos.getZ());
 
-                    tileentity.read(tileNbt);
+                    tileentity.func_230337_a_(state, tileNbt);
                     tileentity.markDirty();
                     return true;
                 }

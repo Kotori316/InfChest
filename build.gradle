@@ -22,8 +22,12 @@ archivesBaseName = "InfChest"
 
 sourceCompatibility = targetCompatibility = '1.8'
 
+static String MappingVersion() { return '20200514-1.16' }
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
 minecraft {
-    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    mappings channel: 'snapshot', version: MappingVersion()
 
     // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
 
@@ -90,12 +94,12 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.57'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
 //    deobfCompile "appeng:appliedenergistics2:rv6-stable-6"
-    implementation fg.deobf("mcp.mobius.waila:Hwyla:" + "1.10.7-B71_1.15.1")
-    implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:1.15-2.0.0-3")
-    implementation fg.deobf("curse.maven:break-all-of-the-same-block-and-more:2882056")
+//    implementation fg.deobf("mcp.mobius.waila:Hwyla:" + "1.10.7-B71_1.15.1")
+    implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.0-beta-3")
+//    implementation fg.deobf("curse.maven:break-all-of-the-same-block-and-more:2882056")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -165,7 +169,7 @@ curseforge {
         id = '312222'
         changelogType = 'markdown'
         changelog = new File("temp_changelog.md")
-        addGameVersion '1.15.2'
+        addGameVersion '1.16.1'
         releaseType = 'release'
         mainArtifact jar
         addArtifact srcJar
