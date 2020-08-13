@@ -169,7 +169,7 @@ curseforge {
         id = '312222'
         changelogType = 'markdown'
         changelog = new File("temp_changelog.md")
-        addGameVersion '1.16.1'
+        addGameVersion '1.16.2'
         releaseType = 'release'
         mainArtifact jar
         addArtifact srcJar
