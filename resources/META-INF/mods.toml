@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="[32,)"
 issueTrackerURL="https://github.com/Kotori316/InfChest/issues"
-license="All Rights Reserved."
+license="MIT License (c) 2019-2020 Kotori316"
 [[mods]] 
 modId="infchest"
 version="${file.jarVersion}"
