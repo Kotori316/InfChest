@@ -64,7 +64,7 @@ public class InfChest {
         public static final BlockDeque DEQUE = new BlockDeque();
         public static final TileEntityType<TileDeque> DEQUE_TYPE = TileEntityType.Builder.create(TileDeque::new, DEQUE).build(DSL.emptyPartType());
         public static final ContainerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeContainerType.create(ContainerInfChest::create);
-        public static final LootFunctionType CHEST_FUNCTION = Registry.register(Registry.field_239694_aZ_, ContentInfChest.LOCATION,
+        public static final LootFunctionType CHEST_FUNCTION = Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
             new LootFunctionType(new ContentInfChest.Serializer()));
 
         @SubscribeEvent

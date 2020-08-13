@@ -38,8 +38,8 @@ public class TileDeque extends TileEntity implements HasInv {
     }
 
     @Override
-    public void func_230337_a_(BlockState state, CompoundNBT compound) {
-        super.func_230337_a_(state, compound);
+    public void read(BlockState state, CompoundNBT compound) {
+        super.read(state, compound);
         inventory = compound.getList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).stream()
             .map(CompoundNBT.class::cast)
             .map(ItemStack::read)

@@ -57,7 +57,7 @@ final class ItemInfChest extends BlockItem {
                     tileNbt.putInt("y", pos.getY());
                     tileNbt.putInt("z", pos.getZ());
 
-                    tileentity.func_230337_a_(state, tileNbt);
+                    tileentity.read(state, tileNbt);
                     tileentity.markDirty();
                     return true;
                 }

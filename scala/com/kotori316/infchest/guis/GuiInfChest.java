@@ -23,27 +23,27 @@ public class GuiInfChest extends ContainerScreen<ContainerInfChest> {
     }
 
     @Override
-    protected void func_230451_b_(MatrixStack matrixStack, final int mouseX, final int mouseY) {
-        super.func_230451_b_(matrixStack, mouseX, mouseY);
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, final int mouseX, final int mouseY) {
+        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
         Optional.ofNullable(infChest).map(TileInfChest::getStack).filter(InfChest.STACK_NON_EMPTY).map(ItemStack::getDisplayName).ifPresent(itemName -> {
-                this.field_230712_o_.func_238422_b_(matrixStack, itemName, (xSize - this.field_230712_o_.func_238414_a_(itemName)) / (float) 2, 35, 0x404040);
-                this.field_230712_o_.func_238421_b_(matrixStack, "Item: " + infChest.itemCount(), 8, 60, 0x404040);
+                this.font.func_238422_b_(matrixStack, itemName.func_241878_f(), (xSize - this.font.func_238414_a_(itemName)) / (float) 2, 35, 0x404040);
+                this.font.drawString(matrixStack, "Item: " + infChest.itemCount(), 8, 60, 0x404040);
             }
         );
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.getMinecraft().getTextureManager().bindTexture(LOCATION);
-        this.func_238474_b_(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        this.blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 
     @Override
-    public void func_230430_a_(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
-        this.func_230446_a_(matrixStack);// back ground
-        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.renderBackground(matrixStack);// back ground
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.func_230459_a_(matrixStack, mouseX, mouseY); // render tooltip
     }
 }

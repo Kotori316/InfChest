@@ -41,7 +41,7 @@ public class ItemCountMessage {
     public static ItemCountMessage fromBytes(PacketBuffer p) {
         ItemCountMessage message = new ItemCountMessage();
         message.pos = p.readBlockPos();
-        message.dim = RegistryKey.func_240903_a_(Registry.field_239699_ae_, p.readResourceLocation());
+        message.dim = RegistryKey.func_240903_a_(Registry.WORLD_KEY, p.readResourceLocation());
         message.bytes = p.readByteArray();
         message.out = p.readItemStack();
         message.holding = p.readItemStack();
