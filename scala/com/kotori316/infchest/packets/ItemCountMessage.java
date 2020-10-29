@@ -32,7 +32,7 @@ public class ItemCountMessage {
 
     public ItemCountMessage(TileInfChest chest, BigInteger integer) {
         pos = chest.getPos();
-        dim = Optional.ofNullable(chest.getWorld()).map(World::func_234923_W_).orElse(World.field_234918_g_);
+        dim = Optional.ofNullable(chest.getWorld()).map(World::getDimensionKey).orElse(World.OVERWORLD);
         bytes = integer.toByteArray();
         out = chest.getStackInSlot(1);
         holding = chest.getStack(1);
@@ -41,7 +41,7 @@ public class ItemCountMessage {
     public static ItemCountMessage fromBytes(PacketBuffer p) {
         ItemCountMessage message = new ItemCountMessage();
         message.pos = p.readBlockPos();
-        message.dim = RegistryKey.func_240903_a_(Registry.WORLD_KEY, p.readResourceLocation());
+        message.dim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, p.readResourceLocation());
         message.bytes = p.readByteArray();
         message.out = p.readItemStack();
         message.holding = p.readItemStack();
@@ -49,14 +49,14 @@ public class ItemCountMessage {
     }
 
     public void toBytes(PacketBuffer p) {
-        p.writeBlockPos(pos).writeResourceLocation(dim.func_240901_a_());
+        p.writeBlockPos(pos).writeResourceLocation(dim.getLocation());
         p.writeByteArray(bytes).writeItemStack(out).writeItemStack(holding);
     }
 
     void onReceive(Supplier<NetworkEvent.Context> ctx) {
         assert Minecraft.getInstance().world != null;
         TileEntity entity = Minecraft.getInstance().world.getTileEntity(pos);
-        if (Minecraft.getInstance().world.func_234923_W_().equals(dim) && entity instanceof TileInfChest) {
+        if (Minecraft.getInstance().world.getDimensionKey().equals(dim) && entity instanceof TileInfChest) {
             TileInfChest chest = (TileInfChest) entity;
             ctx.get().enqueueWork(() -> {
                 chest.setCount(new BigInteger(bytes));
