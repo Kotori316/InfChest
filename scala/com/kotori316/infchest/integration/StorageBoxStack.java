@@ -18,7 +18,7 @@ import com.kotori316.infchest.tiles.InsertingHook;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 /**
- * Integration class of mod <a href="https://www.curseforge.com/minecraft/mc-mods/break-all-of-the-same-block-and-more/files/2877188">"StorageBox"</a>.
+ * Integration class of mod <a href="https://www.curseforge.com/minecraft/mc-mods/break-all-of-the-same-block-and-more/files/2740435">"StorageBox"</a>.
  */
 @SuppressWarnings("SpellCheckingInspection")
 public class StorageBoxStack {

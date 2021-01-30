@@ -28,6 +28,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.guis.GuiHandler;
+import com.kotori316.infchest.integration.StorageBoxStack;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 public class BlockInfChest extends BlockContainer {
@@ -62,6 +63,10 @@ public class BlockInfChest extends BlockContainer {
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!playerIn.isSneaking()) {
+            if (StorageBoxStack.isStorageBox(playerIn.getHeldItem(hand))) {
+                if (!worldIn.isRemote) StorageBoxStack.moveToStorage(worldIn, pos, playerIn, hand);
+                return true;
+            }
             playerIn.openGui(InfChest.getInstance(), GuiHandler.CHEST_GUI_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
             return true;
         }
