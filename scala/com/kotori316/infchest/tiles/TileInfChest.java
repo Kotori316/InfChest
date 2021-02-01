@@ -89,7 +89,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
             count = BigInteger.ZERO;
         }
         if (compound.contains(NBT_CUSTOM_NAME))
-            customName = ITextComponent.Serializer.func_240644_b_(compound.getString(NBT_CUSTOM_NAME));
+            customName = ITextComponent.Serializer.getComponentFromJson(compound.getString(NBT_CUSTOM_NAME));
         ItemStackHelper.loadAllItems(compound, inventory);
         updateInv();
     }

@@ -10,7 +10,6 @@ buildscript {
     }
 }
 plugins {
-    id "com.wynprice.cursemaven" version "2.1.1"
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -85,21 +84,33 @@ repositories {
     }
     maven {
         name = "Hwyla"
-        url "http://tehnut.info/maven"
+        url "https://maven.tehnut.info"
+        content {
+            it.includeGroup("mcp.mobius.waila")
+        }
     }
     maven { // The One Probe
         name 'tterrag maven'
         url "https://maven.tterrag.com/"
+        content {
+            includeGroup("mcjty.theoneprobe")
+        }
+    }
+    maven {
+        url = "https://www.cursemaven.com"
+        content {
+            it.includeGroup("curse.maven")
+        }
     }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.0.1'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
-//    deobfCompile "appeng:appliedenergistics2:rv6-stable-6"
-//    implementation fg.deobf("mcp.mobius.waila:Hwyla:" + "1.10.7-B71_1.15.1")
+    compileOnly fg.deobf("appeng:appliedenergistics2:8.2.0")
+    implementation fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
     implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.4-beta-7")
-//    implementation fg.deobf("curse.maven:break-all-of-the-same-block-and-more:2882056")
+    implementation fg.deobf("curse.maven:storagebox-mod-419839:3119354")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

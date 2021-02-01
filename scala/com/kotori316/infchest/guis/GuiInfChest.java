@@ -26,7 +26,7 @@ public class GuiInfChest extends ContainerScreen<ContainerInfChest> {
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, final int mouseX, final int mouseY) {
         super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
         Optional.ofNullable(infChest).map(TileInfChest::getStack).filter(InfChest.STACK_NON_EMPTY).map(ItemStack::getDisplayName).ifPresent(itemName -> {
-                this.font.func_238422_b_(matrixStack, itemName.func_241878_f(), (xSize - this.font.func_238414_a_(itemName)) / (float) 2, 20, 0x404040);
+                this.font.func_238422_b_(matrixStack, itemName.func_241878_f(), (xSize - this.font.getStringPropertyWidth(itemName)) / (float) 2, 20, 0x404040);
                 this.font.drawString(matrixStack, "Item: " + infChest.itemCount(), 8, 60, 0x404040);
             }
         );
