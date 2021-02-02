@@ -1,3 +1,8 @@
+# Version 3.2
+2021-02-02
+* For 1.16.4, 1.16.5
+* Re-added supports for HWYLA, AE2, Storage Box
+
 # Version 3.1
 * For 1.16.2
 * Added License
