@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -10,6 +13,7 @@ buildscript {
     }
 }
 plugins {
+    id("maven-publish")
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -190,5 +194,42 @@ curseforge {
     options {
         debug = false // defaults to false
         javaVersionAutoDetect = false
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "AzureRepository"
+            url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+            credentials {
+                username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
+                password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "InfChest".toLowerCase()
+            artifact srcJar {
+                archiveClassifier.set('sources')
+                extension = 'jar'
+            }
+            artifact deobfJar {
+                archiveClassifier.set('deobf')
+                extension = 'jar'
+            }
+            artifact reobfArtifact
+        }
+    }
+}
+
+task copyToDrive(type: Copy, dependsOn: "build") {
+    def PATH_NAME = "drive_path"
+    from(jar.getArchiveFile(), deobfJar.getArchiveFile(), srcJar.getArchiveFile())
+    into(file(java.util.Optional.ofNullable(System.getenv(PATH_NAME)).orElse(".")))
+    onlyIf {
+        System.getenv(PATH_NAME) != null &&
+                Files.exists(Paths.get(System.getenv(PATH_NAME)))
     }
 }
