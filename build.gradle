@@ -9,7 +9,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
 plugins {
@@ -213,11 +213,11 @@ publishing {
             artifactId = "InfChest".toLowerCase()
             artifact srcJar {
                 archiveClassifier.set('sources')
-                extension = 'jar'
+                archiveExtension.set('jar')
             }
             artifact deobfJar {
                 archiveClassifier.set('deobf')
-                extension = 'jar'
+                archiveExtension.set('jar')
             }
             artifact reobfArtifact
         }
