@@ -109,7 +109,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.0.46'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
     compileOnly fg.deobf("appeng:appliedenergistics2:8.2.0")
     implementation fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
