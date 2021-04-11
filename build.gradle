@@ -1,5 +1,9 @@
+import net.minecraftforge.gradle.common.task.SignJar
+
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 buildscript {
     repositories {
@@ -38,11 +42,14 @@ minecraft {
         client {
             workingDirectory project.file('Minecraft')
 
+            property 'mixin.env.disableRefMap', 'true'
+            property "mixin.debug.export", "true"
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'REGISTRIES'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            forceExit false
 
             mods {
                 quarryplus {
@@ -54,11 +61,14 @@ minecraft {
         server {
             workingDirectory project.file('run-server')
 
+            property 'mixin.env.disableRefMap', 'true'
+            property "mixin.debug.export", "true"
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'info'
+            forceExit false
 
             mods {
                 quarryplus {
@@ -111,10 +121,10 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
-    compileOnly fg.deobf("appeng:appliedenergistics2:8.2.0")
+    implementation fg.deobf("appeng:appliedenergistics2:8.2.0")
     implementation fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
     implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.4-beta-7")
-    implementation fg.deobf("curse.maven:storagebox-mod-419839:3119354")
+    implementation fg.deobf("curse.maven:StorageBox-mod-419839:3119354".toLowerCase())
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -125,9 +135,9 @@ jar {
                 "Specification-Vendor"    : "Kotori316",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
+                "Implementation-Version"  : archiveVersion.get(),
                 "Implementation-Vendor"   : "Kotori316",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT)
         ])
     }
 }
@@ -138,39 +148,32 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
     builtBy 'reobfJar'
 }
 
-task signJar2() {
-    doLast {
-        ant.signjar(
-                jar: jar.archivePath,
-                alias: project.hasProperty('keyStoreAlias') ? project.getProperty('keyStoreAlias') : "",
-                keystore: project.hasProperty('keyStore') ? project.getProperty("keyStore") : "",
-                storepass: project.hasProperty('keyStorePass') ? project.getProperty('keyStorePass') : "",
-                sigalg: "SHA1withRSA",
-                digestalg: "SHA-256",
-                tsaurl: "http://timestamp.digicert.com"
-        )
-        ant.signjar(
-                jar: deobfJar.archivePath,
-                alias: project.hasProperty('keyStoreAlias') ? project.getProperty('keyStoreAlias') : "",
-                keystore: project.hasProperty('keyStore') ? project.getProperty("keyStore") : "",
-                storepass: project.hasProperty('keyStorePass') ? project.getProperty('keyStorePass') : "",
-                sigalg: "SHA1withRSA",
-                digestalg: "SHA-256",
-                tsaurl: "http://timestamp.digicert.com"
-        )
+task signJar(type: SignJar, dependsOn: 'reobfJar') {
+    boolean executeCondition = project.hasProperty('keyStoreAlias') &&
+            project.hasProperty('keyStore') &&
+            project.hasProperty('keyStorePass')
+    onlyIf { executeCondition }
+    if (executeCondition) {
+        keyStore = project.getProperty("keyStore")
+        alias = project.getProperty('keyStoreAlias')
+        storePass = project.getProperty('keyStorePass')
+        keyPass = ""
     }
+
+    inputFile = jar.getArchiveFile().get()
+    outputFile = jar.getArchiveFile().get()
 }
 // Runs this task automatically when build is ran.
-assemble.dependsOn(signJar2)
+assemble.dependsOn(signJar)
 
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
-    classifier = 'sources'
+    archiveClassifier.set('sources')
 }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    classifier = 'deobf'
+    archiveClassifier.set('deobf')
 }
 
 // Tell the artifact system about our extra jars
