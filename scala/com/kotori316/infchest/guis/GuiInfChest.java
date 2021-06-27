@@ -2,6 +2,7 @@ package com.kotori316.infchest.guis;
 
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -27,7 +28,7 @@ public class GuiInfChest extends HandledScreen<ContainerInfChest> {
     @Override
     protected void drawForeground(MatrixStack matrixStack, final int mouseX, final int mouseY) {
         super.drawForeground(matrixStack, mouseX, mouseY);
-        Optional.ofNullable(infChest).map(TileInfChest::getStackWithAmount).filter(InfChest.STACK_NON_EMPTY).map(ItemStack::getName).ifPresent(itemName -> {
+        Optional.ofNullable(infChest).map(TileInfChest::getStackWithAmount).filter(Predicate.not(ItemStack::isEmpty)).map(ItemStack::getName).ifPresent(itemName -> {
                 this.textRenderer.draw(matrixStack, itemName.getString(), (this.backgroundWidth - this.textRenderer.getWidth(itemName)) / (float) 2, 20, 0x404040);
                 var count = infChest.itemCount().add(BigInteger.valueOf(infChest.getStack(1).getCount()));
                 this.textRenderer.draw(matrixStack, "Item: " + count, titleX, 60, 0x404040);

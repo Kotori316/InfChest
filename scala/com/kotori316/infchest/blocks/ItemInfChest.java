@@ -3,6 +3,7 @@ package com.kotori316.infchest.blocks;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,7 +26,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 final class ItemInfChest extends BlockItem {
@@ -80,7 +80,7 @@ final class ItemInfChest extends BlockItem {
         var n = chestStack.getSubTag(TileInfChest.NBT_BLOCK_TAG);
         if (n != null) {
             var stack = Optional.of(ItemStack.fromNbt(n.getCompound(TileInfChest.NBT_ITEM)))
-                .filter(InfChest.STACK_NON_EMPTY);
+                .filter(Predicate.not(ItemStack::isEmpty));
             stack.map(ItemStack::getItem)
                 .map(Registry.ITEM::getId)
                 .map(Identifier::toString)
@@ -89,7 +89,7 @@ final class ItemInfChest extends BlockItem {
             stack.map(ItemStack::getName)
                 .ifPresent(tooltip::add);
             Optional.of(n.getString(TileInfChest.NBT_COUNT))
-                .filter(InfChest.STRING_NON_EMPTY)
+                .filter(Predicate.not(String::isEmpty))
                 .map(s -> new BigInteger(s).add(TileInfChest.countInInventory(n)).toString())
                 .map(ItemInfChest::addPostfix)
                 .ifPresent(tooltip::add);

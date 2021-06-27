@@ -1,6 +1,7 @@
 package com.kotori316.infchest.blocks;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockRenderType;
@@ -86,7 +87,7 @@ public class BlockInfChest extends BlockWithEntity {
         Optional.ofNullable(entity)
             .filter(TileInfChest.class::isInstance)
             .map(TileInfChest.class::cast)
-            .filter(InfChest.CHEST_NOT_EMPTY)
+            .filter(Predicate.not(TileInfChest::isEmpty))
             .map(TileInfChest::getBlockTag)
             .ifPresent(tag -> stack.putSubTag(TileInfChest.NBT_BLOCK_TAG, tag));
     }

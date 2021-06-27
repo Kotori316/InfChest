@@ -2,6 +2,7 @@ package com.kotori316.infchest.tiles;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import net.minecraft.block.BlockState;
@@ -34,14 +35,14 @@ public class TileDeque extends BlockEntity implements HasInv {
         inventory = compound.getList(NBT_ITEMS, 10).stream()
             .map(NbtCompound.class::cast)
             .map(ItemStack::fromNbt)
-            .filter(InfChest.STACK_NON_EMPTY)
+            .filter(Predicate.not(ItemStack::isEmpty))
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
     public NbtCompound writeNbt(NbtCompound compound) {
         NbtList list1 = inventory.stream()
-            .filter(InfChest.STACK_NON_EMPTY)
+            .filter(Predicate.not(ItemStack::isEmpty))
             .map(stack -> stack.writeNbt(new NbtCompound()))
             .collect(Collectors.toCollection(NbtList::new));
         compound.put(NBT_ITEMS, list1);
@@ -92,7 +93,7 @@ public class TileDeque extends BlockEntity implements HasInv {
     @Override
     public void markDirty() {
         super.markDirty();
-        inventory = inventory.stream().filter(InfChest.STACK_NON_EMPTY).collect(Collectors.toCollection(LinkedList::new));
+        inventory = inventory.stream().filter(Predicate.not(ItemStack::isEmpty)).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override

@@ -1,13 +1,10 @@
 package com.kotori316.infchest;
 
-import java.util.function.Predicate;
-
 import com.mojang.datafixers.DSL;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
@@ -26,10 +23,6 @@ public class InfChest implements ModInitializer {
     public static final String MOD_NAME = "InfChest";
     public static final String modID = "infchest";
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
-
-    public static final Predicate<TileInfChest> CHEST_NOT_EMPTY = Predicate.not(TileInfChest::isEmpty);
-    public static final Predicate<ItemStack> STACK_NON_EMPTY = Predicate.not(ItemStack::isEmpty);
-    public static final Predicate<String> STRING_NON_EMPTY = Predicate.not(String::isEmpty);
 
     @Override
     public void onInitialize() {
