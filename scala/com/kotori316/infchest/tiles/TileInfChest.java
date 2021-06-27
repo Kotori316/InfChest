@@ -54,15 +54,8 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
 
     @Override
     public NbtCompound writeNbt(NbtCompound compound) {
-        if (stacksEqual(holding, getStack(1))) {
-            ItemStack temp = removeStack(1);
-            Inventories.writeNbt(compound, inventory);
-            compound.putString(NBT_COUNT, count.add(BigInteger.valueOf(temp.getCount())).toString());
-            inventory.set(1, temp);
-        } else {
-            compound.putString(NBT_COUNT, count.toString());
-            Inventories.writeNbt(compound, inventory);
-        }
+        compound.putString(NBT_COUNT, count.toString());
+        Inventories.writeNbt(compound, inventory);
         compound.put(NBT_ITEM, holding.writeNbt(new NbtCompound()));
         Optional.ofNullable(customName).map(Text.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
         return super.writeNbt(compound);
@@ -290,6 +283,12 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
      */
     private static boolean gt(BigInteger bigInteger, int i) {
         return bigInteger.compareTo(BigInteger.valueOf(i)) > 0;
+    }
+
+    public static BigInteger countInInventory(NbtCompound chestNBT) {
+        var inv = DefaultedList.ofSize(2, ItemStack.EMPTY);
+        Inventories.readNbt(chestNBT, inv);
+        return BigInteger.valueOf(inv.stream().mapToLong(ItemStack::getCount).sum());
     }
 
     @Override

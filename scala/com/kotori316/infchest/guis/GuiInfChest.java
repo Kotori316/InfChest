@@ -1,5 +1,6 @@
 package com.kotori316.infchest.guis;
 
+import java.math.BigInteger;
 import java.util.Optional;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -28,7 +29,8 @@ public class GuiInfChest extends HandledScreen<ContainerInfChest> {
         super.drawForeground(matrixStack, mouseX, mouseY);
         Optional.ofNullable(infChest).map(TileInfChest::getStackWithAmount).filter(InfChest.STACK_NON_EMPTY).map(ItemStack::getName).ifPresent(itemName -> {
                 this.textRenderer.draw(matrixStack, itemName.getString(), (this.backgroundWidth - this.textRenderer.getWidth(itemName)) / (float) 2, 20, 0x404040);
-                this.textRenderer.draw(matrixStack, "Item: " + infChest.itemCount(), titleX, 60, 0x404040);
+                var count = infChest.itemCount().add(BigInteger.valueOf(infChest.getStack(1).getCount()));
+                this.textRenderer.draw(matrixStack, "Item: " + count, titleX, 60, 0x404040);
             }
         );
     }

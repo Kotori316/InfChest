@@ -1,5 +1,6 @@
 package com.kotori316.infchest.blocks;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,6 +90,7 @@ final class ItemInfChest extends BlockItem {
                 .ifPresent(tooltip::add);
             Optional.of(n.getString(TileInfChest.NBT_COUNT))
                 .filter(InfChest.STRING_NON_EMPTY)
+                .map(s -> new BigInteger(s).add(TileInfChest.countInInventory(n)).toString())
                 .map(ItemInfChest::addPostfix)
                 .ifPresent(tooltip::add);
         }

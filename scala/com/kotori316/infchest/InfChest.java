@@ -27,9 +27,9 @@ public class InfChest implements ModInitializer {
     public static final String modID = "infchest";
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
-    public static final Predicate<TileInfChest> CHEST_NOT_EMPTY = ((Predicate<TileInfChest>) TileInfChest::isEmpty).negate();
-    public static final Predicate<ItemStack> STACK_NON_EMPTY = ((Predicate<ItemStack>) ItemStack::isEmpty).negate();
-    public static final Predicate<String> STRING_NON_EMPTY = ((Predicate<String>) String::isEmpty).negate();
+    public static final Predicate<TileInfChest> CHEST_NOT_EMPTY = Predicate.not(TileInfChest::isEmpty);
+    public static final Predicate<ItemStack> STACK_NON_EMPTY = Predicate.not(ItemStack::isEmpty);
+    public static final Predicate<String> STRING_NON_EMPTY = Predicate.not(String::isEmpty);
 
     @Override
     public void onInitialize() {
