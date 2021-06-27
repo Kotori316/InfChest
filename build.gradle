@@ -1,81 +1,56 @@
-import net.minecraftforge.gradle.common.task.SignJar
-
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Optional
 
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net/' }
-        maven { url = "https://plugins.gradle.org/m2/" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-    }
-}
 plugins {
-    id("maven-publish")
+    // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
+    id 'fabric-loom' version "0.8.17"
+    id 'maven-publish'
+    //noinspection SpellCheckingInspection
+    id "com.github.breadmoirai.github-release" version "2.2.12"
+    //noinspection SpellCheckingInspection
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: "com.matthewprenger.cursegradle"
 
-version = getProperty("modVersion")
+version = project.mod_version
 group = "com.kotori316"
 archivesBaseName = "InfChest"
 
-sourceCompatibility = targetCompatibility = '1.8'
-
-static String MappingVersion() { return '20201028-1.16.3' }
-
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
+java {
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
+    toolchain {
+        it.languageVersion = JavaLanguageVersion.of(16)
+    }
+}
+
 minecraft {
-    mappings channel: 'snapshot', version: MappingVersion()
-
-    // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
-
     runs {
-        client {
-            workingDirectory project.file('Minecraft')
-
-            property 'mixin.env.disableRefMap', 'true'
-            property "mixin.debug.export", "true"
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            forceExit false
-
-            mods {
-                quarryplus {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run-server')
-
-            property 'mixin.env.disableRefMap', 'true'
-            property "mixin.debug.export", "true"
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'info'
-            forceExit false
-
-            mods {
-                quarryplus {
-                    source sourceSets.main
-                }
+        it.configure {
+            client {
+                runDir = "Minecraft"
             }
         }
     }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }
 
 sourceSets {
@@ -95,38 +70,18 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev/"
     }
-    maven {
-        name = "Hwyla"
-        url "https://maven.tehnut.info"
-        content {
-            it.includeGroup("mcp.mobius.waila")
-        }
-    }
-    maven { // The One Probe
-        name 'tterrag maven'
-        url "https://maven.tterrag.com/"
-        content {
-            includeGroup("mcjty.theoneprobe")
-        }
-    }
-    maven {
-        url = "https://www.cursemaven.com"
-        content {
-            it.includeGroup("curse.maven")
-        }
-    }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
-    //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
-    implementation fg.deobf("appeng:appliedenergistics2:8.2.0")
-    implementation fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
-    implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.4-beta-7")
-    implementation fg.deobf("curse.maven:StorageBox-mod-419839:3119354".toLowerCase())
+    //to change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
@@ -141,61 +96,21 @@ jar {
     }
 }
 
-def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) {
-    type 'jar'
-    builtBy 'reobfJar'
-}
-
-task signJar(type: SignJar, dependsOn: 'reobfJar') {
-    boolean executeCondition = project.hasProperty('keyStoreAlias') &&
-            project.hasProperty('keyStore') &&
-            project.hasProperty('keyStorePass')
-    onlyIf { executeCondition }
-    if (executeCondition) {
-        keyStore = project.getProperty("keyStore")
-        alias = project.getProperty('keyStoreAlias')
-        storePass = project.getProperty('keyStorePass')
-        keyPass = ""
-    }
-
-    inputFile = jar.getArchiveFile().get()
-    outputFile = jar.getArchiveFile().get()
-}
-// Runs this task automatically when build is ran.
-assemble.dependsOn(signJar)
-
-task srcJar(type: Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier.set('sources')
-}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    archiveClassifier.set('deobf')
-}
-
-// Tell the artifact system about our extra jars
-artifacts {
-    archives srcJar, deobfJar
-}
-
 curseforge {
     apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
     project {
         id = '312222'
         changelogType = 'markdown'
         changelog = new File("temp_changelog.md")
-        addGameVersion '1.16.4'
-        addGameVersion '1.16.5'
-        releaseType = 'release'
-        mainArtifact jar
-        addArtifact srcJar
-        addArtifact deobfJar
+        addGameVersion 'Fabric'
+        addGameVersion '1.17'
+        releaseType = 'beta'
+        mainArtifact remapJar
     }
     options {
-        debug = false // defaults to false
+        curseGradleOptions.debug = false
         javaVersionAutoDetect = false
+        forgeGradleIntegration = false
     }
 }
 
@@ -213,23 +128,19 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = "InfChest".toLowerCase()
-            artifact srcJar {
-                archiveClassifier.set('sources')
-                archiveExtension.set('jar')
-            }
-            artifact deobfJar {
-                archiveClassifier.set('deobf')
-                archiveExtension.set('jar')
-            }
-            artifact reobfArtifact
+//            artifact srcJar {
+//                archiveClassifier.set('sources')
+//                archiveExtension.set('jar')
+//            }
+            artifact remapJar
         }
     }
 }
 
 task copyToDrive(type: Copy, dependsOn: "build") {
     def PATH_NAME = "drive_path"
-    from(jar.getArchiveFile(), deobfJar.getArchiveFile(), srcJar.getArchiveFile())
-    into(file(java.util.Optional.ofNullable(System.getenv(PATH_NAME)).orElse(".")))
+    from(remapJar.getArchiveFile())
+    into(file(Optional.ofNullable(System.getenv(PATH_NAME)).orElse(".")))
     onlyIf {
         System.getenv(PATH_NAME) != null &&
                 Files.exists(Paths.get(System.getenv(PATH_NAME)))

@@ -1,38 +1,21 @@
 package com.kotori316.infchest;
 
-import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public final class ItemDamage {
-    private final Item item;
-    private final CompoundNBT compound;
-
+public record ItemDamage(@NotNull Item item, @Nullable NbtCompound compound) {
     public ItemDamage(ItemStack stack) {
-        item = stack.getItem();
-        compound = stack.getTag();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ItemDamage that = (ItemDamage) o;
-        return item.equals(that.item) &&
-            Objects.equals(compound, that.compound);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(item, compound);
+        this(stack.getItem(), stack.getTag() == null ? null : stack.getTag().copy());
     }
 
     public ItemStack toStack(int count) {
-        ItemStack stack = new ItemStack(item, count);
+        var stack = new ItemStack(item, count);
         stack.setTag(compound);
         return stack;
     }

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "infchest",
+  "version": "${version}",
+  "name": "InfChest",
+  "description": "InfChest",
+  "authors": [
+    "Me!", "Kotori316"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Kotori316",
+    "sources": "https://github.com/Kotori316/InfChest"
+  },
+  "license": "All rights reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "com.kotori316.infchest.InfChest"
+      }
+    ],
+    "client": [
+      "com.kotori316.infchest.InfChestClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.9.1",
+    "fabric": "*",
+    "minecraft": "1.17.x"
+  }
+}

@@ -180,4 +180,3 @@ class AE2Capability implements ICapabilityProvider {
         }
     }
 }
-

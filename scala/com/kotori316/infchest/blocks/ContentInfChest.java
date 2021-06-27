@@ -3,43 +3,42 @@ package com.kotori316.infchest.blocks;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.function.ConditionalLootFunction;
+import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.util.Identifier;
 
 import com.kotori316.infchest.InfChest;
 
-public class ContentInfChest extends LootFunction {
-    public static final ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "content_infchest");
+public class ContentInfChest extends ConditionalLootFunction {
+    public static final Identifier LOCATION = new Identifier(InfChest.modID, "content_infchest");
 
-    protected ContentInfChest(ILootCondition[] conditionsIn) {
+    protected ContentInfChest(LootCondition[] conditionsIn) {
         super(conditionsIn);
     }
 
     @Override
-    protected ItemStack doApply(ItemStack stack, LootContext context) {
-        TileEntity entity = context.get(LootParameters.BLOCK_ENTITY);
+    protected ItemStack process(ItemStack stack, LootContext context) {
+        var entity = context.get(LootContextParameters.BLOCK_ENTITY);
         BlockInfChest.saveChestNbtToStack(entity, stack);
         BlockInfChest.saveCustomName(entity, stack);
         return stack;
     }
 
     @Override
-    public LootFunctionType getFunctionType() {
+    public LootFunctionType getType() {
         return InfChest.Register.CHEST_FUNCTION;
     }
 
-    public static class Serializer extends LootFunction.Serializer<ContentInfChest> {
+    public static class Serializer extends ConditionalLootFunction.Serializer<ContentInfChest> {
 
         public Serializer() {
         }
 
         @Override
-        public ContentInfChest deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn) {
+        public ContentInfChest fromJson(JsonObject object, JsonDeserializationContext deserializationContext, LootCondition[] conditionsIn) {
             return new ContentInfChest(conditionsIn);
         }
     }

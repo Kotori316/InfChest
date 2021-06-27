@@ -4,67 +4,58 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
-import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.ItemDamage;
 import com.kotori316.infchest.blocks.BlockDeque;
 
-public class TileDeque extends TileEntity implements HasInv {
+public class TileDeque extends BlockEntity implements HasInv {
 
     public static final String NBT_ITEMS = "items";
     public static final int MAX_COUNT = 1000000; // 1 million
     LinkedList<ItemStack> inventory = new LinkedList<>();
-    private final IItemHandler handler;
 
-    public TileDeque() {
-        super(InfChest.Register.DEQUE_TYPE);
-        handler = new DequeItemHandler(this);
+    public TileDeque(BlockPos pos, BlockState state) {
+        super(InfChest.Register.DEQUE_TYPE, pos, state);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
-        super.read(state, compound);
-        inventory = compound.getList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).stream()
-            .map(CompoundNBT.class::cast)
-            .map(ItemStack::read)
+    public void readNbt(NbtCompound compound) {
+        super.readNbt(compound);
+        inventory = compound.getList(NBT_ITEMS, 10).stream()
+            .map(NbtCompound.class::cast)
+            .map(ItemStack::fromNbt)
             .filter(InfChest.STACK_NON_EMPTY)
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        ListNBT list1 = inventory.stream()
+    public NbtCompound writeNbt(NbtCompound compound) {
+        NbtList list1 = inventory.stream()
             .filter(InfChest.STACK_NON_EMPTY)
-            .map(ItemStack::serializeNBT)
-            .collect(Collectors.toCollection(ListNBT::new));
+            .map(stack -> stack.writeNbt(new NbtCompound()))
+            .collect(Collectors.toCollection(NbtList::new));
         compound.put(NBT_ITEMS, list1);
-        return super.write(compound);
+        return super.writeNbt(compound);
     }
 
-    public ITextComponent getName() {
+    public Text getName() {
         String name = InfChest.modID + ":tile." + BlockDeque.name;
-        return new TranslationTextComponent(name);
+        return new TranslatableText(name);
     }
 
     @Override
-    public int getSizeInventory() {
-        return Math.min(inventory.size() + 1, MAX_COUNT);
+    public int size() {
+        return Math.min(inventory.size() + 2, MAX_COUNT);
     }
 
     @Override
@@ -73,7 +64,7 @@ public class TileDeque extends TileEntity implements HasInv {
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getStack(int index) {
         if (index == 0 || index > inventory.size()) {
             return ItemStack.EMPTY; // Prevent hopper from stopping its work.
         }
@@ -81,19 +72,21 @@ public class TileDeque extends TileEntity implements HasInv {
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        return ItemStackHelper.getAndSplit(inventory, index - 1, count); // range check is done inside the method.
+    public ItemStack removeStack(int index, int count) {
+        return Inventories.splitStack(inventory, index - 1, count); // range check is done inside the method.
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return ItemStackHelper.getAndRemove(inventory, index - 1); // range check is done inside the method.
+    public ItemStack removeStack(int index) {
+        return Inventories.removeStack(inventory, index - 1); // range check is done inside the method.
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setStack(int index, ItemStack stack) {
         if (0 < index && index <= inventory.size())
             inventory.set(index - 1, stack);
+        else if (index == 0 && size() < TileDeque.MAX_COUNT)
+            inventory.add(stack);
     }
 
     @Override
@@ -114,15 +107,6 @@ public class TileDeque extends TileEntity implements HasInv {
             .stream()
             .flatMap(e -> e.getKey().toStacks(e.getValue()))
             .collect(Collectors.toList());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> handler));
-        }
-        return super.getCapability(cap, side);
     }
 
 }

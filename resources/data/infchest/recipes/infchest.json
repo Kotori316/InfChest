@@ -7,18 +7,21 @@
   ],
   "key": {
     "e": {
-      "tag": "forge:chests/ender"
+      "item": "minecraft:ender_chest"
     },
     "i": [
       {
-        "tag": "forge:ingots/iron"
+        "item": "minecraft:copper_ingot"
       },
       {
-        "tag": "forge:ingots/gold"
+        "item": "minecraft:iron_ingot"
+      },
+      {
+        "item": "minecraft:gold_ingot"
       }
     ],
     "q": {
-      "tag": "forge:storage_blocks/quartz"
+      "item": "minecraft:quartz_block"
     },
     "b": {
       "item": "minecraft:beacon"

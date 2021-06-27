@@ -3,24 +3,26 @@ package com.kotori316.infchest.blocks;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -28,36 +30,40 @@ import com.kotori316.infchest.tiles.TileInfChest;
 final class ItemInfChest extends BlockItem {
 
     ItemInfChest(Block block) {
-        super(block, new Item.Properties().group(ItemGroup.DECORATIONS));
-        setRegistryName(InfChest.modID, BlockInfChest.name);
+        super(block, new Item.Settings().group(ItemGroup.DECORATIONS));
     }
 
     @Override
-    public ActionResultType tryPlace(BlockItemUseContext context) {
+    public ActionResult place(ItemPlacementContext context) {
         if (Optional.ofNullable(context.getPlayer()).map(PlayerEntity::isCreative).orElse(Boolean.FALSE)) {
-            int size = context.getItem().getCount();
-            ActionResultType result = super.tryPlace(context);
-            context.getItem().setCount(size);
+            var size = context.getStack().getCount();
+            var result = super.place(context);
+            context.getStack().setCount(size);
             return result;
         } else {
-            return super.tryPlace(context);
+            return super.place(context);
         }
     }
 
     @Override
-    protected boolean onBlockPlaced(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
+    protected boolean place(ItemPlacementContext context, BlockState state) {
+        return super.place(context, state);
+    }
+
+    @Override
+    protected boolean postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
         if (world.getServer() != null) {
-            CompoundNBT tag = stack.getChildTag(TileInfChest.NBT_BLOCK_TAG);
-            TileEntity tileentity = world.getTileEntity(pos);
+            var tag = stack.getSubTag(TileInfChest.NBT_BLOCK_TAG);
+            var tileentity = world.getBlockEntity(pos);
             if (tag != null && tileentity != null) {
-                if (world.isRemote || !tileentity.onlyOpsCanSetNbt() || (player != null && player.canUseCommandBlock())) {
-                    CompoundNBT tileNbt = tileentity.write(new CompoundNBT());
-                    tileNbt.merge(tag);
+                if (world.isClient || !tileentity.copyItemDataRequiresOperator() || (player != null && player.isCreativeLevelTwoOp())) {
+                    var tileNbt = tileentity.writeNbt(new NbtCompound());
+                    tileNbt.copyFrom(tag);
                     tileNbt.putInt("x", pos.getX());
                     tileNbt.putInt("y", pos.getY());
                     tileNbt.putInt("z", pos.getZ());
 
-                    tileentity.read(state, tileNbt);
+                    tileentity.readNbt(tileNbt);
                     tileentity.markDirty();
                     return true;
                 }
@@ -67,18 +73,19 @@ final class ItemInfChest extends BlockItem {
     }
 
     @Override
-    public void addInformation(ItemStack chestStack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(chestStack, worldIn, tooltip, flagIn);
-        CompoundNBT n = chestStack.getChildTag(TileInfChest.NBT_BLOCK_TAG);
+    @Environment(EnvType.CLIENT)
+    public void appendTooltip(ItemStack chestStack, @Nullable World worldIn, List<Text> tooltip, TooltipContext flagIn) {
+        super.appendTooltip(chestStack, worldIn, tooltip, flagIn);
+        var n = chestStack.getSubTag(TileInfChest.NBT_BLOCK_TAG);
         if (n != null) {
-            Optional<ItemStack> stack = Optional.of(ItemStack.read(n.getCompound(TileInfChest.NBT_ITEM)))
+            var stack = Optional.of(ItemStack.fromNbt(n.getCompound(TileInfChest.NBT_ITEM)))
                 .filter(InfChest.STACK_NON_EMPTY);
             stack.map(ItemStack::getItem)
-                .map(Item::getRegistryName)
-                .map(ResourceLocation::toString)
-                .map(StringTextComponent::new)
+                .map(Registry.ITEM::getId)
+                .map(Identifier::toString)
+                .map(LiteralText::new)
                 .ifPresent(tooltip::add);
-            stack.map(ItemStack::getDisplayName)
+            stack.map(ItemStack::getName)
                 .ifPresent(tooltip::add);
             Optional.of(n.getString(TileInfChest.NBT_COUNT))
                 .filter(InfChest.STRING_NON_EMPTY)
@@ -87,7 +94,7 @@ final class ItemInfChest extends BlockItem {
         }
     }
 
-    private static ITextComponent addPostfix(String s) {
-        return new StringTextComponent(s + " items");
+    private static Text addPostfix(String s) {
+        return new LiteralText(s + " items");
     }
 }

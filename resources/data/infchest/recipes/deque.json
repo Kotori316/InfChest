@@ -6,9 +6,11 @@
     "c c"
   ],
   "key": {
-    "c": {
-      "tag": "forge:chests"
-    },
+    "c": [
+      {"item": "minecraft:chest"},
+      {"item": "minecraft:trapped_chest"},
+      {"item": "minecraft:ender_chest"}
+    ],
     "d": [
       {"item": "minecraft:dispenser"},
       {"item": "minecraft:dropper"}
