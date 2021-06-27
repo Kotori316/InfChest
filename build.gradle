@@ -1,3 +1,5 @@
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Optional
@@ -6,8 +8,6 @@ plugins {
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
     id 'fabric-loom' version "0.8.17"
     id 'maven-publish'
-    //noinspection SpellCheckingInspection
-    id "com.github.breadmoirai.github-release" version "2.2.12"
     //noinspection SpellCheckingInspection
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
@@ -128,12 +128,25 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = "InfChest".toLowerCase()
-//            artifact srcJar {
-//                archiveClassifier.set('sources')
-//                archiveExtension.set('jar')
-//            }
+            artifact sourcesJar {
+                archiveClassifier.set('sources')
+                archiveExtension.set('jar')
+            }
+            artifact jar {
+                archiveClassifier.set('deobf')
+                archiveExtension.set('jar')
+            }
             artifact remapJar
         }
+    }
+}
+
+task checkOutput() {
+    doLast {
+        [remapJar, jar, sourcesJar].forEach { t ->
+            println("$t -> ${t.getArchiveFile().get().asFile}")
+        }
+        println("$remapSourcesJar -> ${remapSourcesJar.output}")
     }
 }
 
