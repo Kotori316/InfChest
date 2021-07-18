@@ -11,12 +11,12 @@ import org.jetbrains.annotations.Nullable;
 
 public record ItemDamage(@NotNull Item item, @Nullable NbtCompound compound) {
     public ItemDamage(ItemStack stack) {
-        this(stack.getItem(), stack.getTag() == null ? null : stack.getTag().copy());
+        this(stack.getItem(), stack.getNbt() == null ? null : stack.getNbt().copy());
     }
 
     public ItemStack toStack(int count) {
         var stack = new ItemStack(item, count);
-        stack.setTag(compound);
+        stack.setNbt(compound);
         return stack;
     }
 

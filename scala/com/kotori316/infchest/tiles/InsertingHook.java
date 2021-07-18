@@ -45,7 +45,7 @@ public record InsertingHook(List<Hook> hooks) {
 
         @Override
         public BigInteger getCount(ItemStack hookItem) {
-            NbtCompound tag = hookItem.getSubTag(TileInfChest.NBT_BLOCK_TAG);
+            NbtCompound tag = hookItem.getSubNbt(TileInfChest.NBT_BLOCK_TAG);
             if (tag == null) {
                 return BigInteger.ZERO;
             }
@@ -54,7 +54,7 @@ public record InsertingHook(List<Hook> hooks) {
             ItemStack holding = ItemStack.fromNbt(tag.getCompound(TileInfChest.NBT_ITEM));
             holding.setCount(1);
             BigInteger second;
-            if (ItemStack.areItemsEqual(secondStack, holding) && ItemStack.areTagsEqual(secondStack, holding))
+            if (ItemStack.areItemsEqual(secondStack, holding) && ItemStack.areNbtEqual(secondStack, holding))
                 second = BigInteger.valueOf(secondStack.getCount());
             else
                 second = BigInteger.ZERO;
@@ -72,18 +72,18 @@ public record InsertingHook(List<Hook> hooks) {
 
         @Override
         public ItemStack removeAllItems(ItemStack hookItem) {
-            hookItem.removeSubTag(TileInfChest.NBT_BLOCK_TAG);
+            hookItem.removeSubNbt(TileInfChest.NBT_BLOCK_TAG);
             return hookItem;
         }
 
         @Override
         public boolean checkItemAcceptable(ItemStack chestContent, ItemStack hookItem) {
-            NbtCompound tag = hookItem.getSubTag(TileInfChest.NBT_BLOCK_TAG);
+            NbtCompound tag = hookItem.getSubNbt(TileInfChest.NBT_BLOCK_TAG);
             if (tag == null) {
                 return false;
             }
             ItemStack holding = ItemStack.fromNbt(tag.getCompound(TileInfChest.NBT_ITEM));
-            return ItemStack.areItemsEqual(chestContent, holding) && ItemStack.areTagsEqual(chestContent, holding);
+            return ItemStack.areItemsEqual(chestContent, holding) && ItemStack.areNbtEqual(chestContent, holding);
         }
 
         private static ItemStack getSecondItem(NbtCompound nbt) {

@@ -275,7 +275,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
     }
 
     private static boolean stacksEqual(ItemStack s1, ItemStack s2) {
-        return ItemStack.areItemsEqual(s1, s2) && ItemStack.areTagsEqual(s1, s2);
+        return ItemStack.areItemsEqual(s1, s2) && ItemStack.areNbtEqual(s1, s2);
     }
 
     /**

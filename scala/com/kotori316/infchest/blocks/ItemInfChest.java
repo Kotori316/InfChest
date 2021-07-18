@@ -54,7 +54,7 @@ final class ItemInfChest extends BlockItem {
     @Override
     protected boolean postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
         if (world.getServer() != null) {
-            var tag = stack.getSubTag(TileInfChest.NBT_BLOCK_TAG);
+            var tag = stack.getSubNbt(TileInfChest.NBT_BLOCK_TAG);
             var tileentity = world.getBlockEntity(pos);
             if (tag != null && tileentity != null) {
                 if (world.isClient || !tileentity.copyItemDataRequiresOperator() || (player != null && player.isCreativeLevelTwoOp())) {
@@ -77,7 +77,7 @@ final class ItemInfChest extends BlockItem {
     @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack chestStack, @Nullable World worldIn, List<Text> tooltip, TooltipContext flagIn) {
         super.appendTooltip(chestStack, worldIn, tooltip, flagIn);
-        var n = chestStack.getSubTag(TileInfChest.NBT_BLOCK_TAG);
+        var n = chestStack.getSubNbt(TileInfChest.NBT_BLOCK_TAG);
         if (n != null) {
             var stack = Optional.of(ItemStack.fromNbt(n.getCompound(TileInfChest.NBT_ITEM)))
                 .filter(Predicate.not(ItemStack::isEmpty));
