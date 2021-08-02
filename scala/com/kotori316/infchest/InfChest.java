@@ -3,15 +3,15 @@ package com.kotori316.infchest;
 import java.util.function.Predicate;
 
 import com.mojang.datafixers.DSL;
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,7 +27,6 @@ import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.blocks.ContentInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
 import com.kotori316.infchest.guis.GuiInfChest;
-import com.kotori316.infchest.integration.TOP;
 import com.kotori316.infchest.packets.PacketHandler;
 import com.kotori316.infchest.tiles.TileDeque;
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -38,9 +37,7 @@ public class InfChest {
     public static final String modID = "infchest";
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
-    public static final Predicate<TileInfChest> CHEST_NOT_EMPTY = ((Predicate<TileInfChest>) TileInfChest::isEmpty).negate();
-    public static final Predicate<ItemStack> STACK_NON_EMPTY = ((Predicate<ItemStack>) ItemStack::isEmpty).negate();
-    public static final Predicate<String> STRING_NON_EMPTY = ((Predicate<String>) String::isEmpty).negate();
+    public static final Predicate<ItemStack> STACK_NON_EMPTY = Predicate.not(ItemStack::isEmpty);
 
     public InfChest() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
@@ -50,22 +47,22 @@ public class InfChest {
     public void preInit(FMLCommonSetupEvent event) {
 //        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
         PacketHandler.init();
-        TOP.register();
+        // TOP.register();
     }
 
     public void clientInit(FMLClientSetupEvent event) {
-        ScreenManager.registerFactory(Register.INF_CHEST_CONTAINER_TYPE, GuiInfChest::new);
+        MenuScreens.register(Register.INF_CHEST_CONTAINER_TYPE, GuiInfChest::new);
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class Register {
         public static final BlockInfChest CHEST = new BlockInfChest();
-        public static final TileEntityType<TileInfChest> INF_CHEST_TYPE = TileEntityType.Builder.create(TileInfChest::new, CHEST).build(DSL.emptyPartType());
+        public static final BlockEntityType<TileInfChest> INF_CHEST_TYPE = BlockEntityType.Builder.of(TileInfChest::new, CHEST).build(DSL.emptyPartType());
         public static final BlockDeque DEQUE = new BlockDeque();
-        public static final TileEntityType<TileDeque> DEQUE_TYPE = TileEntityType.Builder.create(TileDeque::new, DEQUE).build(DSL.emptyPartType());
-        public static final ContainerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeContainerType.create(ContainerInfChest::create);
-        public static final LootFunctionType CHEST_FUNCTION = Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
-            new LootFunctionType(new ContentInfChest.Serializer()));
+        public static final BlockEntityType<TileDeque> DEQUE_TYPE = BlockEntityType.Builder.of(TileDeque::new, DEQUE).build(DSL.emptyPartType());
+        public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeContainerType.create(ContainerInfChest::create);
+        public static final LootItemFunctionType CHEST_FUNCTION = Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
+            new LootItemFunctionType(new ContentInfChest.Serializer()));
 
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -78,13 +75,13 @@ public class InfChest {
         }
 
         @SubscribeEvent
-        public static void registerTiles(RegistryEvent.Register<TileEntityType<?>> event) {
+        public static void registerTiles(RegistryEvent.Register<BlockEntityType<?>> event) {
             event.getRegistry().register(INF_CHEST_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockInfChest.name)));
             event.getRegistry().register(DEQUE_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockDeque.name)));
         }
 
         @SubscribeEvent
-        public static void registerContainer(RegistryEvent.Register<ContainerType<?>> event) {
+        public static void registerContainer(RegistryEvent.Register<MenuType<?>> event) {
             event.getRegistry().register(INF_CHEST_CONTAINER_TYPE.setRegistryName(new ResourceLocation(TileInfChest.GUI_ID)));
         }
     }

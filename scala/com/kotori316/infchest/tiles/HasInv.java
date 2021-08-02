@@ -1,20 +1,20 @@
 package com.kotori316.infchest.tiles;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-public interface HasInv extends net.minecraft.inventory.IInventory {
-
+public interface HasInv extends Container {
     @Override
-    default void openInventory(PlayerEntity player) {
+    default void startOpen(Player player) {
     }
 
     @Override
-    default void closeInventory(PlayerEntity player) {
+    default void stopOpen(Player player) {
     }
 
     @Override
-    default int getSizeInventory() {
+    default int getContainerSize() {
         return 1;
     }
 
@@ -24,40 +24,35 @@ public interface HasInv extends net.minecraft.inventory.IInventory {
     }
 
     @Override
-    default ItemStack getStackInSlot(int index) {
+    default ItemStack getItem(int index) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    default ItemStack decrStackSize(int index, int count) {
+    default ItemStack removeItem(int index, int count) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    default ItemStack removeStackFromSlot(int index) {
+    default ItemStack removeItemNoUpdate(int index) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    default void setInventorySlotContents(int index, ItemStack stack) {
+    default void setItem(int index, ItemStack stack) {
     }
 
     @Override
-    default int getInventoryStackLimit() {
-        return 64;
-    }
-
-    @Override
-    default boolean isUsableByPlayer(PlayerEntity player) {
+    default boolean stillValid(Player player) {
         return true;
     }
 
     @Override
-    default boolean isItemValidForSlot(int index, ItemStack stack) {
+    default boolean canPlaceItem(int index, ItemStack stack) {
         return true;
     }
 
     @Override
-    default void clear() {
+    default void clearContent() {
     }
 }

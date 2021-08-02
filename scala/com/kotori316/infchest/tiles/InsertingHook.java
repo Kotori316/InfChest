@@ -7,17 +7,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.integration.StorageBoxStack;
 
-public class InsertingHook {
-    private final List<Hook> hooks;
+public record InsertingHook(List<Hook> hooks) {
     private static final List<Hook> DEFAULT_HOOKS;
 
     static {
@@ -32,10 +32,6 @@ public class InsertingHook {
 
     public static InsertingHook getInstance() {
         return new InsertingHook(DEFAULT_HOOKS);
-    }
-
-    public InsertingHook(List<Hook> hooks) {
-        this.hooks = hooks;
     }
 
     public Optional<Hook> findHookObject(ItemStack maybeHookItem) {
@@ -60,16 +56,16 @@ public class InsertingHook {
 
         @Override
         public BigInteger getCount(ItemStack hookItem) {
-            CompoundNBT tag = hookItem.getChildTag(TileInfChest.NBT_BLOCK_TAG);
+            var tag = hookItem.getTagElement(BlockItem.BLOCK_ENTITY_TAG);
             if (tag == null) {
                 return BigInteger.ZERO;
             }
 
             ItemStack secondStack = getSecondItem(tag);
-            ItemStack holding = ItemStack.read(tag.getCompound(TileInfChest.NBT_ITEM));
+            ItemStack holding = ItemStack.of(tag.getCompound(TileInfChest.NBT_ITEM));
             holding.setCount(1);
             BigInteger second;
-            if (ItemStack.areItemsEqual(secondStack, holding) && ItemStack.areItemStackTagsEqual(secondStack, holding))
+            if (ItemStack.isSame(secondStack, holding) && ItemStack.tagMatches(secondStack, holding))
                 second = BigInteger.valueOf(secondStack.getCount());
             else
                 second = BigInteger.ZERO;
@@ -87,23 +83,23 @@ public class InsertingHook {
 
         @Override
         public ItemStack removeAllItems(ItemStack hookItem) {
-            hookItem.removeChildTag(TileInfChest.NBT_BLOCK_TAG);
+            hookItem.removeTagKey(BlockItem.BLOCK_ENTITY_TAG);
             return hookItem;
         }
 
         @Override
         public boolean checkItemAcceptable(ItemStack chestContent, ItemStack hookItem) {
-            CompoundNBT tag = hookItem.getChildTag(TileInfChest.NBT_BLOCK_TAG);
+            var tag = hookItem.getTagElement(BlockItem.BLOCK_ENTITY_TAG);
             if (tag == null) {
                 return false;
             }
-            ItemStack holding = ItemStack.read(tag.getCompound(TileInfChest.NBT_ITEM));
-            return ItemStack.areItemsEqual(chestContent, holding) && ItemStack.areItemStackTagsEqual(chestContent, holding);
+            ItemStack holding = ItemStack.of(tag.getCompound(TileInfChest.NBT_ITEM));
+            return ItemStack.isSame(chestContent, holding) && ItemStack.tagMatches(chestContent, holding);
         }
 
-        private static ItemStack getSecondItem(CompoundNBT nbt) {
+        private static ItemStack getSecondItem(CompoundTag nbt) {
             NonNullList<ItemStack> list = NonNullList.withSize(2, ItemStack.EMPTY);
-            ItemStackHelper.loadAllItems(nbt, list);
+            ContainerHelper.loadAllItems(nbt, list);
             return list.get(1);
         }
     }

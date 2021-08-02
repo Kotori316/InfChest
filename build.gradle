@@ -1,5 +1,3 @@
-import net.minecraftforge.gradle.common.task.SignJar
-
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.ZonedDateTime
@@ -12,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 plugins {
@@ -26,14 +24,15 @@ version = getProperty("modVersion")
 group = "com.kotori316"
 archivesBaseName = "InfChest"
 
-sourceCompatibility = targetCompatibility = '1.8'
+// Mojang ships Java 16 to end users in 1.17+ instead of Java 8 in 1.16 or lower, so your mod should target Java 16.
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
-static String MappingVersion() { return '20201028-1.16.3' }
+static String MappingVersion() { return '1.17.1' }
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'snapshot', version: MappingVersion()
+    mappings channel: 'official', version: MappingVersion()
 
     // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
 
@@ -51,7 +50,7 @@ minecraft {
             forceExit false
 
             mods {
-                quarryplus {
+                infchest {
                     source sourceSets.main
                 }
             }
@@ -70,7 +69,7 @@ minecraft {
             forceExit false
 
             mods {
-                quarryplus {
+                infchest {
                     source sourceSets.main
                 }
             }
@@ -94,6 +93,9 @@ repositories {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.dev/"
+        content {
+            it.includeModule("appeng", "appliedenergistics2")
+        }
     }
     maven {
         name = "Hwyla"
@@ -118,12 +120,12 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.18'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
-    implementation fg.deobf("appeng:appliedenergistics2:8.2.0")
-    implementation fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
-    implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.4-beta-7")
-    implementation fg.deobf("curse.maven:StorageBox-mod-419839:3119354".toLowerCase())
+    // implementation fg.deobf("appeng:appliedenergistics2:8.2.0")
+    // implementation fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
+    // implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.4-beta-7")
+    // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3119354".toLowerCase())
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -147,23 +149,23 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
     builtBy 'reobfJar'
 }
 
-task signJar(type: SignJar, dependsOn: 'reobfJar') {
-    boolean executeCondition = project.hasProperty('keyStoreAlias') &&
-            project.hasProperty('keyStore') &&
-            project.hasProperty('keyStorePass')
-    onlyIf { executeCondition }
-    if (executeCondition) {
-        keyStore = project.getProperty("keyStore")
-        alias = project.getProperty('keyStoreAlias')
-        storePass = project.getProperty('keyStorePass')
-        keyPass = ""
-    }
-
-    inputFile = jar.getArchiveFile().get()
-    outputFile = jar.getArchiveFile().get()
-}
-// Runs this task automatically when build is ran.
-assemble.dependsOn(signJar)
+//task signJar(type: SignJar, dependsOn: 'reobfJar') {
+//    boolean executeCondition = project.hasProperty('keyStoreAlias') &&
+//            project.hasProperty('keyStore') &&
+//            project.hasProperty('keyStorePass')
+//    onlyIf { executeCondition }
+//    if (executeCondition) {
+//        keyStore = project.getProperty("keyStore")
+//        alias = project.getProperty('keyStoreAlias')
+//        storePass = project.getProperty('keyStorePass')
+//        keyPass = ""
+//    }
+//
+//    inputFile = jar.getArchiveFile().get()
+//    outputFile = jar.getArchiveFile().get()
+//}
+//// Runs this task automatically when build is ran.
+//assemble.dependsOn(signJar)
 
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
@@ -186,8 +188,7 @@ curseforge {
         id = '312222'
         changelogType = 'markdown'
         changelog = new File("temp_changelog.md")
-        addGameVersion '1.16.4'
-        addGameVersion '1.16.5'
+        addGameVersion '1.17.1'
         releaseType = 'release'
         mainArtifact jar
         addArtifact srcJar

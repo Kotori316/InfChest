@@ -5,14 +5,13 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import com.kotori316.infchest.tiles.TileInfChest;
 
@@ -21,7 +20,7 @@ import com.kotori316.infchest.tiles.TileInfChest;
  */
 public class ItemCountMessage {
     BlockPos pos;
-    RegistryKey<World> dim;
+    ResourceKey<Level> dim;
     private byte[] bytes;
     private ItemStack out, holding;
 
@@ -31,36 +30,35 @@ public class ItemCountMessage {
     }
 
     public ItemCountMessage(TileInfChest chest, BigInteger integer) {
-        pos = chest.getPos();
-        dim = Optional.ofNullable(chest.getWorld()).map(World::getDimensionKey).orElse(World.OVERWORLD);
+        pos = chest.getBlockPos();
+        dim = Optional.ofNullable(chest.getLevel()).map(Level::dimension).orElse(Level.OVERWORLD);
         bytes = integer.toByteArray();
-        out = chest.getStackInSlot(1);
+        out = chest.getItem(1);
         holding = chest.getStack(1);
     }
 
-    public static ItemCountMessage fromBytes(PacketBuffer p) {
+    public static ItemCountMessage fromBytes(FriendlyByteBuf p) {
         ItemCountMessage message = new ItemCountMessage();
         message.pos = p.readBlockPos();
-        message.dim = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, p.readResourceLocation());
+        message.dim = ResourceKey.create(Registry.DIMENSION_REGISTRY, p.readResourceLocation());
         message.bytes = p.readByteArray();
-        message.out = p.readItemStack();
-        message.holding = p.readItemStack();
+        message.out = p.readItem();
+        message.holding = p.readItem();
         return message;
     }
 
-    public void toBytes(PacketBuffer p) {
-        p.writeBlockPos(pos).writeResourceLocation(dim.getLocation());
-        p.writeByteArray(bytes).writeItemStack(out).writeItemStack(holding);
+    public void toBytes(FriendlyByteBuf p) {
+        p.writeBlockPos(pos).writeResourceLocation(dim.location());
+        p.writeByteArray(bytes).writeItem(out).writeItem(holding);
     }
 
     void onReceive(Supplier<NetworkEvent.Context> ctx) {
-        assert Minecraft.getInstance().world != null;
-        TileEntity entity = Minecraft.getInstance().world.getTileEntity(pos);
-        if (Minecraft.getInstance().world.getDimensionKey().equals(dim) && entity instanceof TileInfChest) {
-            TileInfChest chest = (TileInfChest) entity;
+        assert Minecraft.getInstance().level != null;
+        var entity = Minecraft.getInstance().level.getBlockEntity(pos);
+        if (Minecraft.getInstance().level.dimension().equals(dim) && entity instanceof TileInfChest chest) {
             ctx.get().enqueueWork(() -> {
                 chest.setCount(new BigInteger(bytes));
-                chest.setInventorySlotContents(1, out);
+                chest.setItem(1, out);
                 chest.setHolding(holding);
             });
             ctx.get().setPacketHandled(true);

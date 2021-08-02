@@ -1,5 +1,5 @@
 package com.kotori316.infchest.integration;
-
+/*
 import java.math.BigInteger;
 import java.util.Optional;
 
@@ -180,4 +180,4 @@ class AE2Capability implements ICapabilityProvider {
         }
     }
 }
-
+*/

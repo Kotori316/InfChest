@@ -2,25 +2,26 @@ package com.kotori316.infchest.blocks;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -28,37 +29,37 @@ import com.kotori316.infchest.tiles.TileInfChest;
 final class ItemInfChest extends BlockItem {
 
     ItemInfChest(Block block) {
-        super(block, new Item.Properties().group(ItemGroup.DECORATIONS));
+        super(block, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
         setRegistryName(InfChest.modID, BlockInfChest.name);
     }
 
     @Override
-    public ActionResultType tryPlace(BlockItemUseContext context) {
-        if (Optional.ofNullable(context.getPlayer()).map(PlayerEntity::isCreative).orElse(Boolean.FALSE)) {
-            int size = context.getItem().getCount();
-            ActionResultType result = super.tryPlace(context);
-            context.getItem().setCount(size);
+    public InteractionResult useOn(UseOnContext context) {
+        if (Optional.ofNullable(context.getPlayer()).map(Player::isCreative).orElse(Boolean.FALSE)) {
+            int size = context.getItemInHand().getCount();
+            InteractionResult result = super.useOn(context);
+            context.getItemInHand().setCount(size);
             return result;
         } else {
-            return super.tryPlace(context);
+            return super.useOn(context);
         }
     }
 
     @Override
-    protected boolean onBlockPlaced(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
+    protected boolean updateCustomBlockEntityTag(BlockPos pos, Level world, @Nullable Player player, ItemStack stack, BlockState state) {
         if (world.getServer() != null) {
-            CompoundNBT tag = stack.getChildTag(TileInfChest.NBT_BLOCK_TAG);
-            TileEntity tileentity = world.getTileEntity(pos);
+            CompoundTag tag = stack.getTagElement(BlockItem.BLOCK_ENTITY_TAG);
+            BlockEntity tileentity = world.getBlockEntity(pos);
             if (tag != null && tileentity != null) {
-                if (world.isRemote || !tileentity.onlyOpsCanSetNbt() || (player != null && player.canUseCommandBlock())) {
-                    CompoundNBT tileNbt = tileentity.write(new CompoundNBT());
+                if (world.isClientSide || !tileentity.onlyOpCanSetNbt() || (player != null && player.canUseGameMasterBlocks())) {
+                    CompoundTag tileNbt = tileentity.save(new CompoundTag());
                     tileNbt.merge(tag);
                     tileNbt.putInt("x", pos.getX());
                     tileNbt.putInt("y", pos.getY());
                     tileNbt.putInt("z", pos.getZ());
 
-                    tileentity.read(state, tileNbt);
-                    tileentity.markDirty();
+                    tileentity.load(tileNbt);
+                    tileentity.setChanged();
                     return true;
                 }
             }
@@ -67,27 +68,27 @@ final class ItemInfChest extends BlockItem {
     }
 
     @Override
-    public void addInformation(ItemStack chestStack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(chestStack, worldIn, tooltip, flagIn);
-        CompoundNBT n = chestStack.getChildTag(TileInfChest.NBT_BLOCK_TAG);
+    public void appendHoverText(ItemStack chestStack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(chestStack, worldIn, tooltip, flagIn);
+        CompoundTag n = chestStack.getTagElement(BLOCK_ENTITY_TAG);
         if (n != null) {
-            Optional<ItemStack> stack = Optional.of(ItemStack.read(n.getCompound(TileInfChest.NBT_ITEM)))
+            Optional<ItemStack> stack = Optional.of(ItemStack.of(n.getCompound(TileInfChest.NBT_ITEM)))
                 .filter(InfChest.STACK_NON_EMPTY);
             stack.map(ItemStack::getItem)
                 .map(Item::getRegistryName)
                 .map(ResourceLocation::toString)
-                .map(StringTextComponent::new)
+                .map(TextComponent::new)
                 .ifPresent(tooltip::add);
             stack.map(ItemStack::getDisplayName)
                 .ifPresent(tooltip::add);
             Optional.of(n.getString(TileInfChest.NBT_COUNT))
-                .filter(InfChest.STRING_NON_EMPTY)
+                .filter(Predicate.not(String::isEmpty))
                 .map(ItemInfChest::addPostfix)
                 .ifPresent(tooltip::add);
         }
     }
 
-    private static ITextComponent addPostfix(String s) {
-        return new StringTextComponent(s + " items");
+    private static Component addPostfix(String s) {
+        return new TextComponent(s + " items");
     }
 }

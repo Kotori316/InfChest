@@ -1,5 +1,5 @@
 package com.kotori316.infchest.integration;
-
+/*
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
@@ -17,3 +17,4 @@ public class Waila implements IWailaPlugin {
         registrar.registerBlockDataProvider(provider, TileInfChest.class);
     }
 }
+*/

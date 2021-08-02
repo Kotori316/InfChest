@@ -1,107 +1,105 @@
 package com.kotori316.infchest.blocks;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ContainerBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.integration.StorageBoxStack;
 import com.kotori316.infchest.tiles.TileInfChest;
 
-public class BlockInfChest extends ContainerBlock {
+public class BlockInfChest extends BaseEntityBlock {
     public static final String name = InfChest.modID;
     public final BlockItem itemBlock;
 
     public BlockInfChest() {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(1.0f));
+        super(Block.Properties.of(Material.METAL).strength(1.0f));
         setRegistryName(InfChest.modID, name);
         itemBlock = new ItemInfChest(this);
     }
 
     @Override
-    public TileEntity createNewTileEntity(IBlockReader worldIn) {
-        return InfChest.Register.INF_CHEST_TYPE.create();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return InfChest.Register.INF_CHEST_TYPE.create(pos, state);
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
-    public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
+    public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
         return false;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos,
-                                             PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos,
+                                 Player player, InteractionHand hand, BlockHitResult rayTrace) {
         if (!player.isCrouching()) {
-            if (!worldIn.isRemote) {
-                if (StorageBoxStack.moveToStorage(worldIn, pos, player, hand)) return ActionResultType.SUCCESS;
-                Optional.ofNullable(((TileInfChest) worldIn.getTileEntity(pos))).ifPresent(t ->
-                    NetworkHooks.openGui(((ServerPlayerEntity) player), t, pos));
+            if (!worldIn.isClientSide) {
+                if (StorageBoxStack.moveToStorage(worldIn, pos, player, hand)) return InteractionResult.SUCCESS;
+                worldIn.getBlockEntity(pos, InfChest.Register.INF_CHEST_TYPE).ifPresent(t ->
+                    NetworkHooks.openGui(((ServerPlayer) player), t, pos));
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return super.onBlockActivated(state, worldIn, pos, player, hand, rayTrace);
+        return super.use(state, worldIn, pos, player, hand, rayTrace);
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-        if (stack.hasDisplayName()) {
-            Optional.ofNullable(worldIn.getTileEntity(pos))
-                .filter(TileInfChest.class::isInstance)
-                .map(TileInfChest.class::cast)
+    public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(worldIn, pos, state, placer, stack);
+        if (stack.hasCustomHoverName()) {
+            worldIn.getBlockEntity(pos, InfChest.Register.INF_CHEST_TYPE)
                 .ifPresent(chest -> chest.setCustomName(stack.getDisplayName()));
         }
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         ItemStack pickBlock = super.getPickBlock(state, target, world, pos, player);
-        saveChestNbtToStack(world.getTileEntity(pos), pickBlock);
-        saveCustomName(world.getTileEntity(pos), pickBlock);
+        saveChestNbtToStack(world.getBlockEntity(pos), pickBlock);
+        saveCustomName(world.getBlockEntity(pos), pickBlock);
         return pickBlock;
     }
 
-    public static void saveCustomName(@Nullable TileEntity te, ItemStack drop) {
+    public static void saveCustomName(@Nullable BlockEntity te, ItemStack drop) {
         Optional.ofNullable(te).filter(TileInfChest.class::isInstance).map(TileInfChest.class::cast)
             .filter(TileInfChest::hasCustomName)
             .map(TileInfChest::getName)
-            .ifPresent(drop::setDisplayName);
+            .ifPresent(drop::setHoverName);
     }
 
-    public static void saveChestNbtToStack(@Nullable TileEntity entity, ItemStack stack) {
+    public static void saveChestNbtToStack(@Nullable BlockEntity entity, ItemStack stack) {
         Optional.ofNullable(entity)
             .filter(TileInfChest.class::isInstance)
             .map(TileInfChest.class::cast)
-            .filter(InfChest.CHEST_NOT_EMPTY)
+            .filter(Predicate.not(TileInfChest::isEmpty))
             .map(TileInfChest::getBlockTag)
-            .ifPresent(tag -> stack.setTagInfo(TileInfChest.NBT_BLOCK_TAG, tag));
+            .ifPresent(tag -> stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, tag));
     }
 }

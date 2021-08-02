@@ -1,30 +1,25 @@
 package com.kotori316.infchest.tiles;
 
 import javax.annotation.Nonnull;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-class DequeItemHandler implements IItemHandlerModifiable {
-    private final TileDeque deque;
-
-    public DequeItemHandler(TileDeque deque) {
-        this.deque = deque;
-    }
+record DequeItemHandler(TileDeque deque) implements IItemHandlerModifiable {
 
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-        deque.setInventorySlotContents(slot, stack);
+        deque.setItem(slot, stack);
     }
 
     @Override
     public int getSlots() {
-        return deque.getSizeInventory();
+        return deque.getContainerSize();
     }
 
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return deque.getStackInSlot(slot);
+        return deque.getItem(slot);
     }
 
     @Nonnull
@@ -68,7 +63,7 @@ class DequeItemHandler implements IItemHandlerModifiable {
 
     @Override
     public int getSlotLimit(int slot) {
-        return deque.getInventoryStackLimit();
+        return deque.getMaxStackSize();
     }
 
     @Override

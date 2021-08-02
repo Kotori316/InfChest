@@ -1,5 +1,5 @@
 package com.kotori316.infchest.integration;
-
+/*
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -36,7 +36,7 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
                                  World world, BlockState blockState, IProbeHitData data) {
-            final TileEntity entity = world.getTileEntity(data.getPos());
+            final TileEntity entity = world.getTileEntity(data.getBlockPos());
             if (entity instanceof TileInfChest) {
                 TileInfChest chest = (TileInfChest) entity;
                 final ItemStack stack = chest.getStack(1);
@@ -50,3 +50,4 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
         }
     }
 }
+*/

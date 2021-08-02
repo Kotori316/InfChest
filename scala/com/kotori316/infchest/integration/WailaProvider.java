@@ -1,5 +1,5 @@
 package com.kotori316.infchest.integration;
-
+/*
 import java.math.BigInteger;
 import java.util.List;
 
@@ -9,9 +9,9 @@ import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerDataProvider;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Component;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
@@ -22,10 +22,10 @@ public class WailaProvider implements IServerDataProvider<TileEntity>, IComponen
     private static final String NBT_COUNT = "waila_count";
 
     @Override
-    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendBody(List<Component> tooltip, IDataAccessor accessor, IPluginConfig config) {
         TileEntity t = accessor.getTileEntity();
         if (t instanceof TileInfChest) {
-            CompoundNBT data = accessor.getServerData();
+            CompoundTag data = accessor.getServerData();
             ItemStack stack;
             if (data.contains(NBT_ITEM)) {
                 stack = ItemStack.read(data.getCompound(NBT_ITEM));
@@ -47,7 +47,7 @@ public class WailaProvider implements IServerDataProvider<TileEntity>, IComponen
     }
 
     @Override
-    public void appendServerData(CompoundNBT tag, ServerPlayerEntity serverPlayerEntity, World world, TileEntity te) {
+    public void appendServerData(CompoundTag tag, ServerPlayerEntity serverPlayerEntity, World world, TileEntity te) {
         if (te instanceof TileInfChest) {
             TileInfChest chest = (TileInfChest) te;
             tag.put(NBT_ITEM, chest.getStack(1).serializeNBT());
@@ -56,3 +56,4 @@ public class WailaProvider implements IServerDataProvider<TileEntity>, IComponen
     }
 
 }
+*/

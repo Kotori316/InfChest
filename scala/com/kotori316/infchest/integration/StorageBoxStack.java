@@ -3,14 +3,12 @@ package com.kotori316.infchest.integration;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -42,7 +40,7 @@ public class StorageBoxStack {
         if (!Holder.modLoaded || holding.isEmpty()) return false;
         if (isStorageBox(maybeBox)) {
             ItemStack inBox = getItem(maybeBox);
-            return !inBox.isEmpty() && ItemStack.areItemsEqual(holding, inBox) && ItemStack.areItemStackTagsEqual(holding, inBox);
+            return !inBox.isEmpty() && ItemStack.isSame(holding, inBox) && ItemStack.tagMatches(holding, inBox);
         } else {
             return false;
         }
@@ -67,7 +65,7 @@ public class StorageBoxStack {
     public static ItemStack removeAllItems(ItemStack maybeBox) {
         if (isStorageBox(maybeBox)) {
             ItemStack box = maybeBox.copy();
-            box.removeChildTag(KEY_ITEM_DATA);
+            box.removeTagKey(KEY_ITEM_DATA);
             box.getOrCreateTag(); // Storage box should always have tag.
             return box;
         } else {
@@ -75,23 +73,21 @@ public class StorageBoxStack {
         }
     }
 
-    public static boolean moveToStorage(World worldIn, BlockPos pos, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public static boolean moveToStorage(Level worldIn, BlockPos pos, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         if (isStorageBox(stack)) {
-            TileEntity t = worldIn.getTileEntity(pos);
-            if (t instanceof TileInfChest) {
-                TileInfChest chest = (TileInfChest) t;
+            if (worldIn.getBlockEntity(pos) instanceof TileInfChest chest) {
                 if (checkHoldingItem(chest.getStack(1), stack)) {
                     // flag that checks if the item in second slot of inf check can be inserted to storage box.
-                    boolean flag = checkHoldingItem(chest.getStackInSlot(1), stack);
+                    boolean flag = checkHoldingItem(chest.getItem(1), stack);
                     BigInteger need = chest.itemCount().min(BigInteger.valueOf(2_000_000_000L).subtract(getCount(stack)));
                     if (need.compareTo(BigInteger.ZERO) > 0) { // need > 0
                         chest.decrStack(need);
-                        CompoundNBT nbt = stack.getOrCreateTag();
-                        nbt.putInt(KEYSIZE, need.add(getCount(stack)).add(flag ? BigInteger.valueOf(chest.getStackInSlot(1).getCount()) : BigInteger.ZERO).intValueExact());
+                        var nbt = stack.getOrCreateTag();
+                        nbt.putInt(KEYSIZE, need.add(getCount(stack)).add(flag ? BigInteger.valueOf(chest.getItem(1).getCount()) : BigInteger.ZERO).intValueExact());
                         stack.setTag(nbt);
                         if (flag) {
-                            chest.setInventorySlotContents(1, ItemStack.EMPTY);
+                            chest.setItem(1, ItemStack.EMPTY);
                         }
                         return true;
                     }
@@ -103,8 +99,8 @@ public class StorageBoxStack {
 
     private static ItemStack getItem(ItemStack box) {
         if (!Holder.modLoaded) return ItemStack.EMPTY;
-        return Optional.ofNullable(box.getChildTag(KEY_ITEM_DATA))
-            .map(ItemStack::read)
+        return Optional.ofNullable(box.getTagElement(KEY_ITEM_DATA))
+            .map(ItemStack::of)
             .flatMap(s ->
                 Optional.ofNullable(box.getTag())
                     .map(n -> n.getInt(KEYSIZE))

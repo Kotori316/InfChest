@@ -1,5 +1,5 @@
 package com.kotori316.infchest.integration;
-
+/*
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 
@@ -14,3 +14,4 @@ public class TOP {
         }
     }
 }
+*/

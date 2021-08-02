@@ -9,22 +9,24 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.INameable;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.Nameable;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -37,47 +39,46 @@ import com.kotori316.infchest.guis.ContainerInfChest;
 import com.kotori316.infchest.packets.ItemCountMessage;
 import com.kotori316.infchest.packets.PacketHandler;
 
-public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INamedContainerProvider, INameable {
+public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, MenuProvider, Nameable {
 
     private ItemStack holding = ItemStack.EMPTY;
-    private final NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
     private BigInteger count = BigInteger.ZERO;
-    private ITextComponent customName;
+    private Component customName;
     public static final String NBT_ITEM = "item";
     public static final String NBT_COUNT = "count";
     private static final String NBT_CUSTOM_NAME = "custom_name";
-    public static final String NBT_BLOCK_TAG = "BlockEntityTag";
     public static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private final InfItemHandler handler = new InfItemHandler(this);
     private final List<Runnable> updateRunnable = new ArrayList<>();
     private final InsertingHook hook;
 
-    public TileInfChest() {
-        super(InfChest.Register.INF_CHEST_TYPE);
+    public TileInfChest(BlockPos pos, BlockState state) {
+        super(InfChest.Register.INF_CHEST_TYPE, pos, state);
         addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
         this.hook = InsertingHook.getInstance();
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        if (stacksEqual(holding, getStackInSlot(1))) {
-            ItemStack temp = removeStackFromSlot(1);
-            ItemStackHelper.saveAllItems(compound, inventory);
+    public CompoundTag save(CompoundTag compound) {
+        if (stacksEqual(holding, getItem(1))) {
+            ItemStack temp = removeItemNoUpdate(1);
+            ContainerHelper.saveAllItems(compound, inventory);
             compound.putString(NBT_COUNT, count.add(BigInteger.valueOf(temp.getCount())).toString());
             inventory.set(1, temp);
         } else {
             compound.putString(NBT_COUNT, count.toString());
-            ItemStackHelper.saveAllItems(compound, inventory);
+            ContainerHelper.saveAllItems(compound, inventory);
         }
         compound.put(NBT_ITEM, holding.serializeNBT());
-        Optional.ofNullable(customName).map(ITextComponent.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
-        return super.write(compound);
+        Optional.ofNullable(customName).map(Component.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
-        super.read(state, compound);
-        holding = ItemStack.read(compound.getCompound(NBT_ITEM));
+    public void load(CompoundTag compound) {
+        super.load(compound);
+        holding = ItemStack.of(compound.getCompound(NBT_ITEM));
         if (compound.contains(NBT_COUNT)) {
             try {
                 count = new BigDecimal(compound.getString(NBT_COUNT)).toBigIntegerExact();
@@ -89,36 +90,36 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
             count = BigInteger.ZERO;
         }
         if (compound.contains(NBT_CUSTOM_NAME))
-            customName = ITextComponent.Serializer.getComponentFromJson(compound.getString(NBT_CUSTOM_NAME));
-        ItemStackHelper.loadAllItems(compound, inventory);
+            customName = Component.Serializer.fromJson(compound.getString(NBT_CUSTOM_NAME));
+        ContainerHelper.loadAllItems(compound, inventory);
         updateInv();
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         super.onDataPacket(net, pkt);
-//        handleUpdateTag(pkt.getNbtCompound());
+        handleUpdateTag(pkt.getTag());
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(pos, 0, getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, getUpdateTag());
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         return serializeNBT();
     }
 
-    public CompoundNBT getBlockTag() {
-        CompoundNBT nbtTagCompound = serializeNBT();
+    public CompoundTag getBlockTag() {
+        CompoundTag nbtTagCompound = serializeNBT();
         Stream.of("x", "y", "z", "id", "ForgeCaps", "ForgeData").forEach(nbtTagCompound::remove);
         return nbtTagCompound;
     }
 
     @Override
-    public ITextComponent getName() {
-        return hasCustomName() ? customName : new TranslationTextComponent(InfChest.Register.CHEST.getTranslationKey());
+    public Component getName() {
+        return hasCustomName() ? customName : new TranslatableComponent(InfChest.Register.CHEST.getDescriptionId());
     }
 
     @Override
@@ -126,23 +127,23 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
         return customName != null;
     }
 
-    public void setCustomName(ITextComponent name) {
+    public void setCustomName(Component name) {
         this.customName = name;
     }
 
     @Override
-    public ITextComponent getDisplayName() {
+    public Component getDisplayName() {
         return hasCustomName() ? getCustomName() : getName();
     }
 
     @Override
     @Nullable
-    public ITextComponent getCustomName() {
+    public Component getCustomName() {
         return hasCustomName() ? customName : null;
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return 2;
     }
 
@@ -152,40 +153,47 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         return inventory.get(index);
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        return ItemStackHelper.getAndSplit(inventory, index, count);
+    public ItemStack removeItem(int index, int count) {
+        return ContainerHelper.removeItem(inventory, index, count);
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return ItemStackHelper.getAndRemove(inventory, index);
+    public ItemStack removeItemNoUpdate(int index) {
+        return ContainerHelper.takeItem(inventory, index);
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         inventory.set(index, stack);
-        markDirty();
+        setChanged();
     }
 
     @Override
-    public void markDirty() {
-        super.markDirty();
+    public void setChanged() {
+        super.setChanged();
         updateInv();
     }
 
+    @Override
+    public void startOpen(Player player) {
+        if (level != null && !level.isClientSide) {
+            runUpdates();
+        }
+    }
+
     public void updateInv() {
-        ItemStack insert = getStackInSlot(0);
+        ItemStack insert = getItem(0);
         if (!insert.isEmpty()) {
-            if (isItemValidForSlot(0, insert)) {
+            if (canPlaceItem(0, insert)) {
                 addStack(insert);
             }
         }
-        ItemStack out = getStackInSlot(1);
+        ItemStack out = getItem(1);
         // Make sure out item is equal to holding.
         boolean outFlag = out.isEmpty() || stacksEqual(holding, out);
         if (outFlag && out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
@@ -202,7 +210,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
                 inventory.set(1, itemStack); // Don't need to call markDirty() more.
             }
         }
-        if (world != null && !world.isRemote) {
+        if (level != null && !level.isClientSide) {
             runUpdates();
         }
     }
@@ -266,16 +274,16 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        return world != null && world.getTileEntity(getPos()) == this && player.getDistanceSq(getPos().getX(), getPos().getY(), getPos().getZ()) <= 64;
+    public boolean stillValid(Player player) {
+        return level != null && level.getBlockEntity(getBlockPos()) == this && player.distanceToSqr(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()) <= 64;
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean canPlaceItem(int index, ItemStack stack) {
         if (index == 0) {
             Optional<InsertingHook.Hook> hookObject = hook.findHookObject(stack);
-            ItemStack secondStack = getStackInSlot(1);
-            return (holding.isEmpty() && !hookObject.isPresent() && (secondStack.isEmpty() || stacksEqual(secondStack, stack)))
+            ItemStack secondStack = getStack(1);
+            return (holding.isEmpty() && hookObject.isEmpty() && (secondStack.isEmpty() || stacksEqual(secondStack, stack)))
                 || stacksEqual(holding, stack)
                 || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
         }
@@ -283,7 +291,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         inventory.clear();
         holding = ItemStack.EMPTY;
         count = BigInteger.ZERO;
@@ -305,7 +313,7 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     }
 
     private static boolean stacksEqual(ItemStack s1, ItemStack s2) {
-        return ItemStack.areItemsEqual(s1, s2) && ItemStack.areItemStackTagsEqual(s1, s2);
+        return ItemStack.isSame(s1, s2) && ItemStack.tagMatches(s1, s2);
     }
 
     /**
@@ -328,8 +336,8 @@ public class TileInfChest extends TileEntity implements HasInv, IRunUpdates, INa
     public static final String GUI_ID = InfChest.modID + ":gui_" + BlockInfChest.name;
 
     @Override
-    public Container createMenu(int containerID, PlayerInventory inventory, PlayerEntity player) {
-        return new ContainerInfChest(containerID, inventory, pos);
+    public AbstractContainerMenu createMenu(int containerID, Inventory inventory, Player player) {
+        return new ContainerInfChest(containerID, inventory, getBlockPos());
     }
 
 }
