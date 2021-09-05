@@ -1,5 +1,12 @@
+# Version 17.0.0
+2021-08-03
+
+* For 1.17.1
+* No support for other mods.
+
 # Version 3.2
 2021-02-02
+
 * For 1.16.4, 1.16.5
 * Re-added supports for HWYLA, AE2, Storage Box
 
