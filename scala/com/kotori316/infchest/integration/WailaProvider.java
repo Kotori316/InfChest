@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.Component;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.world.World;
 
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -41,7 +41,7 @@ public class WailaProvider implements IServerDataProvider<TileEntity>, IComponen
                 else
                     integer = BigInteger.ZERO;
                 tooltip.add(stack.getDisplayName());
-                tooltip.add(new StringTextComponent(integer.toString()));
+                tooltip.add(new TextComponent(integer.toString()));
             }
         }
     }

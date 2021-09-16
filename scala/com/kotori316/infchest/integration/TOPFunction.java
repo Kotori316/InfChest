@@ -12,7 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.world.World;
 
 import com.kotori316.infchest.InfChest;
@@ -43,7 +43,7 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
                 if (!stack.isEmpty()) {
                     Arrays.asList(
                         stack.getDisplayName(),
-                        new StringTextComponent(chest.itemCount().toString())
+                        new TextComponent(chest.itemCount().toString())
                     ).forEach(probeInfo::text);
                 }
             }
