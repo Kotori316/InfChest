@@ -45,9 +45,7 @@ public class InfChest {
     }
 
     public void preInit(FMLCommonSetupEvent event) {
-//        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
         PacketHandler.init();
-        // TOP.register();
     }
 
     public void clientInit(FMLClientSetupEvent event) {

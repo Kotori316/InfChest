@@ -125,7 +125,8 @@ dependencies {
     // implementation fg.deobf("appeng:appliedenergistics2:8.2.0")
     // implementation fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
     // implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.4-beta-7")
-    // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3119354".toLowerCase())
+    implementation fg.deobf("curse.maven:the-one-probe-245211:3430022")
+    implementation fg.deobf("curse.maven:StorageBox-mod-419839:3430254".toLowerCase())
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
