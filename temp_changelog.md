@@ -1,3 +1,9 @@
+# Version 17.0.1
+2021-10-06
+
+* For 1.17.1
+* Added support for [The One Probe], [Storage Box]
+
 # Version 17.0.0
 2021-08-03
 
@@ -8,7 +14,7 @@
 2021-02-02
 
 * For 1.16.4, 1.16.5
-* Re-added supports for HWYLA, AE2, Storage Box
+* Re-added supports for HWYLA, AE2, [Storage Box]
 
 # Version 3.1
 * For 1.16.2
@@ -28,8 +34,8 @@
 
 # Version 2.0
 * Added support for [HWYLA](https://www.curseforge.com/minecraft/mc-mods/hwyla).
-* Added support for [The One Probe](https://www.curseforge.com/minecraft/mc-mods/the-one-probe).
-* Added support for [Storage Box](https://www.curseforge.com/minecraft/mc-mods/break-all-of-the-same-block-and-more/files/2877188).
+* Added support for [The One Probe].
+* Added support for [Storage Box].
 
 2020/03/23
 
@@ -50,3 +56,6 @@
 # Version 1.5
 
 Update for Minecraft 1.14.4
+
+[Storage Box]: https://www.curseforge.com/minecraft/mc-mods/storagebox-mod
+[The One Probe]: https://www.curseforge.com/minecraft/mc-mods/the-one-probe
