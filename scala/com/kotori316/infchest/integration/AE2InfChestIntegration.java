@@ -23,7 +23,7 @@ import appeng.me.storage.MEMonitorPassThrough;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,7 +51,7 @@ public class AE2InfChestIntegration implements IAEAddon {
     private static final ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "attach_ae2");
 
     @SubscribeEvent
-    public void attachCapability(AttachCapabilitiesEvent<TileEntity> event) {
+    public void attachCapability(AttachCapabilitiesEvent<BlockEntity> event) {
         if (event.getObject() instanceof TileInfChest) {
             event.addCapability(LOCATION, new AE2Capability((TileInfChest) event.getObject(), api));
         }

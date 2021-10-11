@@ -7,23 +7,23 @@ import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerDataProvider;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.util.text.Component;
 import net.minecraft.util.text.TextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.Level;
 
 import com.kotori316.infchest.tiles.TileInfChest;
 
-public class WailaProvider implements IServerDataProvider<TileEntity>, IComponentProvider {
+public class WailaProvider implements IServerDataProvider<BlockEntity>, IComponentProvider {
     private static final String NBT_ITEM = "waila_item";
     private static final String NBT_COUNT = "waila_count";
 
     @Override
     public void appendBody(List<Component> tooltip, IDataAccessor accessor, IPluginConfig config) {
-        TileEntity t = accessor.getTileEntity();
+        BlockEntity t = accessor.getBlockEntity();
         if (t instanceof TileInfChest) {
             CompoundTag data = accessor.getServerData();
             ItemStack stack;
@@ -47,7 +47,7 @@ public class WailaProvider implements IServerDataProvider<TileEntity>, IComponen
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayerEntity serverPlayerEntity, World world, TileEntity te) {
+    public void appendServerData(CompoundTag tag, ServerPlayer serverPlayer, Level world, BlockEntity te) {
         if (te instanceof TileInfChest) {
             TileInfChest chest = (TileInfChest) te;
             tag.put(NBT_ITEM, chest.getStack(1).serializeNBT());

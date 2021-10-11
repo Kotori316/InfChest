@@ -21,7 +21,7 @@ import appeng.me.storage.MEMonitorPassThrough;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -39,7 +39,7 @@ public class AE2Capability implements ICapabilityProvider {
     private static final BigInteger LONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
 
     @SubscribeEvent
-    public static void attachCapability(AttachCapabilitiesEvent<TileEntity> event) {
+    public static void attachCapability(AttachCapabilitiesEvent<BlockEntity> event) {
         if (event.getObject() instanceof TileInfChest) {
             event.addCapability(LOCATION, new AE2Capability((TileInfChest) event.getObject()));
         }
