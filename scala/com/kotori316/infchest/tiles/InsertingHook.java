@@ -56,7 +56,7 @@ public record InsertingHook(List<Hook> hooks) {
 
         @Override
         public BigInteger getCount(ItemStack hookItem) {
-            var tag = hookItem.getTagElement(BlockItem.BLOCK_ENTITY_TAG);
+            var tag = BlockItem.getBlockEntityData(hookItem);
             if (tag == null) {
                 return BigInteger.ZERO;
             }
@@ -83,13 +83,14 @@ public record InsertingHook(List<Hook> hooks) {
 
         @Override
         public ItemStack removeAllItems(ItemStack hookItem) {
-            hookItem.removeTagKey(BlockItem.BLOCK_ENTITY_TAG);
+            // Set empty tag to remove tag.
+            BlockItem.setBlockEntityData(hookItem, InfChest.Register.INF_CHEST_TYPE, new CompoundTag());
             return hookItem;
         }
 
         @Override
         public boolean checkItemAcceptable(ItemStack chestContent, ItemStack hookItem) {
-            var tag = hookItem.getTagElement(BlockItem.BLOCK_ENTITY_TAG);
+            var tag = BlockItem.getBlockEntityData(hookItem);
             if (tag == null) {
                 return false;
             }

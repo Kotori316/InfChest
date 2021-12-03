@@ -1,5 +1,5 @@
 package com.kotori316.infchest.integration;
-
+/*
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -47,4 +47,4 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
             }
         }
     }
-}
+}*/

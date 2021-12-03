@@ -11,40 +11,33 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import com.kotori316.infchest.tiles.TileInfChest;
 
 /**
  * To Client Only
  */
-public class ItemCountMessage {
-    BlockPos pos;
-    ResourceKey<Level> dim;
-    private byte[] bytes;
-    private ItemStack out, holding;
-
-    @SuppressWarnings("unused")
-    //Accessed via reflection
-    public ItemCountMessage() {
-    }
+public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] bytes, ItemStack out, ItemStack holding) {
 
     public ItemCountMessage(TileInfChest chest, BigInteger integer) {
-        pos = chest.getBlockPos();
-        dim = Optional.ofNullable(chest.getLevel()).map(Level::dimension).orElse(Level.OVERWORLD);
-        bytes = integer.toByteArray();
-        out = chest.getItem(1);
-        holding = chest.getStack(1);
+        this(
+            chest.getBlockPos(),
+            Optional.ofNullable(chest.getLevel()).map(Level::dimension).orElse(Level.OVERWORLD),
+            integer.toByteArray(),
+            chest.getItem(1),
+            chest.getStack(1)
+        );
     }
 
-    public static ItemCountMessage fromBytes(FriendlyByteBuf p) {
-        ItemCountMessage message = new ItemCountMessage();
-        message.pos = p.readBlockPos();
-        message.dim = ResourceKey.create(Registry.DIMENSION_REGISTRY, p.readResourceLocation());
-        message.bytes = p.readByteArray();
-        message.out = p.readItem();
-        message.holding = p.readItem();
-        return message;
+    public ItemCountMessage(FriendlyByteBuf p) {
+        this(
+            p.readBlockPos(),
+            ResourceKey.create(Registry.DIMENSION_REGISTRY, p.readResourceLocation()),
+            p.readByteArray(),
+            p.readItem(),
+            p.readItem()
+        );
     }
 
     public void toBytes(FriendlyByteBuf p) {

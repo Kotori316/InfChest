@@ -3,9 +3,9 @@ package com.kotori316.infchest.packets;
 import java.util.function.Predicate;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 import com.kotori316.infchest.InfChest;
 
@@ -18,13 +18,13 @@ public class PacketHandler {
         .simpleChannel();
 
     public static void init() {
-        WRAPPER.registerMessage(0, ItemCountMessage.class, ItemCountMessage::toBytes, ItemCountMessage::fromBytes, ItemCountMessage::onReceive);
+        WRAPPER.registerMessage(0, ItemCountMessage.class, ItemCountMessage::toBytes, ItemCountMessage::new, ItemCountMessage::onReceive);
 //        WRAPPER.registerMessage(ItemCountMessage::onReceive, ItemCountMessage.class, 0, Side.CLIENT);
     }
 
     public static void sendToPoint(ItemCountMessage message) {
         WRAPPER.send(PacketDistributor.NEAR.with(() ->
-                new PacketDistributor.TargetPoint(message.pos.getX(), message.pos.getY(), message.pos.getZ(), 16, message.dim)),
+                new PacketDistributor.TargetPoint(message.pos().getX(), message.pos().getY(), message.pos().getZ(), 16, message.dim())),
             message);
     }
 }

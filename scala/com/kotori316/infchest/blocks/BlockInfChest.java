@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.integration.StorageBoxStack;
@@ -51,7 +51,7 @@ public class BlockInfChest extends BaseEntityBlock {
     }
 
     @Override
-    public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
+    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
         return false;
     }
 
@@ -80,8 +80,8 @@ public class BlockInfChest extends BaseEntityBlock {
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-        ItemStack pickBlock = super.getPickBlock(state, target, world, pos, player);
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        ItemStack pickBlock = super.getCloneItemStack(state, target, world, pos, player);
         saveChestNbtToStack(world.getBlockEntity(pos), pickBlock);
         saveCustomName(world.getBlockEntity(pos), pickBlock);
         return pickBlock;
@@ -99,7 +99,7 @@ public class BlockInfChest extends BaseEntityBlock {
             .filter(TileInfChest.class::isInstance)
             .map(TileInfChest.class::cast)
             .filter(Predicate.not(TileInfChest::isEmpty))
-            .map(TileInfChest::getBlockTag)
-            .ifPresent(tag -> stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, tag));
+            .map(TileInfChest::saveWithoutMetadata)
+            .ifPresent(tag -> stack.addTagElement("BlockEntityTag", tag));
     }
 }

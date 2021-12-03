@@ -48,7 +48,7 @@ final class ItemInfChest extends BlockItem {
     @Override
     protected boolean updateCustomBlockEntityTag(BlockPos pos, Level world, @Nullable Player player, ItemStack stack, BlockState state) {
         if (world.getServer() != null) {
-            CompoundTag tag = stack.getTagElement(BlockItem.BLOCK_ENTITY_TAG);
+            CompoundTag tag = BlockItem.getBlockEntityData(stack);
             BlockEntity tileentity = world.getBlockEntity(pos);
             if (tag != null && tileentity != null) {
                 if (world.isClientSide || !tileentity.onlyOpCanSetNbt() || (player != null && player.canUseGameMasterBlocks())) {
@@ -70,7 +70,7 @@ final class ItemInfChest extends BlockItem {
     @Override
     public void appendHoverText(ItemStack chestStack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(chestStack, worldIn, tooltip, flagIn);
-        CompoundTag n = chestStack.getTagElement(BLOCK_ENTITY_TAG);
+        CompoundTag n = BlockItem.getBlockEntityData(chestStack);
         if (n != null) {
             Optional<ItemStack> stack = Optional.of(ItemStack.of(n.getCompound(TileInfChest.NBT_ITEM)))
                 .filter(InfChest.STACK_NON_EMPTY);

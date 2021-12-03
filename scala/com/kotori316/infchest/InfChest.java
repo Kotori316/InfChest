@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -58,7 +58,7 @@ public class InfChest {
         public static final BlockEntityType<TileInfChest> INF_CHEST_TYPE = BlockEntityType.Builder.of(TileInfChest::new, CHEST).build(DSL.emptyPartType());
         public static final BlockDeque DEQUE = new BlockDeque();
         public static final BlockEntityType<TileDeque> DEQUE_TYPE = BlockEntityType.Builder.of(TileDeque::new, DEQUE).build(DSL.emptyPartType());
-        public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeContainerType.create(ContainerInfChest::create);
+        public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeMenuType.create(ContainerInfChest::create);
         public static final LootItemFunctionType CHEST_FUNCTION = Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
             new LootItemFunctionType(new ContentInfChest.Serializer()));
 

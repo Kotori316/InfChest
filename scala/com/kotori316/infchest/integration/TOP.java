@@ -1,7 +1,6 @@
 package com.kotori316.infchest.integration;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -15,7 +14,7 @@ public class TOP {
     @SubscribeEvent
     public static void register(FMLCommonSetupEvent event) {
         if (ModList.get().isLoaded(TOP_MODID)) {
-            InterModComms.sendTo(InfChest.modID, TOP_MODID, "getTheOneProbe", TOPFunction::new);
+            // InterModComms.sendTo(InfChest.modID, TOP_MODID, "getTheOneProbe", TOPFunction::new);
         }
     }
 }

@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -35,8 +33,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
-import com.kotori316.infchest.packets.ItemCountMessage;
-import com.kotori316.infchest.packets.PacketHandler;
 
 public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, MenuProvider, Nameable {
 
@@ -54,12 +50,18 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
 
     public TileInfChest(BlockPos pos, BlockState state) {
         super(InfChest.Register.INF_CHEST_TYPE, pos, state);
-        addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
+        // addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
         this.hook = InsertingHook.getInstance();
     }
 
     @Override
     public CompoundTag save(CompoundTag compound) {
+        saveAdditional(compound);
+        return super.save(compound);
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag compound) {
         if (stacksEqual(holding, getItem(1))) {
             ItemStack temp = removeItemNoUpdate(1);
             ContainerHelper.saveAllItems(compound, inventory);
@@ -71,7 +73,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         }
         compound.put(NBT_ITEM, holding.serializeNBT());
         Optional.ofNullable(customName).map(Component.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
-        return super.save(compound);
+        super.saveAdditional(compound);
     }
 
     @Override
@@ -95,25 +97,13 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        super.onDataPacket(net, pkt);
-        handleUpdateTag(pkt.getTag());
-    }
-
-    @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return serializeNBT();
-    }
-
-    public CompoundTag getBlockTag() {
-        CompoundTag nbtTagCompound = serializeNBT();
-        Stream.of("x", "y", "z", "id", "ForgeCaps", "ForgeData").forEach(nbtTagCompound::remove);
-        return nbtTagCompound;
+        return saveWithFullMetadata();
     }
 
     @Override

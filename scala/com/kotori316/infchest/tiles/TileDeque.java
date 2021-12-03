@@ -10,21 +10,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.ItemDamage;
-import com.kotori316.infchest.blocks.BlockDeque;
 
 public class TileDeque extends BlockEntity implements HasInv {
 
@@ -41,7 +38,7 @@ public class TileDeque extends BlockEntity implements HasInv {
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-        inventory = compound.getList(NBT_ITEMS, Constants.NBT.TAG_COMPOUND).stream()
+        inventory = compound.getList(NBT_ITEMS, Tag.TAG_COMPOUND).stream()
             .map(CompoundTag.class::cast)
             .map(ItemStack::of)
             .filter(InfChest.STACK_NON_EMPTY)
@@ -56,11 +53,6 @@ public class TileDeque extends BlockEntity implements HasInv {
             .collect(Collectors.toCollection(ListTag::new));
         compound.put(NBT_ITEMS, list1);
         return super.save(compound);
-    }
-
-    public Component getName() {
-        String name = InfChest.modID + ":tile." + BlockDeque.name;
-        return new TranslatableComponent(name);
     }
 
     @Override
