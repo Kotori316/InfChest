@@ -5,11 +5,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,6 +17,7 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -32,7 +31,7 @@ import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
 
-public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, ExtendedScreenHandlerFactory, Nameable, BlockEntityClientSerializable {
+public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, ExtendedScreenHandlerFactory, Nameable {
 
     private ItemStack holding = ItemStack.EMPTY;
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
@@ -48,17 +47,16 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
 
     public TileInfChest(BlockPos pos, BlockState state) {
         super(InfChest.Register.INF_CHEST_TYPE, pos, state);
-        addUpdate(this::sync);
         this.hook = InsertingHook.getInstance();
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound compound) {
+    public void writeNbt(NbtCompound compound) {
         compound.putString(NBT_COUNT, count.toString());
         Inventories.writeNbt(compound, inventory);
         compound.put(NBT_ITEM, holding.writeNbt(new NbtCompound()));
         Optional.ofNullable(customName).map(Text.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
-        return super.writeNbt(compound);
+        super.writeNbt(compound);
     }
 
     @Override
@@ -81,10 +79,14 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
         updateInv();
     }
 
-    public NbtCompound getBlockTag() {
-        NbtCompound nbtTagCompound = writeNbt(new NbtCompound());
-        Stream.of("x", "y", "z", "id", "ForgeCaps", "ForgeData").forEach(nbtTagCompound::remove);
-        return nbtTagCompound;
+    @Override
+    public BlockEntityUpdateS2CPacket toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return this.createNbt();
     }
 
     @Override
@@ -153,7 +155,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
     public void onOpen(PlayerEntity player) {
         HasInv.super.onOpen(player);
         if (world != null && !world.isClient) {
-            sync();
+            markDirty();
         }
     }
 
@@ -313,13 +315,4 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
         buf.writeBlockPos(pos);
     }
 
-    @Override
-    public void fromClientTag(NbtCompound tag) {
-        readNbt(tag);
-    }
-
-    @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
-        return writeNbt(tag);
-    }
 }

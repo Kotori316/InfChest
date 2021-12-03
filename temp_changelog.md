@@ -1,4 +1,4 @@
-# Version 17.0.0-fabric
-2021-06-28
+# Version 18.0-fabric
+2021-12-03
 
-* First release for Minecraft 1.17 with Fabric
+* First release for Minecraft 1.18 with Fabric

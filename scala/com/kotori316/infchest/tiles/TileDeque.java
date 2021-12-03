@@ -11,13 +11,10 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.ItemDamage;
-import com.kotori316.infchest.blocks.BlockDeque;
 
 public class TileDeque extends BlockEntity implements HasInv {
 
@@ -40,18 +37,13 @@ public class TileDeque extends BlockEntity implements HasInv {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound compound) {
+    public void writeNbt(NbtCompound compound) {
         NbtList list1 = inventory.stream()
             .filter(Predicate.not(ItemStack::isEmpty))
             .map(stack -> stack.writeNbt(new NbtCompound()))
             .collect(Collectors.toCollection(NbtList::new));
         compound.put(NBT_ITEMS, list1);
-        return super.writeNbt(compound);
-    }
-
-    public Text getName() {
-        String name = InfChest.modID + ":tile." + BlockDeque.name;
-        return new TranslatableText(name);
+        super.writeNbt(compound);
     }
 
     @Override

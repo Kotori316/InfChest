@@ -16,7 +16,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -54,11 +53,11 @@ final class ItemInfChest extends BlockItem {
     @Override
     protected boolean postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
         if (world.getServer() != null) {
-            var tag = stack.getSubNbt(TileInfChest.NBT_BLOCK_TAG);
+            var tag = BlockItem.getBlockEntityNbt(stack);
             var tileentity = world.getBlockEntity(pos);
             if (tag != null && tileentity != null) {
                 if (world.isClient || !tileentity.copyItemDataRequiresOperator() || (player != null && player.isCreativeLevelTwoOp())) {
-                    var tileNbt = tileentity.writeNbt(new NbtCompound());
+                    var tileNbt = tileentity.createNbt();
                     tileNbt.copyFrom(tag);
                     tileNbt.putInt("x", pos.getX());
                     tileNbt.putInt("y", pos.getY());

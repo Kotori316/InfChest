@@ -88,7 +88,7 @@ public class BlockInfChest extends BlockWithEntity {
             .filter(TileInfChest.class::isInstance)
             .map(TileInfChest.class::cast)
             .filter(Predicate.not(TileInfChest::isEmpty))
-            .map(TileInfChest::getBlockTag)
+            .map(TileInfChest::createNbt)
             .ifPresent(tag -> stack.setSubNbt(TileInfChest.NBT_BLOCK_TAG, tag));
     }
 }
