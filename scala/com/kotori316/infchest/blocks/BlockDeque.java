@@ -54,7 +54,7 @@ public class BlockDeque extends BlockWithEntity {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (world.getBlockEntity(pos) instanceof TileDeque deque) {
             if (!world.isClient) {
-                player.sendMessage(new LiteralText("Items: " + deque.size()), false);
+                player.sendMessage(new LiteralText("Items: " + (deque.size() - 2)), false);
                 return ActionResult.CONSUME;
             } else {
                 return ActionResult.SUCCESS;
