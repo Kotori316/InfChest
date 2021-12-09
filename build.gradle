@@ -103,17 +103,18 @@ repositories {
             it.includeGroup("mcp.mobius.waila")
         }
     }
-    maven { // The One Probe
-        name 'tterrag maven'
-        url "https://maven.tterrag.com/"
-        content {
-            includeGroup("mcjty.theoneprobe")
-        }
-    }
     maven {
         url = "https://www.cursemaven.com"
         content {
             it.includeGroup("curse.maven")
+        }
+    }
+    maven {
+        name = "What The Hell Is That"
+        url = "https://maven.bai.lol"
+        content {
+            it.includeModule("mcp.mobius.waila", "wthit-api")
+            it.includeModule("mcp.mobius.waila", "wthit")
         }
     }
 }
@@ -122,9 +123,9 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18-38.0.16'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
     // implementation fg.deobf("appeng:appliedenergistics2:8.2.0")
-    // implementation fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
-    // implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.4-beta-7")
-    // implementation fg.deobf("curse.maven:the-one-probe-245211:3430022")
+    compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-4.3.1"))
+    runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-4.3.1"))
+    implementation(fg.deobf("curse.maven:the-one-probe-245211:3550084"))
     // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3430254".toLowerCase())
 }
 
