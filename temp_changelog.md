@@ -1,9 +1,19 @@
+# Version 18.1
+
+2021-12-09
+
+* Add support of tooltip mods.
+  * WTHIT
+  * TOP
+
 # Version 18.0
+
 2021-12-03
 
 * For 1.18
 
 # Version 17.0.1
+
 2021-10-06
 
 * For 1.17.1
