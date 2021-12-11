@@ -26,7 +26,7 @@ archivesBaseName = "InfChest"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-static String MappingVersion() { return '1.18' }
+static String MappingVersion() { return '1.18.1' }
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
@@ -120,7 +120,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18-38.0.16'
+    minecraft 'net.minecraftforge:forge:1.18.1-39.0.0'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
     // implementation fg.deobf("appeng:appliedenergistics2:8.2.0")
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-4.3.1"))
@@ -190,7 +190,7 @@ curseforge {
         id = '312222'
         changelogType = 'markdown'
         changelog = new File("temp_changelog.md")
-        addGameVersion '1.18'
+        addGameVersion '1.18.1'
         releaseType = 'release'
         mainArtifact jar
         addArtifact srcJar
