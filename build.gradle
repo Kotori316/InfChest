@@ -191,6 +191,7 @@ curseforge {
         changelogType = 'markdown'
         changelog = new File("temp_changelog.md")
         addGameVersion '1.18.1'
+        addGameVersion 'Forge'
         releaseType = 'release'
         mainArtifact jar
         addArtifact srcJar
