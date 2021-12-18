@@ -7,10 +7,12 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net/' }
         maven { url = "https://plugins.gradle.org/m2/" }
+        maven { url = 'https://maven.parchmentmc.org' }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 plugins {
@@ -18,7 +20,7 @@ plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: "com.matthewprenger.cursegradle"
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 version = getProperty("modVersion")
 group = "com.kotori316"
@@ -26,12 +28,10 @@ archivesBaseName = "InfChest"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-static String MappingVersion() { return '1.18.1' }
-
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: MappingVersion()
+    mappings channel: 'parchment', version: project.parchmentMapping
 
     // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
 
