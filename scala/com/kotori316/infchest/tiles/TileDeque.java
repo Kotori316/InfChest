@@ -46,12 +46,18 @@ public class TileDeque extends BlockEntity implements HasInv {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    protected void saveAdditional(CompoundTag compound) {
         var list1 = inventory.stream()
             .filter(InfChest.STACK_NON_EMPTY)
             .map(ItemStack::serializeNBT)
             .collect(Collectors.toCollection(ListTag::new));
         compound.put(NBT_ITEMS, list1);
+        super.saveAdditional(compound);
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag compound) {
+        saveAdditional(compound);
         return super.save(compound);
     }
 
