@@ -33,6 +33,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
+import com.kotori316.infchest.packets.ItemCountMessage;
+import com.kotori316.infchest.packets.PacketHandler;
 
 public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, MenuProvider, Nameable {
 
@@ -50,7 +52,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
 
     public TileInfChest(BlockPos pos, BlockState state) {
         super(InfChest.Register.INF_CHEST_TYPE, pos, state);
-        // addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
+        addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
         this.hook = InsertingHook.getInstance();
     }
 

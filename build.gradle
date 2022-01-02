@@ -39,10 +39,12 @@ minecraft {
         client {
             workingDirectory project.file('Minecraft')
 
-            property 'mixin.env.disableRefMap', 'true'
-            property "mixin.debug.export", "true"
+            property('mixin.env.remapRefMap', 'true')
+            property('mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg")
+            property("mixin.debug.export", "true")
+            property('forge.logging.console.level', 'debug')
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'REGISTRIES'
+            property('forge.logging.markers', 'REGISTRIES')
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
@@ -58,8 +60,10 @@ minecraft {
         server {
             workingDirectory project.file('run-server')
 
-            property 'mixin.env.disableRefMap', 'true'
-            property "mixin.debug.export", "true"
+            property('mixin.env.remapRefMap', 'true')
+            property('mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg")
+            property("mixin.debug.export", "true")
+            property('forge.logging.console.level', 'debug')
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
@@ -122,7 +126,7 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.18.1-39.0.9'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
-    // implementation fg.deobf("appeng:appliedenergistics2:8.2.0")
+    implementation(fg.deobf("appeng:appliedenergistics2:${project.ae2Version}"))
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-4.3.1"))
     runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-4.3.1"))
     implementation(fg.deobf("curse.maven:the-one-probe-245211:3550084"))

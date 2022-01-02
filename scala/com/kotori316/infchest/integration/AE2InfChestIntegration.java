@@ -1,73 +1,57 @@
 package com.kotori316.infchest.integration;
-/*
-import java.math.BigInteger;
-import java.util.Optional;
 
-import appeng.api.AEAddon;
-import appeng.api.IAEAddon;
-import appeng.api.IAppEngApi;
+import java.math.BigInteger;
+import java.util.Objects;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.MEStorage;
 import appeng.capabilities.Capabilities;
-import appeng.me.helpers.BaseActionSource;
-import appeng.me.storage.MEMonitorPassThrough;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.BlockEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
 
-import static com.kotori316.infchest.tiles.TileInfChest.INT_MAX;
+public class AE2InfChestIntegration {
 
-@AEAddon
-public class AE2InfChestIntegration implements IAEAddon {
-    private IAppEngApi api;
-
-    @Override
-    public void onAPIAvailable(IAppEngApi iAppEngApi) {
-        this.api = iAppEngApi;
-        MinecraftForge.EVENT_BUS.register(this);
+    public static void onAPIAvailable() {
+        if (ModList.get().isLoaded("ae2"))
+            MinecraftForge.EVENT_BUS.register(new AE2InfChestIntegration());
     }
 
     private static final ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "attach_ae2");
 
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<BlockEntity> event) {
-        if (event.getObject() instanceof TileInfChest) {
-            event.addCapability(LOCATION, new AE2Capability((TileInfChest) event.getObject(), api));
+        if (event.getObject() instanceof TileInfChest infChest) {
+            event.addCapability(LOCATION, new AE2Capability(infChest));
         }
     }
 }
 
 class AE2Capability implements ICapabilityProvider {
-    private static final BigInteger LONG_MAX = BigInteger.valueOf(9000000000000000000L);
 
-    private final TileInfChest chest;
-    private final IAppEngApi api;
-    private final LazyOptional<IStorageMonitorableAccessor> accessorLazyOptional = LazyOptional.of(AEInfChestInv::new);
+    private final LazyOptional<IStorageMonitorableAccessor> accessorLazyOptional;
 
-    AE2Capability(TileInfChest chest, IAppEngApi api) {
-        this.chest = chest;
-        this.api = api;
+    AE2Capability(TileInfChest chest) {
+        accessorLazyOptional = LazyOptional.of(() -> new AEInfChestInv(chest));
     }
 
     @Nonnull
@@ -76,108 +60,99 @@ class AE2Capability implements ICapabilityProvider {
         return Capabilities.STORAGE_MONITORABLE_ACCESSOR.orEmpty(cap, accessorLazyOptional.cast());
     }
 
-    class AEInfChestInv implements IMEInventory<IAEItemStack>, IStorageMonitorableAccessor {
-        private final IStorageMonitorable monitorable = new IStorageMonitorable() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> iStorageChannel) {
-                if (iStorageChannel == getChannel()) {
-                    mePassThrough.setInternal(AEInfChestInv.this);
-                    return (IMEMonitor<T>) mePassThrough;
-                } else {
-                    return null;
-                }
-            }
-        };
-        private final MEMonitorPassThrough<IAEItemStack> mePassThrough = new MEMonitorPassThrough<>(null, getChannel());
+}
 
-        AEInfChestInv() {
-            AE2Capability.this.chest.addUpdate(this::postChange);
-        }
+record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorableAccessor {
+    private static final BigInteger LONG_MAX = BigInteger.valueOf(9000000000000000000L);
 
-        @Override
-        public IAEItemStack injectItems(IAEItemStack iaeItemStack, Actionable actionable, IActionSource iActionSource) {
-            ItemStack definition = iaeItemStack.getDefinition();
-            if (chest.isItemValidForSlot(0, definition)) {
-                if (actionable == Actionable.MODULATE) {
-                    // do fill
-                    chest.addStack(definition, BigInteger.valueOf(iaeItemStack.getStackSize()));
-                    chest.markDirty();
-                }
-                return getChannel().createStack(ItemStack.EMPTY);
-            } else {
-                // Not acceptable.
-                return iaeItemStack;
-            }
-        }
+    // IStorageMonitorableAccessor
+    @Override
+    public MEStorage getInventory(IActionSource iActionSource) {
+        return this;
+    }
 
-        @Override
-        public IAEItemStack extractItems(IAEItemStack iaeItemStack, Actionable actionable, IActionSource iActionSource) {
-            ItemStack definition = iaeItemStack.getDefinition();
-            ItemStack holding = chest.getStack();
-            ItemStack out = chest.getStackInSlot(1);
-            BigInteger requestSize = BigInteger.valueOf(iaeItemStack.getStackSize());
-            if (ItemStack.areItemsEqual(holding, definition) && ItemStack.areItemStackTagsEqual(holding, definition)) {
-                BigInteger subs = chest.itemCount().min(requestSize);
-                if (actionable == Actionable.MODULATE) {
-                    // do subtract.
-                    chest.decrStack(subs);
-                    chest.markDirty();
-                }
-                if (subs.compareTo(requestSize) < 0) {
-                    if (ItemStack.areItemsEqual(out, definition) && ItemStack.areItemStackTagsEqual(out, definition)) {
-                        ItemStack decreased;
-                        if (actionable == Actionable.MODULATE) {
-                            decreased = chest.decrStackSize(1, (requestSize.subtract(subs)).min(BigInteger.valueOf(definition.getMaxStackSize())).intValueExact());
-                        } else {
-                            decreased = out.copy();
-                            decreased.setCount((requestSize.subtract(subs)).min(BigInteger.valueOf(decreased.getCount())).intValueExact());
-                        }
-                        subs = subs.add(BigInteger.valueOf(decreased.getCount()));
-                    }
-                }
-                IAEItemStack stack = iaeItemStack.copy();
-                stack.setStackSize(subs.min(LONG_MAX).longValueExact());
-                return stack;
-            } else if (ItemStack.areItemsEqual(out, definition) && ItemStack.areItemStackTagsEqual(out, definition)) {
-                BigInteger subs = BigInteger.valueOf(out.getCount()).min(requestSize);
-                ItemStack decreased;
-                if (actionable == Actionable.MODULATE) {
-                    decreased = chest.decrStackSize(1, subs.min(INT_MAX).intValueExact());
-                } else {
-                    decreased = out.copy();
-                    decreased.setCount(subs.min(BigInteger.valueOf(decreased.getCount())).intValueExact());
-                }
-                return getChannel().createStack(decreased);
-            }
-            return getChannel().createStack(ItemStack.EMPTY);
-        }
+    // MEStorage
 
-        @Override
-        public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> iItemList) {
-            ItemStack inSlot = chest.getStackInSlot(1);
-            Optional.of(chest.getStack()).filter(InfChest.STACK_NON_EMPTY).map(getChannel()::createStack)
-                .map(s -> s.setStackSize(chest.itemCount().min(LONG_MAX.subtract(BigInteger.valueOf(inSlot.getCount()))).longValueExact()))
-                .ifPresent(iItemList::add);
-            Optional.of(inSlot).filter(InfChest.STACK_NON_EMPTY)
-                .map(getChannel()::createStack)
-                .ifPresent(iItemList::add);
-            return iItemList;
-        }
-
-        @Override
-        public IStorageChannel<IAEItemStack> getChannel() {
-            return AE2Capability.this.api.storage().getStorageChannel(IItemStorageChannel.class);
-        }
-
-        @Override
-        public IStorageMonitorable getInventory(IActionSource iActionSource) {
-            return monitorable;
-        }
-
-        private void postChange() {
-            mePassThrough.postChange(mePassThrough, mePassThrough.getStorageList(), new BaseActionSource());
+    @Override
+    public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
+        if (what instanceof AEItemKey itemKey) {
+            return this.chest.canPlaceItem(0, itemKey.toStack());
+        } else {
+            return false;
         }
     }
+
+    @Override
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (!(what instanceof AEItemKey itemKey)) return 0; // Key is not item.
+        var definition = itemKey.toStack();
+        if (!this.chest.canPlaceItem(0, definition)) return 0; // The item is NOT acceptable.
+        if (mode == Actionable.MODULATE) {
+            chest.addStack(definition, BigInteger.valueOf(amount));
+            chest.setChanged();
+        }
+        return amount;
+    }
+
+    @Override
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (!(what instanceof AEItemKey itemKey)) return 0; // Key is not item.
+        var definition = itemKey.toStack();
+        var holding = chest.getStack();
+        var out = chest.getItem(1);
+        if (ItemStack.isSameItemSameTags(definition, holding)) {
+            BigInteger extractCount = BigInteger.valueOf(amount).min(chest.itemCount());
+            if (mode == Actionable.MODULATE) {
+                // do subtract.
+                chest.decrStack(extractCount);
+                chest.setChanged();
+            }
+            if (extractCount.equals(chest.itemCount())) {
+                // The caller requests more items than this chest holds.
+                // Check the output slot and extract from it.
+                if (ItemStack.isSameItemSameTags(definition, out)) {
+                    var extraCount = BigInteger.valueOf(amount).subtract(chest.itemCount()).min(BigInteger.valueOf(out.getCount())).intValueExact();
+                    if (mode == Actionable.MODULATE) {
+                        this.chest.removeItem(1, extraCount);
+                        this.chest.setChanged();
+                    }
+                    return extractCount.longValue() + extraCount;
+                } else {
+                    // There is no extra item to be extracted.
+                    return extractCount.longValue();
+                }
+            } else {
+                // The demand is satisfied.
+                return extractCount.longValue();
+            }
+        } else if (ItemStack.isSameItemSameTags(definition, out)) {
+            int extractCount = (int) Math.min(out.getCount(), amount);
+            if (mode == Actionable.MODULATE) {
+                this.chest.removeItem(1, extractCount);
+                this.chest.setChanged();
+            }
+            return extractCount;
+        } else {
+            return 0; // This chest doesn't contain the item.
+        }
+    }
+
+    @Override
+    public void getAvailableStacks(KeyCounter out) {
+        var inSlot = this.chest.getItem(1);
+        if (!inSlot.isEmpty()) {
+            out.add(Objects.requireNonNull(AEItemKey.of(inSlot)), inSlot.getCount());
+        }
+        var holding = this.chest.getStack();
+        if (!holding.isEmpty()) {
+            var count = LONG_MAX.min(this.chest.itemCount());
+            out.add(Objects.requireNonNull(AEItemKey.of(holding)), count.longValue());
+        }
+    }
+
+    @Override
+    public Component getDescription() {
+        return this.chest.getName();
+    }
 }
-*/
+
