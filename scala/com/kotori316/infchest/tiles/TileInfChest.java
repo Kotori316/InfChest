@@ -57,12 +57,6 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        saveAdditional(compound);
-        return super.save(compound);
-    }
-
-    @Override
     protected void saveAdditional(CompoundTag compound) {
         if (stacksEqual(holding, getItem(1))) {
             ItemStack temp = removeItemNoUpdate(1);

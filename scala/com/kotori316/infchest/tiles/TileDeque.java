@@ -56,12 +56,6 @@ public class TileDeque extends BlockEntity implements HasInv {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        saveAdditional(compound);
-        return super.save(compound);
-    }
-
-    @Override
     public int getContainerSize() {
         return Math.min(inventory.size() + 1, MAX_COUNT);
     }
