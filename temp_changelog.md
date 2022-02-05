@@ -1,3 +1,9 @@
+# Version 18.4
+
+2022-02-05
+
+* Fixed NoSuchMethodError.
+
 # Version 18.3
 
 2022-01-02
