@@ -122,8 +122,8 @@ curseforge {
     }
     options {
         curseGradleOptions.debug = false
-        javaVersionAutoDetect = false
-        forgeGradleIntegration = false
+        curseGradleOptions.javaVersionAutoDetect = false
+        curseGradleOptions.forgeGradleIntegration = false
     }
 }
 
