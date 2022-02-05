@@ -2,7 +2,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Optional
 
 plugins {
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
@@ -30,10 +29,9 @@ java {
 
 loom {
     runs {
-        it.configure {
-            client {
-                runDir = "Minecraft"
-            }
+        client {
+            configName = "Client"
+            runDir = "Minecraft"
         }
     }
 }
@@ -80,6 +78,11 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
+        transitive(false)
+    }
+    //noinspection SpellCheckingInspection
+    modRuntimeOnly("teamreborn:energy:2.2.0") // For AE2
 }
 
 jar {
@@ -128,15 +131,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = "InfChest".toLowerCase()
-            artifact sourcesJar {
-                archiveClassifier.set('sources')
-                archiveExtension.set('jar')
-            }
-            artifact jar {
-                archiveClassifier.set('deobf')
-                archiveExtension.set('jar')
-            }
-            artifact remapJar
+            from components.java
         }
     }
 }
@@ -153,7 +148,7 @@ task checkOutput() {
 task copyToDrive(type: Copy, dependsOn: "build") {
     def PATH_NAME = "drive_path"
     from(remapJar.getArchiveFile())
-    into(file(Optional.ofNullable(System.getenv(PATH_NAME)).orElse(".")))
+    into(file(java.util.Optional.ofNullable(System.getenv(PATH_NAME)).orElse(".")))
     onlyIf {
         System.getenv(PATH_NAME) != null &&
                 Files.exists(Paths.get(System.getenv(PATH_NAME)))
