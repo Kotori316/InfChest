@@ -68,6 +68,14 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev/"
     }
+    maven {
+        name = "What The Hell Is That"
+        url = "https://maven.bai.lol"
+        content {
+            it.includeVersion("mcp.mobius.waila", "wthit-api", "fabric-${project.wthit_version}")
+            it.includeVersion("mcp.mobius.waila", "wthit", "fabric-${project.wthit_version}")
+        }
+    }
 }
 
 dependencies {
@@ -83,6 +91,8 @@ dependencies {
     }
     //noinspection SpellCheckingInspection
     modRuntimeOnly("teamreborn:energy:2.2.0") // For AE2
+    modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}")
+    modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_version}")
 }
 
 jar {
