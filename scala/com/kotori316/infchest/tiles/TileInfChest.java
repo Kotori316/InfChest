@@ -30,6 +30,8 @@ import org.jetbrains.annotations.Nullable;
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
+import com.kotori316.infchest.packets.ItemCountMessage;
+import com.kotori316.infchest.packets.PacketHandler;
 
 public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, ExtendedScreenHandlerFactory, Nameable {
 
@@ -151,11 +153,32 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
         updateInv();
     }
 
+    private record MessageSender(ServerPlayerEntity player, TileInfChest chest) implements Runnable {
+        @Override
+        public void run() {
+            PacketHandler.sendToClientPlayer(new ItemCountMessage(chest, chest.itemCount()), player);
+        }
+
+        boolean playerEqual(PlayerEntity player) {
+            return this.player.getGameProfile().getId().equals(player.getGameProfile().getId());
+        }
+    }
+
     @Override
     public void onOpen(PlayerEntity player) {
         HasInv.super.onOpen(player);
-        if (world != null && !world.isClient) {
-            markDirty();
+        if (world != null && !world.isClient && player instanceof ServerPlayerEntity) {
+            var messageSender = new MessageSender((ServerPlayerEntity) player, this);
+            this.updateRunnable.add(messageSender);
+            messageSender.run();
+        }
+    }
+
+    @Override
+    public void onClose(PlayerEntity player) {
+        HasInv.super.onClose(player);
+        if (world != null && !world.isClient && player instanceof ServerPlayerEntity) {
+            this.updateRunnable.removeIf(r -> (r instanceof MessageSender m) && m.playerEqual(player));
         }
     }
 

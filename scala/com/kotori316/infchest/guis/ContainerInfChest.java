@@ -69,6 +69,12 @@ public class ContainerInfChest extends ScreenHandler {
         return ItemStack.EMPTY;
     }
 
+    @Override
+    public void close(PlayerEntity player) {
+        super.close(player);
+        this.infChest.onClose(player);
+    }
+
     private static class LimitSlot extends Slot {
 
         LimitSlot(Inventory inventoryIn, int index, int xPosition, int yPosition) {
