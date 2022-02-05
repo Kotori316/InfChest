@@ -21,6 +21,9 @@
     ],
     "client": [
       "com.kotori316.infchest.InfChestClient"
+    ],
+    "ae2": [
+      "com.kotori316.infchest.integration.AE2InfChestIntegration"
     ]
   },
   "depends": {
