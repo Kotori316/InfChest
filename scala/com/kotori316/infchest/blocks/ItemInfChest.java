@@ -52,7 +52,7 @@ final class ItemInfChest extends BlockItem {
             BlockEntity tileentity = world.getBlockEntity(pos);
             if (tag != null && tileentity != null) {
                 if (world.isClientSide || !tileentity.onlyOpCanSetNbt() || (player != null && player.canUseGameMasterBlocks())) {
-                    CompoundTag tileNbt = tileentity.save(new CompoundTag());
+                    CompoundTag tileNbt = tileentity.saveWithoutMetadata();
                     tileNbt.merge(tag);
                     tileNbt.putInt("x", pos.getX());
                     tileNbt.putInt("y", pos.getY());
