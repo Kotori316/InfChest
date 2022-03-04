@@ -26,7 +26,7 @@ public class StorageBoxStack {
 
     @ObjectHolder(modId)
     private static class Holder {
-        public static final Item storagebox = new Item(new Item.Properties());
+        public static Item storagebox = null;
         public static final boolean modLoaded = ModList.get().isLoaded(modId);
     }
 

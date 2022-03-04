@@ -54,7 +54,6 @@ public class InfChest {
         MenuScreens.register(Register.INF_CHEST_CONTAINER_TYPE, GuiInfChest::new);
     }
 
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class Register {
         public static final BlockInfChest CHEST = new BlockInfChest();
         public static final BlockEntityType<TileInfChest> INF_CHEST_TYPE = BlockEntityType.Builder.of(TileInfChest::new, CHEST).build(DSL.emptyPartType());
@@ -63,26 +62,30 @@ public class InfChest {
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeMenuType.create(ContainerInfChest::create);
         public static final LootItemFunctionType CHEST_FUNCTION = Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
             new LootItemFunctionType(new ContentInfChest.Serializer()));
+    }
+
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class EventHandlers {
 
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
-            event.getRegistry().registerAll(CHEST, DEQUE);
+            event.getRegistry().registerAll(Register.CHEST, Register.DEQUE);
         }
 
         @SubscribeEvent
         public static void registerItem(RegistryEvent.Register<Item> event) {
-            event.getRegistry().registerAll(CHEST.itemBlock, DEQUE.itemBlock);
+            event.getRegistry().registerAll(Register.CHEST.itemBlock, Register.DEQUE.itemBlock);
         }
 
         @SubscribeEvent
         public static void registerTiles(RegistryEvent.Register<BlockEntityType<?>> event) {
-            event.getRegistry().register(INF_CHEST_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockInfChest.name)));
-            event.getRegistry().register(DEQUE_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockDeque.name)));
+            event.getRegistry().register(Register.INF_CHEST_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockInfChest.name)));
+            event.getRegistry().register(Register.DEQUE_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockDeque.name)));
         }
 
         @SubscribeEvent
         public static void registerContainer(RegistryEvent.Register<MenuType<?>> event) {
-            event.getRegistry().register(INF_CHEST_CONTAINER_TYPE.setRegistryName(new ResourceLocation(TileInfChest.GUI_ID)));
+            event.getRegistry().register(Register.INF_CHEST_CONTAINER_TYPE.setRegistryName(new ResourceLocation(TileInfChest.GUI_ID)));
         }
     }
 
