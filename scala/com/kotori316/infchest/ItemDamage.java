@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public final record ItemDamage(Item item, @Nullable CompoundTag compound) {
+public record ItemDamage(Item item, @Nullable CompoundTag compound) {
 
     public ItemDamage(ItemStack stack) {
         this(stack.getItem(), stack.getTag());
