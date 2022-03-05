@@ -5,15 +5,14 @@ import java.math.BigInteger;
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerAccessor;
 import mcp.mobius.waila.api.IServerDataProvider;
 import mcp.mobius.waila.api.ITooltip;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
-import net.minecraft.world.World;
 
 import com.kotori316.infchest.tiles.TileInfChest;
 
@@ -51,14 +50,15 @@ public class WailaProvider implements IServerDataProvider<BlockEntity>, IBlockCo
                     integer = new BigInteger(data.getString(TileInfChest.NBT_COUNT)).add(BigInteger.valueOf(outputItem));
                 else
                     integer = BigInteger.ZERO;
-                tooltip.add(stack.getName());
-                tooltip.add(new LiteralText(integer.toString()));
+                tooltip.addLine(stack.getName());
+                tooltip.addLine(new LiteralText(integer.toString()));
             }
         }
     }
 
     @Override
-    public void appendServerData(NbtCompound tag, ServerPlayerEntity serverPlayer, World world, BlockEntity te) {
+    public void appendServerData(NbtCompound tag, IServerAccessor<BlockEntity> accessor, IPluginConfig config) {
+        var te = accessor.getTarget();
         if (te instanceof TileInfChest chest) {
             tag.put(NBT_ITEM, chest.getStackWithAmount(1).writeNbt(new NbtCompound())); // Holding item
             tag.putByteArray(NBT_COUNT, chest.itemCount().toByteArray()); // Item count
