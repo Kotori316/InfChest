@@ -86,7 +86,8 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
+    // FIXME wait until AE2 supports 1.18.2
+    modCompileOnly("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
         transitive(false)
     }
     //noinspection SpellCheckingInspection
