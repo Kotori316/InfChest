@@ -117,7 +117,7 @@ curseforge {
         changelogType = 'markdown'
         changelog = file("temp_changelog.md")
         addGameVersion 'Fabric'
-        addGameVersion '1.18.1'
+        addGameVersion project.minecraft_version
         releaseType = 'beta'
         mainArtifact remapJar
     }
