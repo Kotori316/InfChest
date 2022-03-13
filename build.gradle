@@ -31,8 +31,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    // mappings channel: 'parchment', version: project.parchmentMapping
-    mappings channel: 'official', version: (project.minecraftVersion as String)
+    mappings channel: 'parchment', version: ((project.parchmentMapping + "-" + project.minecraftVersion) as String)
+    // mappings channel: 'official', version: (project.minecraftVersion as String)
 
     // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
 
@@ -125,7 +125,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.0.2'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.0.13'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
     implementation(fg.deobf("appeng:appliedenergistics2:${project.ae2Version}"))
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-4.3.1"))
