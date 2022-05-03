@@ -125,7 +125,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.14'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
     implementation(fg.deobf("appeng:appliedenergistics2:${project.ae2Version}"))
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-4.3.1"))
