@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -30,7 +30,6 @@ final class ItemInfChest extends BlockItem {
 
     ItemInfChest(Block block) {
         super(block, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
-        setRegistryName(InfChest.modID, BlockInfChest.name);
     }
 
     @Override
@@ -75,9 +74,9 @@ final class ItemInfChest extends BlockItem {
             Optional<ItemStack> stack = Optional.of(ItemStack.of(n.getCompound(TileInfChest.NBT_ITEM)))
                 .filter(InfChest.STACK_NON_EMPTY);
             stack.map(ItemStack::getItem)
-                .map(Item::getRegistryName)
+                .map(ForgeRegistries.ITEMS::getKey)
                 .map(ResourceLocation::toString)
-                .map(TextComponent::new)
+                .map(Component::literal)
                 .ifPresent(tooltip::add);
             stack.map(ItemStack::getDisplayName)
                 .ifPresent(tooltip::add);
@@ -89,6 +88,6 @@ final class ItemInfChest extends BlockItem {
     }
 
     private static Component addPostfix(String s) {
-        return new TextComponent(s + " items");
+        return Component.literal(s + " items");
     }
 }

@@ -24,8 +24,8 @@ public class StorageBoxStack {
     private static final String KEYSIZE = "StorageSize";
     private static final String KEY_ITEM_DATA = "StorageItemData";
 
-    @ObjectHolder(modId)
     private static class Holder {
+        @ObjectHolder(registryName = "minecraft:item", value = modId + ":storagebox")
         public static Item storagebox = null;
         public static final boolean modLoaded = ModList.get().isLoaded(modId);
     }

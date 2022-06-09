@@ -36,7 +36,6 @@ public class BlockInfChest extends BaseEntityBlock {
 
     public BlockInfChest() {
         super(Block.Properties.of(Material.METAL).strength(1.0f));
-        setRegistryName(InfChest.modID, name);
         itemBlock = new ItemInfChest(this);
     }
 
@@ -46,6 +45,7 @@ public class BlockInfChest extends BaseEntityBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }

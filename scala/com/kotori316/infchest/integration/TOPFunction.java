@@ -8,7 +8,7 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +41,7 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
                 if (!stack.isEmpty()) {
                     Arrays.asList(
                         stack.getDisplayName(),
-                        new TextComponent(chest.itemCount().toString())
+                        Component.literal(chest.itemCount().toString())
                     ).forEach(probeInfo::text);
                 }
             }

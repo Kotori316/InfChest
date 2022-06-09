@@ -8,7 +8,7 @@ import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerDataProvider;
 import mcp.mobius.waila.api.ITooltip;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -40,7 +40,7 @@ public class WailaProvider implements IServerDataProvider<BlockEntity>, IBlockCo
                 else
                     integer = BigInteger.ZERO;
                 tooltip.add(stack.getDisplayName());
-                tooltip.add(new TextComponent(integer.toString()));
+                tooltip.add(Component.literal(integer.toString()));
             }
         }
     }

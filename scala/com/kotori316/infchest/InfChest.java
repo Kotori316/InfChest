@@ -13,12 +13,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,24 +68,30 @@ public class InfChest {
     public static class EventHandlers {
 
         @SubscribeEvent
-        public static void registerBlocks(RegistryEvent.Register<Block> event) {
-            event.getRegistry().registerAll(Register.CHEST, Register.DEQUE);
+        public static void register(RegisterEvent event) {
+            event.register(Registry.BLOCK_REGISTRY, EventHandlers::registerBlock);
+            event.register(Registry.ITEM_REGISTRY, EventHandlers::registerItem);
+            event.register(Registry.BLOCK_ENTITY_TYPE_REGISTRY, EventHandlers::registerTile);
+            event.register(Registry.MENU_REGISTRY, EventHandlers::registerContainer);
         }
 
-        @SubscribeEvent
-        public static void registerItem(RegistryEvent.Register<Item> event) {
-            event.getRegistry().registerAll(Register.CHEST.itemBlock, Register.DEQUE.itemBlock);
+        public static void registerBlock(RegisterEvent.RegisterHelper<Block> event) {
+            event.register(new ResourceLocation(InfChest.modID, BlockInfChest.name), Register.CHEST);
+            event.register(new ResourceLocation(InfChest.modID, BlockDeque.name), Register.DEQUE);
         }
 
-        @SubscribeEvent
-        public static void registerTiles(RegistryEvent.Register<BlockEntityType<?>> event) {
-            event.getRegistry().register(Register.INF_CHEST_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockInfChest.name)));
-            event.getRegistry().register(Register.DEQUE_TYPE.setRegistryName(new ResourceLocation(modID, "tile." + BlockDeque.name)));
+        public static void registerItem(RegisterEvent.RegisterHelper<Item> event) {
+            event.register(new ResourceLocation(InfChest.modID, BlockInfChest.name), Register.CHEST.itemBlock);
+            event.register(new ResourceLocation(InfChest.modID, BlockDeque.name), Register.DEQUE.itemBlock);
         }
 
-        @SubscribeEvent
-        public static void registerContainer(RegistryEvent.Register<MenuType<?>> event) {
-            event.getRegistry().register(Register.INF_CHEST_CONTAINER_TYPE.setRegistryName(new ResourceLocation(TileInfChest.GUI_ID)));
+        public static void registerTile(RegisterEvent.RegisterHelper<BlockEntityType<?>> event) {
+            event.register(new ResourceLocation(modID, "tile." + BlockInfChest.name), Register.INF_CHEST_TYPE);
+            event.register(new ResourceLocation(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
+        }
+
+        public static void registerContainer(RegisterEvent.RegisterHelper<MenuType<?>> event) {
+            event.register(new ResourceLocation(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
         }
     }
 

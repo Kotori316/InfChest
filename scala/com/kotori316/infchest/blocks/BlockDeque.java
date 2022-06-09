@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -32,9 +31,7 @@ public class BlockDeque extends BaseEntityBlock {
 
     public BlockDeque() {
         super(Block.Properties.of(Material.METAL).strength(1.0f));
-        setRegistryName(InfChest.modID, name);
         itemBlock = new BlockItem(this, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
-        itemBlock.setRegistryName(InfChest.modID, name);
     }
 
     @Override
@@ -43,6 +40,7 @@ public class BlockDeque extends BaseEntityBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
@@ -66,8 +64,8 @@ public class BlockDeque extends BaseEntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TextComponent("Use as First-In-First-Out Queue."));
-        tooltip.add(new TextComponent("This block can hold 1 million items."));
+        tooltip.add(Component.literal("Use as First-In-First-Out Queue."));
+        tooltip.add(Component.literal("This block can hold 1 million items."));
     }
 
 }
