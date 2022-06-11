@@ -3,10 +3,9 @@ package com.kotori316.infchest;
 import com.mojang.datafixers.DSL;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import org.apache.logging.log4j.LogManager;
@@ -33,6 +32,7 @@ public class InfChest implements ModInitializer {
         Registry.register(Registry.BLOCK_ENTITY_TYPE, new ResourceLocation(modID, "tile." + BlockInfChest.name), Register.INF_CHEST_TYPE);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, new ResourceLocation(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
         Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION, Register.CHEST_FUNCTION);
+        Registry.register(Registry.MENU, new ResourceLocation(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
     }
 
     public static class Register {
@@ -40,7 +40,7 @@ public class InfChest implements ModInitializer {
         public static final BlockDeque DEQUE = new BlockDeque();
         public static final BlockEntityType<TileInfChest> INF_CHEST_TYPE = FabricBlockEntityTypeBuilder.create(TileInfChest::new, CHEST).build(DSL.emptyPartType());
         public static final BlockEntityType<TileDeque> DEQUE_TYPE = FabricBlockEntityTypeBuilder.create(TileDeque::new, DEQUE).build(DSL.emptyPartType());
-        public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = ScreenHandlerRegistry.registerExtended(new ResourceLocation(TileInfChest.GUI_ID), ContainerInfChest::create);
+        public static final ExtendedScreenHandlerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(ContainerInfChest::create);
         public static final LootItemFunctionType CHEST_FUNCTION = new LootItemFunctionType(new ContentInfChest.Serializer());
     }
 
