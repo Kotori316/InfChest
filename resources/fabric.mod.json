@@ -24,6 +24,9 @@
     ],
     "ae2": [
       "com.kotori316.infchest.integration.AE2InfChestIntegration"
+    ],
+    "jade": [
+      "com.kotori316.infchest.integration.InfChestJadePlugin"
     ]
   },
   "depends": {
@@ -35,7 +38,7 @@
     "waila:plugins": [
       {
         "id": "infchest:wthit_plugin",
-        "initializer": "com.kotori316.infchest.integration.Waila"
+        "initializer": "com.kotori316.infchest.integration.InfChestWthitPlugin"
       }
     ]
   }
