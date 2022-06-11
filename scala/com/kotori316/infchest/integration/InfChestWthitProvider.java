@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import com.kotori316.infchest.tiles.TileInfChest;
 
-public class WailaProvider implements IServerDataProvider<BlockEntity>, IBlockComponentProvider {
+public class InfChestWthitProvider implements IServerDataProvider<BlockEntity>, IBlockComponentProvider {
     private static final String NBT_ITEM = "waila_item";
     private static final String NBT_COUNT = "waila_count";
     private static final String NBT_OUTPUT = "waila_output";

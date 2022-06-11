@@ -7,11 +7,11 @@ import mcp.mobius.waila.api.TooltipPosition;
 import com.kotori316.infchest.tiles.TileInfChest;
 
 @SuppressWarnings("unused")
-public class Waila implements IWailaPlugin {
+public class InfChestWthitPlugin implements IWailaPlugin {
 
     @Override
     public void register(IRegistrar registrar) {
-        WailaProvider provider = new WailaProvider();
+        InfChestWthitProvider provider = new InfChestWthitProvider();
         registrar.addComponent(provider, TooltipPosition.BODY, TileInfChest.class);
         registrar.addBlockData(provider, TileInfChest.class);
     }
