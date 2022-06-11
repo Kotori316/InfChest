@@ -2,26 +2,29 @@ package com.kotori316.infchest.integration;
 
 import java.math.BigInteger;
 
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IBlockComponentProvider;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.IServerDataProvider;
-import mcp.mobius.waila.api.ITooltip;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.IServerDataProvider;
+import snownee.jade.api.ITooltip;
+import snownee.jade.api.TooltipPosition;
+import snownee.jade.api.config.IPluginConfig;
 
+import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
 
-public class WailaProvider implements IServerDataProvider<BlockEntity>, IBlockComponentProvider {
-    private static final String NBT_ITEM = "waila_item";
-    private static final String NBT_COUNT = "waila_count";
+public class InfChestJadeProvider implements IServerDataProvider<BlockEntity>, IBlockComponentProvider {
+    private static final String NBT_ITEM = "jade_item";
+    private static final String NBT_COUNT = "jade_count";
 
     @Override
-    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         BlockEntity t = accessor.getBlockEntity();
         if (t instanceof TileInfChest) {
             CompoundTag data = accessor.getServerData();
@@ -46,11 +49,20 @@ public class WailaProvider implements IServerDataProvider<BlockEntity>, IBlockCo
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayer serverPlayer, Level world, BlockEntity te) {
+    public void appendServerData(CompoundTag tag, ServerPlayer serverPlayer, Level world, BlockEntity te, boolean b) {
         if (te instanceof TileInfChest chest) {
             tag.put(NBT_ITEM, chest.getStack(1).serializeNBT());
             tag.putByteArray(NBT_COUNT, chest.itemCount().toByteArray());
         }
     }
 
+    @Override
+    public ResourceLocation getUid() {
+        return new ResourceLocation(InfChest.modID, "jade_plugin");
+    }
+
+    @Override
+    public int getDefaultPriority() {
+        return TooltipPosition.BODY;
+    }
 }
