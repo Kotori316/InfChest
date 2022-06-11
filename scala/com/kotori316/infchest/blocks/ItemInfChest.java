@@ -7,22 +7,21 @@ import java.util.function.Predicate;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -30,15 +29,15 @@ import com.kotori316.infchest.tiles.TileInfChest;
 final class ItemInfChest extends BlockItem {
 
     ItemInfChest(Block block) {
-        super(block, new Item.Settings().group(ItemGroup.DECORATIONS));
+        super(block, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
     }
 
     @Override
-    public ActionResult place(ItemPlacementContext context) {
-        if (Optional.ofNullable(context.getPlayer()).map(PlayerEntity::isCreative).orElse(Boolean.FALSE)) {
-            var size = context.getStack().getCount();
+    public InteractionResult place(BlockPlaceContext context) {
+        if (Optional.ofNullable(context.getPlayer()).map(Player::isCreative).orElse(Boolean.FALSE)) {
+            var size = context.getItemInHand().getCount();
             var result = super.place(context);
-            context.getStack().setCount(size);
+            context.getItemInHand().setCount(size);
             return result;
         } else {
             return super.place(context);
@@ -46,25 +45,25 @@ final class ItemInfChest extends BlockItem {
     }
 
     @Override
-    protected boolean place(ItemPlacementContext context, BlockState state) {
-        return super.place(context, state);
+    protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
+        return super.placeBlock(context, state);
     }
 
     @Override
-    protected boolean postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
+    protected boolean updateCustomBlockEntityTag(BlockPos pos, Level world, @Nullable Player player, ItemStack stack, BlockState state) {
         if (world.getServer() != null) {
-            var tag = BlockItem.getBlockEntityNbt(stack);
+            var tag = BlockItem.getBlockEntityData(stack);
             var tileentity = world.getBlockEntity(pos);
             if (tag != null && tileentity != null) {
-                if (world.isClient || !tileentity.copyItemDataRequiresOperator() || (player != null && player.isCreativeLevelTwoOp())) {
-                    var tileNbt = tileentity.createNbt();
-                    tileNbt.copyFrom(tag);
+                if (world.isClientSide || !tileentity.onlyOpCanSetNbt() || (player != null && player.canUseGameMasterBlocks())) {
+                    var tileNbt = tileentity.saveWithoutMetadata();
+                    tileNbt.merge(tag);
                     tileNbt.putInt("x", pos.getX());
                     tileNbt.putInt("y", pos.getY());
                     tileNbt.putInt("z", pos.getZ());
 
-                    tileentity.readNbt(tileNbt);
-                    tileentity.markDirty();
+                    tileentity.load(tileNbt);
+                    tileentity.setChanged();
                     return true;
                 }
             }
@@ -74,18 +73,18 @@ final class ItemInfChest extends BlockItem {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendTooltip(ItemStack chestStack, @Nullable World worldIn, List<Text> tooltip, TooltipContext flagIn) {
-        super.appendTooltip(chestStack, worldIn, tooltip, flagIn);
-        var n = chestStack.getSubNbt(TileInfChest.NBT_BLOCK_TAG);
+    public void appendHoverText(ItemStack chestStack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(chestStack, worldIn, tooltip, flagIn);
+        var n = chestStack.getTagElement(TileInfChest.NBT_BLOCK_TAG);
         if (n != null) {
-            var stack = Optional.of(ItemStack.fromNbt(n.getCompound(TileInfChest.NBT_ITEM)))
+            var stack = Optional.of(ItemStack.of(n.getCompound(TileInfChest.NBT_ITEM)))
                 .filter(Predicate.not(ItemStack::isEmpty));
             stack.map(ItemStack::getItem)
-                .map(Registry.ITEM::getId)
-                .map(Identifier::toString)
-                .map(LiteralText::new)
+                .map(Registry.ITEM::getKey)
+                .map(ResourceLocation::toString)
+                .map(Component::literal)
                 .ifPresent(tooltip::add);
-            stack.map(ItemStack::getName)
+            stack.map(ItemStack::getHoverName)
                 .ifPresent(tooltip::add);
             Optional.of(n.getString(TileInfChest.NBT_COUNT))
                 .filter(Predicate.not(String::isEmpty))
@@ -95,7 +94,7 @@ final class ItemInfChest extends BlockItem {
         }
     }
 
-    private static Text addPostfix(String s) {
-        return new LiteralText(s + " items");
+    private static Component addPostfix(String s) {
+        return Component.literal(s + " items");
     }
 }

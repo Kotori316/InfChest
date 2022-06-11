@@ -4,13 +4,13 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -18,47 +18,47 @@ import com.kotori316.infchest.tiles.TileInfChest;
 /**
  * To Client Only
  */
-public record ItemCountMessage(BlockPos pos, RegistryKey<World> dim, byte[] bytes, ItemStack out, ItemStack holding) {
-    public static final Identifier NAME = new Identifier(InfChest.modID, "item_count_message");
+public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] bytes, ItemStack out, ItemStack holding) {
+    public static final ResourceLocation NAME = new ResourceLocation(InfChest.modID, "item_count_message");
 
     public ItemCountMessage(TileInfChest chest, BigInteger integer) {
         this(
-            chest.getPos(),
-            Optional.ofNullable(chest.getWorld()).map(World::getRegistryKey).orElse(World.OVERWORLD),
+            chest.getBlockPos(),
+            Optional.ofNullable(chest.getLevel()).map(Level::dimension).orElse(Level.OVERWORLD),
             integer.toByteArray(),
-            chest.getStack(1),
+            chest.getItem(1),
             chest.getStackWithAmount(1)
         );
     }
 
-    public ItemCountMessage(PacketByteBuf p) {
+    public ItemCountMessage(FriendlyByteBuf p) {
         this(
             p.readBlockPos(),
-            RegistryKey.of(Registry.WORLD_KEY, p.readIdentifier()),
+            ResourceKey.create(Registry.DIMENSION_REGISTRY, p.readResourceLocation()),
             p.readByteArray(),
-            p.readItemStack(),
-            p.readItemStack()
+            p.readItem(),
+            p.readItem()
         );
     }
 
-    public void toBytes(PacketByteBuf p) {
-        p.writeBlockPos(pos).writeIdentifier(dim.getValue());
-        p.writeByteArray(bytes).writeItemStack(out).writeItemStack(holding);
+    public void toBytes(FriendlyByteBuf p) {
+        p.writeBlockPos(pos).writeResourceLocation(dim.location());
+        p.writeByteArray(bytes).writeItem(out).writeItem(holding);
     }
 
-    public Identifier getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return NAME;
     }
 
     static class HandlerHolder {
         static final ClientPlayNetworking.PlayChannelHandler HANDLER = (client, handler1, buf, responseSender) -> {
             var message = new ItemCountMessage(buf);
-            var world = client.world;
-            if (world != null && world.getRegistryKey().equals(message.dim)) {
+            var world = client.level;
+            if (world != null && world.dimension().equals(message.dim)) {
                 client.execute(() -> {
                     if (world.getBlockEntity(message.pos) instanceof TileInfChest chest) {
                         chest.setCount(new BigInteger(message.bytes));
-                        chest.setStack(1, message.out);
+                        chest.setItem(1, message.out);
                         chest.setHolding(message.holding);
                     }
                 });

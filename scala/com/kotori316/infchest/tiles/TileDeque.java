@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.ItemDamage;
@@ -27,27 +27,27 @@ public class TileDeque extends BlockEntity implements HasInv {
     }
 
     @Override
-    public void readNbt(NbtCompound compound) {
-        super.readNbt(compound);
+    public void load(CompoundTag compound) {
+        super.load(compound);
         inventory = compound.getList(NBT_ITEMS, 10).stream()
-            .map(NbtCompound.class::cast)
-            .map(ItemStack::fromNbt)
+            .map(CompoundTag.class::cast)
+            .map(ItemStack::of)
             .filter(Predicate.not(ItemStack::isEmpty))
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    public void writeNbt(NbtCompound compound) {
-        NbtList list1 = inventory.stream()
+    public void saveAdditional(CompoundTag compound) {
+        ListTag list1 = inventory.stream()
             .filter(Predicate.not(ItemStack::isEmpty))
-            .map(stack -> stack.writeNbt(new NbtCompound()))
-            .collect(Collectors.toCollection(NbtList::new));
+            .map(stack -> stack.save(new CompoundTag()))
+            .collect(Collectors.toCollection(ListTag::new));
         compound.put(NBT_ITEMS, list1);
-        super.writeNbt(compound);
+        super.saveAdditional(compound);
     }
 
     @Override
-    public int size() {
+    public int getContainerSize() {
         return Math.min(inventory.size() + 2, MAX_COUNT);
     }
 
@@ -57,7 +57,7 @@ public class TileDeque extends BlockEntity implements HasInv {
     }
 
     @Override
-    public ItemStack getStack(int index) {
+    public ItemStack getItem(int index) {
         if (index == 0 || index > inventory.size()) {
             return ItemStack.EMPTY; // Prevent hopper from stopping its work.
         }
@@ -65,31 +65,31 @@ public class TileDeque extends BlockEntity implements HasInv {
     }
 
     @Override
-    public ItemStack removeStack(int index, int count) {
-        return Inventories.splitStack(inventory, index - 1, count); // range check is done inside the method.
+    public ItemStack removeItem(int index, int count) {
+        return ContainerHelper.removeItem(inventory, index - 1, count); // range check is done inside the method.
     }
 
     @Override
-    public ItemStack removeStack(int index) {
-        return Inventories.removeStack(inventory, index - 1); // range check is done inside the method.
+    public ItemStack removeItemNoUpdate(int index) {
+        return ContainerHelper.takeItem(inventory, index - 1); // range check is done inside the method.
     }
 
     @Override
-    public void setStack(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         if (0 < index && index <= inventory.size())
             inventory.set(index - 1, stack);
-        else if (index == 0 && size() < TileDeque.MAX_COUNT)
+        else if (index == 0 && getContainerSize() < TileDeque.MAX_COUNT)
             inventory.add(stack);
     }
 
     @Override
-    public void markDirty() {
-        super.markDirty();
+    public void setChanged() {
+        super.setChanged();
         inventory = inventory.stream().filter(Predicate.not(ItemStack::isEmpty)).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         inventory.clear();
     }
 

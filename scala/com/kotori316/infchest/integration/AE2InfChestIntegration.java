@@ -12,8 +12,8 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
@@ -51,7 +51,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
         if (what instanceof AEItemKey itemKey) {
-            return this.chest.isValid(0, itemKey.toStack());
+            return this.chest.canPlaceItem(0, itemKey.toStack());
         } else {
             return false;
         }
@@ -61,10 +61,10 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (!(what instanceof AEItemKey itemKey)) return 0; // Key is not item.
         var definition = itemKey.toStack();
-        if (!this.chest.isValid(0, definition)) return 0; // The item is NOT acceptable.
+        if (!this.chest.canPlaceItem(0, definition)) return 0; // The item is NOT acceptable.
         if (mode == Actionable.MODULATE) {
             chest.addStack(definition, BigInteger.valueOf(amount));
-            chest.markDirty();
+            chest.setChanged();
         }
         return amount;
     }
@@ -74,22 +74,22 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
         if (!(what instanceof AEItemKey itemKey)) return 0; // Key is not item.
         var definition = itemKey.toStack();
         var holding = chest.getStackWithAmount();
-        var out = chest.getStack(1);
-        if (ItemStack.canCombine(definition, holding)) {
+        var out = chest.getItem(1);
+        if (ItemStack.matches(definition, holding)) {
             BigInteger extractCount = BigInteger.valueOf(amount).min(chest.itemCount());
             if (mode == Actionable.MODULATE) {
                 // do subtract.
                 chest.decrStack(extractCount);
-                chest.markDirty();
+                chest.setChanged();
             }
             if (extractCount.equals(chest.itemCount())) {
                 // The caller requests more items than this chest holds.
                 // Check the output slot and extract from it.
-                if (ItemStack.canCombine(definition, out)) {
+                if (ItemStack.matches(definition, out)) {
                     var extraCount = BigInteger.valueOf(amount).subtract(chest.itemCount()).min(BigInteger.valueOf(out.getCount())).intValueExact();
                     if (mode == Actionable.MODULATE) {
-                        this.chest.removeStack(1, extraCount);
-                        this.chest.markDirty();
+                        this.chest.removeItem(1, extraCount);
+                        this.chest.setChanged();
                     }
                     return extractCount.longValue() + extraCount;
                 } else {
@@ -100,11 +100,11 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
                 // The demand is satisfied.
                 return extractCount.longValue();
             }
-        } else if (ItemStack.canCombine(definition, out)) {
+        } else if (ItemStack.matches(definition, out)) {
             int extractCount = (int) Math.min(out.getCount(), amount);
             if (mode == Actionable.MODULATE) {
-                this.chest.removeStack(1, extractCount);
-                this.chest.markDirty();
+                this.chest.removeItem(1, extractCount);
+                this.chest.setChanged();
             }
             return extractCount;
         } else {
@@ -114,7 +114,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        var inSlot = this.chest.getStack(1);
+        var inSlot = this.chest.getItem(1);
         if (!inSlot.isEmpty()) {
             out.add(Objects.requireNonNull(AEItemKey.of(inSlot)), inSlot.getCount());
         }
@@ -126,7 +126,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
     }
 
     @Override
-    public Text getDescription() {
+    public Component getDescription() {
         return this.chest.getName();
     }
 }

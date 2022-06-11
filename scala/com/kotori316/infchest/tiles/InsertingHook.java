@@ -5,10 +5,10 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.inventory.Inventories;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.ItemStack;
 
 import com.kotori316.infchest.InfChest;
 
@@ -45,16 +45,16 @@ public record InsertingHook(List<Hook> hooks) {
 
         @Override
         public BigInteger getCount(ItemStack hookItem) {
-            NbtCompound tag = hookItem.getSubNbt(TileInfChest.NBT_BLOCK_TAG);
+            CompoundTag tag = hookItem.getTagElement(TileInfChest.NBT_BLOCK_TAG);
             if (tag == null) {
                 return BigInteger.ZERO;
             }
 
             ItemStack secondStack = getSecondItem(tag);
-            ItemStack holding = ItemStack.fromNbt(tag.getCompound(TileInfChest.NBT_ITEM));
+            ItemStack holding = ItemStack.of(tag.getCompound(TileInfChest.NBT_ITEM));
             holding.setCount(1);
             BigInteger second;
-            if (ItemStack.areItemsEqual(secondStack, holding) && ItemStack.areNbtEqual(secondStack, holding))
+            if (ItemStack.isSame(secondStack, holding) && ItemStack.tagMatches(secondStack, holding))
                 second = BigInteger.valueOf(secondStack.getCount());
             else
                 second = BigInteger.ZERO;
@@ -72,23 +72,23 @@ public record InsertingHook(List<Hook> hooks) {
 
         @Override
         public ItemStack removeAllItems(ItemStack hookItem) {
-            hookItem.removeSubNbt(TileInfChest.NBT_BLOCK_TAG);
+            hookItem.removeTagKey(TileInfChest.NBT_BLOCK_TAG);
             return hookItem;
         }
 
         @Override
         public boolean checkItemAcceptable(ItemStack chestContent, ItemStack hookItem) {
-            NbtCompound tag = hookItem.getSubNbt(TileInfChest.NBT_BLOCK_TAG);
+            CompoundTag tag = hookItem.getTagElement(TileInfChest.NBT_BLOCK_TAG);
             if (tag == null) {
                 return false;
             }
-            ItemStack holding = ItemStack.fromNbt(tag.getCompound(TileInfChest.NBT_ITEM));
-            return ItemStack.areItemsEqual(chestContent, holding) && ItemStack.areNbtEqual(chestContent, holding);
+            ItemStack holding = ItemStack.of(tag.getCompound(TileInfChest.NBT_ITEM));
+            return ItemStack.isSame(chestContent, holding) && ItemStack.tagMatches(chestContent, holding);
         }
 
-        private static ItemStack getSecondItem(NbtCompound nbt) {
-            DefaultedList<ItemStack> list = DefaultedList.ofSize(2, ItemStack.EMPTY);
-            Inventories.readNbt(nbt, list);
+        private static ItemStack getSecondItem(CompoundTag nbt) {
+            NonNullList<ItemStack> list = NonNullList.withSize(2, ItemStack.EMPTY);
+            ContainerHelper.loadAllItems(nbt, list);
             return list.get(1);
         }
     }

@@ -1,12 +1,12 @@
 package com.kotori316.infchest.tiles;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-public interface HasInv extends net.minecraft.inventory.Inventory {
+public interface HasInv extends net.minecraft.world.Container {
 
     @Override
-    default int size() {
+    default int getContainerSize() {
         return 1;
     }
 
@@ -16,35 +16,35 @@ public interface HasInv extends net.minecraft.inventory.Inventory {
     }
 
     @Override
-    default ItemStack getStack(int index) {
+    default ItemStack getItem(int index) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    default ItemStack removeStack(int index, int count) {
+    default ItemStack removeItem(int index, int count) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    default ItemStack removeStack(int index) {
+    default ItemStack removeItemNoUpdate(int index) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    default void setStack(int index, ItemStack stack) {
+    default void setItem(int index, ItemStack stack) {
     }
 
     @Override
-    default boolean canPlayerUse(PlayerEntity player) {
+    default boolean stillValid(Player player) {
         return true;
     }
 
     @Override
-    default boolean isValid(int index, ItemStack stack) {
+    default boolean canPlaceItem(int index, ItemStack stack) {
         return true;
     }
 
     @Override
-    default void clear() {
+    default void clearContent() {
     }
 }

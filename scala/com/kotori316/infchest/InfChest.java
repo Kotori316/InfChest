@@ -4,11 +4,11 @@ import com.mojang.datafixers.DSL;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.loot.function.LootFunctionType;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,12 +26,12 @@ public class InfChest implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registry.BLOCK, new Identifier(modID, BlockInfChest.name), Register.CHEST);
-        Registry.register(Registry.BLOCK, new Identifier(modID, BlockDeque.name), Register.DEQUE);
-        Registry.register(Registry.ITEM, new Identifier(modID, BlockInfChest.name), Register.CHEST.itemBlock);
-        Registry.register(Registry.ITEM, new Identifier(modID, BlockDeque.name), Register.DEQUE.itemBlock);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(modID, "tile." + BlockInfChest.name), Register.INF_CHEST_TYPE);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
+        Registry.register(Registry.BLOCK, new ResourceLocation(modID, BlockInfChest.name), Register.CHEST);
+        Registry.register(Registry.BLOCK, new ResourceLocation(modID, BlockDeque.name), Register.DEQUE);
+        Registry.register(Registry.ITEM, new ResourceLocation(modID, BlockInfChest.name), Register.CHEST.itemBlock);
+        Registry.register(Registry.ITEM, new ResourceLocation(modID, BlockDeque.name), Register.DEQUE.itemBlock);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, new ResourceLocation(modID, "tile." + BlockInfChest.name), Register.INF_CHEST_TYPE);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, new ResourceLocation(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
         Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION, Register.CHEST_FUNCTION);
     }
 
@@ -40,8 +40,8 @@ public class InfChest implements ModInitializer {
         public static final BlockDeque DEQUE = new BlockDeque();
         public static final BlockEntityType<TileInfChest> INF_CHEST_TYPE = FabricBlockEntityTypeBuilder.create(TileInfChest::new, CHEST).build(DSL.emptyPartType());
         public static final BlockEntityType<TileDeque> DEQUE_TYPE = FabricBlockEntityTypeBuilder.create(TileDeque::new, DEQUE).build(DSL.emptyPartType());
-        public static final ScreenHandlerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = ScreenHandlerRegistry.registerExtended(new Identifier(TileInfChest.GUI_ID), ContainerInfChest::create);
-        public static final LootFunctionType CHEST_FUNCTION = new LootFunctionType(new ContentInfChest.Serializer());
+        public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = ScreenHandlerRegistry.registerExtended(new ResourceLocation(TileInfChest.GUI_ID), ContainerInfChest::create);
+        public static final LootItemFunctionType CHEST_FUNCTION = new LootItemFunctionType(new ContentInfChest.Serializer());
     }
 
     /*

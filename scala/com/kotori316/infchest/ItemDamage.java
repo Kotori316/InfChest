@@ -3,20 +3,20 @@ package com.kotori316.infchest;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record ItemDamage(@NotNull Item item, @Nullable NbtCompound compound) {
+public record ItemDamage(@NotNull Item item, @Nullable CompoundTag compound) {
     public ItemDamage(ItemStack stack) {
-        this(stack.getItem(), stack.getNbt() == null ? null : stack.getNbt().copy());
+        this(stack.getItem(), stack.getTag() == null ? null : stack.getTag().copy());
     }
 
     public ItemStack toStack(int count) {
         var stack = new ItemStack(item, count);
-        stack.setNbt(compound);
+        stack.setTag(compound);
         return stack;
     }
 

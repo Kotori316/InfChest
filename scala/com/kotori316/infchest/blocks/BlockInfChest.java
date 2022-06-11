@@ -3,74 +3,74 @@ package com.kotori316.infchest.blocks;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileInfChest;
 
-public class BlockInfChest extends BlockWithEntity {
+public class BlockInfChest extends BaseEntityBlock {
     public static final String name = InfChest.modID;
     public final BlockItem itemBlock;
 
     public BlockInfChest() {
-        super(AbstractBlock.Settings.of(Material.METAL).strength(1.0f).allowsSpawning((state, world, pos, type) -> false));
+        super(BlockBehaviour.Properties.of(Material.METAL).strength(1.0f).isValidSpawn((state, world, pos, type) -> false));
         itemBlock = new ItemInfChest(this);
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return InfChest.Register.INF_CHEST_TYPE.instantiate(pos, state);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return InfChest.Register.INF_CHEST_TYPE.create(pos, state);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResult onUse(BlockState state, World worldIn, BlockPos pos,
-                              PlayerEntity player, Hand hand, BlockHitResult rayTrace) {
-        if (!player.isSneaking() && worldIn.getBlockEntity(pos) instanceof TileInfChest chest) {
-            if (!worldIn.isClient) {
-                player.openHandledScreen(chest);
-                return ActionResult.CONSUME;
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos,
+                              Player player, InteractionHand hand, BlockHitResult rayTrace) {
+        if (!player.isShiftKeyDown() && worldIn.getBlockEntity(pos) instanceof TileInfChest chest) {
+            if (!worldIn.isClientSide) {
+                player.openMenu(chest);
+                return InteractionResult.CONSUME;
             } else {
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return super.onUse(state, worldIn, pos, player, hand, rayTrace);
+        return super.use(state, worldIn, pos, player, hand, rayTrace);
     }
 
     @Override
-    public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        super.onPlaced(worldIn, pos, state, placer, stack);
-        if (stack.hasCustomName()) {
+    public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(worldIn, pos, state, placer, stack);
+        if (stack.hasCustomHoverName()) {
             if (worldIn.getBlockEntity(pos) instanceof TileInfChest chest) {
-                chest.setCustomName(stack.getName());
+                chest.setCustomName(stack.getHoverName());
             }
         }
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        var pickBlock = super.getPickStack(world, pos, state);
+    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
+        var pickBlock = super.getCloneItemStack(world, pos, state);
         saveChestNbtToStack(world.getBlockEntity(pos), pickBlock);
         saveCustomName(world.getBlockEntity(pos), pickBlock);
         return pickBlock;
@@ -80,7 +80,7 @@ public class BlockInfChest extends BlockWithEntity {
         Optional.ofNullable(te).filter(TileInfChest.class::isInstance).map(TileInfChest.class::cast)
             .filter(TileInfChest::hasCustomName)
             .map(TileInfChest::getName)
-            .ifPresent(drop::setCustomName);
+            .ifPresent(drop::setHoverName);
     }
 
     public static void saveChestNbtToStack(@Nullable BlockEntity entity, ItemStack stack) {
@@ -88,7 +88,7 @@ public class BlockInfChest extends BlockWithEntity {
             .filter(TileInfChest.class::isInstance)
             .map(TileInfChest.class::cast)
             .filter(Predicate.not(TileInfChest::isEmpty))
-            .map(TileInfChest::createNbt)
-            .ifPresent(tag -> stack.setSubNbt(TileInfChest.NBT_BLOCK_TAG, tag));
+            .map(TileInfChest::saveWithoutMetadata)
+            .ifPresent(tag -> stack.addTagElement(TileInfChest.NBT_BLOCK_TAG, tag));
     }
 }

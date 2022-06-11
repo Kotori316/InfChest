@@ -4,82 +4,81 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.tiles.TileDeque;
 
-public class BlockDeque extends BlockWithEntity {
+public class BlockDeque extends BaseEntityBlock {
     public static final String name = "deque";
     public final BlockItem itemBlock;
 
     public BlockDeque() {
-        super(AbstractBlock.Settings.of(Material.METAL).strength(1.0f).allowsSpawning((state, world, pos, type) -> false));
-        itemBlock = new BlockItem(this, new Item.Settings().group(ItemGroup.DECORATIONS));
+        super(BlockBehaviour.Properties.of(Material.METAL).strength(1.0f).isValidSpawn((state, world, pos, type) -> false));
+        itemBlock = new BlockItem(this, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return InfChest.Register.DEQUE_TYPE.instantiate(pos, state);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return InfChest.Register.DEQUE_TYPE.create(pos, state);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.getBlockEntity(pos) instanceof TileDeque deque) {
-            if (!world.isClient) {
-                player.sendMessage(new LiteralText("Items: " + (deque.size() - 2)), false);
-                return ActionResult.CONSUME;
+            if (!world.isClientSide) {
+                player.displayClientMessage(Component.literal("Items: " + (deque.getContainerSize() - 2)), false);
+                return InteractionResult.CONSUME;
             } else {
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.use(state, world, pos, player, hand, hit);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onStateReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.isOf(newState.getBlock())) {
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
             if (worldIn.getBlockEntity(pos) instanceof TileDeque deque) {
-                deque.itemsList().forEach(stack -> ItemScatterer.spawn(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack));
+                deque.itemsList().forEach(stack -> Containers.dropItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack));
             }
-            super.onStateReplaced(state, worldIn, pos, newState, isMoving);
+            super.onRemove(state, worldIn, pos, newState, isMoving);
         }
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
-        super.appendTooltip(stack, world, tooltip, options);
-        tooltip.add(new LiteralText("Use as First-In-First-Out Queue."));
-        tooltip.add(new LiteralText("This block can hold 1 million items."));
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag options) {
+        super.appendHoverText(stack, world, tooltip, options);
+        tooltip.add(Component.literal("Use as First-In-First-Out Queue."));
+        tooltip.add(Component.literal("This block can hold 1 million items."));
     }
 
 }
