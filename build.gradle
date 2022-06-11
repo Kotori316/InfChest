@@ -99,16 +99,18 @@ repositories {
         }
     }
     maven {
-        name = "Hwyla"
-        url "https://maven.tehnut.info"
-        content {
-            it.includeGroup("mcp.mobius.waila")
-        }
-    }
-    maven {
         url = "https://www.cursemaven.com"
         content {
             it.includeGroup("curse.maven")
+        }
+    }
+    maven {
+        name = "What The Hell Is That"
+        url = "https://maven.bai.lol"
+        content {
+            it.includeModule("mcp.mobius.waila", "wthit-api")
+            it.includeModule("mcp.mobius.waila", "wthit")
+            it.includeModule("lol.bai", "badpackets")
         }
     }
 }
@@ -119,6 +121,9 @@ dependencies {
     compileOnly(fg.deobf("appeng:appliedenergistics2:${project.ae2Version}"))
     implementation(fg.deobf("curse.maven:jade-324717:${project.jade_id}"))
     implementation(fg.deobf("curse.maven:the-one-probe-245211:${project.top_id}"))
+    compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.wthit_version}"))
+    // runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-${project.wthit_version}"))
+    // runtimeOnly(fg.deobf("lol.bai:badpackets:forge-${project.badpackets_version}"))
     // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3430254".toLowerCase())
 }
 
@@ -191,7 +196,7 @@ curseforge {
         addArtifact deobfJar
     }
     options {
-        debug = false // defaults to false
+        curseGradleOptions.debug = false // defaults to false
         javaVersionAutoDetect = false
     }
 }
