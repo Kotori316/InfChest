@@ -1,3 +1,11 @@
+# Version 19.1
+
+2022-06-11
+
+* Update plugins for tooltip mod.
+  * Jade
+  * Wthit
+
 # Version 19.0
 
 2022-06-10
