@@ -1,3 +1,9 @@
+# Version 19.0-fabric
+
+2022-06-12
+
+* Update for 1.19
+
 # Version 18.3-fabric
 
 2022-03-06
