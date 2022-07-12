@@ -3,7 +3,6 @@ package com.kotori316.infchest.blocks;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +24,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.Nullable;
 
 import com.kotori316.infchest.InfChest;
 import com.kotori316.infchest.integration.StorageBoxStack;
@@ -63,7 +63,7 @@ public class BlockInfChest extends BaseEntityBlock {
             if (!worldIn.isClientSide) {
                 if (StorageBoxStack.moveToStorage(worldIn, pos, player, hand)) return InteractionResult.SUCCESS;
                 worldIn.getBlockEntity(pos, InfChest.Register.INF_CHEST_TYPE).ifPresent(t ->
-                    NetworkHooks.openGui(((ServerPlayer) player), t, pos));
+                    NetworkHooks.openScreen(((ServerPlayer) player), t, pos));
             }
             return InteractionResult.SUCCESS;
         }
