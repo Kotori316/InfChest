@@ -116,7 +116,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.94'
+    minecraft 'net.minecraftforge:forge:1.19-41.0.98'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
     compileOnly(fg.deobf("appeng:appliedenergistics2:${project.ae2Version}"))
     implementation(fg.deobf("curse.maven:jade-324717:${project.jade_id}"))
