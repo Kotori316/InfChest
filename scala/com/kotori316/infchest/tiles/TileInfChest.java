@@ -268,6 +268,10 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Ex
         this.holding = holding;
     }
 
+    ItemStack getHolding() {
+        return this.holding;
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return level != null && level.getBlockEntity(getBlockPos()) == this && player.distanceToSqr(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()) <= 64;

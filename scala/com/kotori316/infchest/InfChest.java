@@ -15,6 +15,7 @@ import com.kotori316.infchest.blocks.BlockDeque;
 import com.kotori316.infchest.blocks.BlockInfChest;
 import com.kotori316.infchest.blocks.ContentInfChest;
 import com.kotori316.infchest.guis.ContainerInfChest;
+import com.kotori316.infchest.tiles.InfChestStorage;
 import com.kotori316.infchest.tiles.TileDeque;
 import com.kotori316.infchest.tiles.TileInfChest;
 
@@ -33,6 +34,8 @@ public class InfChest implements ModInitializer {
         Registry.register(Registry.BLOCK_ENTITY_TYPE, new ResourceLocation(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
         Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION, Register.CHEST_FUNCTION);
         Registry.register(Registry.MENU, new ResourceLocation(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
+
+        InfChestStorage.register();
     }
 
     public static class Register {
