@@ -33,8 +33,30 @@ loom {
             configName = "Client"
             runDir = "Minecraft"
         }
+        gameTest {
+            name "GameTest"
+            server()
+            vmArg "-ea"
+            //noinspection SpellCheckingInspection
+            vmArg "-Dfabric-api.gametest"
+            //noinspection SpellCheckingInspection
+            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/test-results/test/game_test.xml"
+            runDir = "build/game_test"
+            source sourceSets.test
+        }
     }
 }
+
+task removeTestWorld(type: Delete) {
+    delete("${project.buildDir}/game_test/world")
+    onlyIf {
+        file("${project.buildDir}/game_test/world").exists() || !file("${project.buildDir}/test-results/test").exists()
+    }
+    doLast {
+        mkdir("${project.buildDir}/test-results/test")
+    }
+}
+runGameTest.dependsOn(removeTestWorld)
 
 processResources {
     inputs.property "version", project.version
