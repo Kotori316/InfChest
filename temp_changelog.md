@@ -1,3 +1,11 @@
+# Version 19.3-fabric
+
+2022-10-21
+
+* Update for 1.19.2
+* Support transfer API by fabric.
+  * Fixed bugs of item duplication.
+
 # Version 19.0-fabric
 
 2022-06-12
