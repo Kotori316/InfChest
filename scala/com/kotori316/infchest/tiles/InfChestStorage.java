@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import com.kotori316.infchest.InfChest;
 
@@ -15,7 +16,8 @@ import com.kotori316.infchest.InfChest;
 public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.ChestItems> implements SingleSlotStorage<ItemVariant> {
     private final TileInfChest chest;
 
-    private InfChestStorage(TileInfChest chest) {
+    @VisibleForTesting
+    InfChestStorage(TileInfChest chest) {
         this.chest = chest;
     }
 
@@ -34,7 +36,7 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
 
     @Override
     public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-        if (resource.matches(chest.getHolding())) {
+        if (resource.matches(chest.getHolding()) || chest.getHolding().isEmpty()) {
             updateSnapshots(transaction);
             chest.addStack(resource.toStack(1), BigInteger.valueOf(maxAmount));
             return maxAmount;
@@ -44,6 +46,7 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
 
     @Override
     public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+        updateSnapshots(transaction);
         long takeFromOutputSlot;
         if (resource.matches(chest.getHolding())) {
             var toTake = BigInteger.valueOf(maxAmount);
@@ -53,19 +56,19 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
                 chest.decrStack(toTake);
                 return maxAmount;
             } else {
-                chest.decrStack(chest.itemCount());
                 takeFromOutputSlot = chest.itemCount().longValueExact();
+                chest.decrStack(chest.itemCount());
             }
         } else {
-            takeFromOutputSlot = maxAmount;
+            takeFromOutputSlot = 0;
         }
         long fromHolding = maxAmount - takeFromOutputSlot;
         if (ItemStack.isSameItemSameTags(chest.getItem(1), resource.toStack(1))) {
             // take from output slot.
-            var extracted = chest.removeItem(1, (int) Math.min(takeFromOutputSlot, Integer.MAX_VALUE));
-            return fromHolding + extracted.getCount();
+            var extracted = chest.removeItem(1, (int) Math.min(fromHolding, Integer.MAX_VALUE));
+            return takeFromOutputSlot + extracted.getCount();
         }
-        return fromHolding;
+        return takeFromOutputSlot;
     }
 
     @Override
