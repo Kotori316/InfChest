@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
     public ItemCountMessage(FriendlyByteBuf p) {
         this(
             p.readBlockPos(),
-            ResourceKey.create(Registry.DIMENSION_REGISTRY, p.readResourceLocation()),
+            ResourceKey.create(Registries.DIMENSION, p.readResourceLocation()),
             p.readByteArray(),
             p.readItem(),
             p.readItem()

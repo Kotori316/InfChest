@@ -5,14 +5,18 @@ import java.util.function.Predicate;
 import com.mojang.datafixers.DSL;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -60,7 +64,7 @@ public class InfChest {
         public static final BlockDeque DEQUE = new BlockDeque();
         public static final BlockEntityType<TileDeque> DEQUE_TYPE = BlockEntityType.Builder.of(TileDeque::new, DEQUE).build(DSL.emptyPartType());
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeMenuType.create(ContainerInfChest::create);
-        public static final LootItemFunctionType CHEST_FUNCTION = Registry.register(Registry.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
+        public static final LootItemFunctionType CHEST_FUNCTION = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
             new LootItemFunctionType(new ContentInfChest.Serializer()));
     }
 
@@ -69,10 +73,10 @@ public class InfChest {
 
         @SubscribeEvent
         public static void register(RegisterEvent event) {
-            event.register(Registry.BLOCK_REGISTRY, EventHandlers::registerBlock);
-            event.register(Registry.ITEM_REGISTRY, EventHandlers::registerItem);
-            event.register(Registry.BLOCK_ENTITY_TYPE_REGISTRY, EventHandlers::registerTile);
-            event.register(Registry.MENU_REGISTRY, EventHandlers::registerContainer);
+            event.register(Registries.BLOCK, EventHandlers::registerBlock);
+            event.register(Registries.ITEM, EventHandlers::registerItem);
+            event.register(Registries.BLOCK_ENTITY_TYPE, EventHandlers::registerTile);
+            event.register(Registries.MENU, EventHandlers::registerContainer);
         }
 
         public static void registerBlock(RegisterEvent.RegisterHelper<Block> event) {
@@ -92,6 +96,12 @@ public class InfChest {
 
         public static void registerContainer(RegisterEvent.RegisterHelper<MenuType<?>> event) {
             event.register(new ResourceLocation(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
+        }
+
+        @SubscribeEvent
+        public static void creativeTab(CreativeModeTabEvent.BuildContents event) {
+            event.registerSimple(CreativeModeTabs.FUNCTIONAL_BLOCKS,
+                Register.CHEST, Register.DEQUE);
         }
     }
 

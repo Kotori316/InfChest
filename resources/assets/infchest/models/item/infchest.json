@@ -1,12 +1,3 @@
 {
-  "parent": "block/cube",
-  "textures": {
-    "particle": "infchest:blocks/if",
-    "down": "infchest:blocks/if",
-    "up": "infchest:blocks/if",
-    "north": "infchest:blocks/if",
-    "east": "infchest:blocks/if",
-    "south": "infchest:blocks/if",
-    "west": "infchest:blocks/if"
-  }
+  "parent": "infchest:block/infchest"
 }

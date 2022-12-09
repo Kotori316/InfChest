@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,7 +28,7 @@ import com.kotori316.infchest.tiles.TileInfChest;
 final class ItemInfChest extends BlockItem {
 
     ItemInfChest(Block block) {
-        super(block, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+        super(block, new Item.Properties());
     }
 
     @Override

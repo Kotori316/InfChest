@@ -9,7 +9,6 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -31,7 +30,7 @@ public class BlockDeque extends BaseEntityBlock {
 
     public BlockDeque() {
         super(Block.Properties.of(Material.METAL).strength(1.0f));
-        itemBlock = new BlockItem(this, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+        itemBlock = new BlockItem(this, new Item.Properties());
     }
 
     @Override

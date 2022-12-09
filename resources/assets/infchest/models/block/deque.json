@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "particle": "infchest:blocks/deque",
-    "down": "infchest:blocks/deque",
-    "up": "infchest:blocks/deque",
-    "north": "infchest:blocks/deque",
-    "east": "infchest:blocks/deque",
-    "south": "infchest:blocks/deque",
-    "west": "infchest:blocks/deque"
+    "particle": "infchest:block/deque",
+    "down": "infchest:block/deque",
+    "up": "infchest:block/deque",
+    "north": "infchest:block/deque",
+    "east": "infchest:block/deque",
+    "south": "infchest:block/deque",
+    "west": "infchest:block/deque"
   }
 }
