@@ -241,7 +241,7 @@ publishing {
     }
     publications {
         mavenJava(MavenPublication) {
-            artifactId = "InfChest".toLowerCase()
+            artifactId = project.archivesBaseName.toLowerCase()
             artifact srcJar {
                 archiveClassifier.set('sources')
                 archiveExtension.set('jar')
