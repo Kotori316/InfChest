@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -21,8 +20,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.blocks.BlockInfChest;
@@ -238,12 +236,16 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         return count;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    /**
+     * CLIENT Only method
+     */
     public void setCount(BigInteger count) {
         this.count = count;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    /**
+     * CLIENT Only method
+     */
     public void setHolding(ItemStack holding) {
         this.holding = holding;
     }

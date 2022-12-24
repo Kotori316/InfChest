@@ -1,15 +1,13 @@
 package com.kotori316.infchest.forge.tiles;
 
-import javax.annotation.Nonnull;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
-
-import com.kotori316.infchest.common.tiles.TileInfChest;
+import org.jetbrains.annotations.NotNull;
 
 record InfItemHandler(TileInfChestForge infChest) implements IItemHandlerModifiable {
 
     @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         infChest.setItem(slot, stack);
     }
 
@@ -18,15 +16,15 @@ record InfItemHandler(TileInfChestForge infChest) implements IItemHandlerModifia
         return infChest.getContainerSize();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
         return infChest.getItem(slot);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (isItemValid(0, stack)) {
             if (!simulate) {
                 infChest.addStack(stack);
@@ -37,7 +35,7 @@ record InfItemHandler(TileInfChestForge infChest) implements IItemHandlerModifia
         return stack;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (slot == 1) {
@@ -58,7 +56,7 @@ record InfItemHandler(TileInfChestForge infChest) implements IItemHandlerModifia
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return infChest.canPlaceItem(slot, stack);
     }
 }

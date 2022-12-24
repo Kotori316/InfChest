@@ -3,10 +3,10 @@ package com.kotori316.infchest.common;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public record ItemDamage(Item item, @Nullable CompoundTag compound) {
 
