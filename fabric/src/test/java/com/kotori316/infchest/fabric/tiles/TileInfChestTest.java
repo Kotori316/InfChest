@@ -44,6 +44,39 @@ public class TileInfChestTest implements FabricGameTest {
     }
 
     @GameTest(template = EMPTY_STRUCTURE)
+    public void isEmpty2(GameTestHelper helper) {
+        var pos = new BlockPos(0, 1, 0);
+        helper.setBlock(pos, InfChest.accessor.CHEST());
+        var tile = (TileInfChestFabric) Objects.requireNonNull(helper.getBlockEntity(pos));
+        var stack = new ItemStack(Items.APPLE, 10);
+        tile.setItem(0, stack);
+        var removed = tile.removeItem(1, 10);
+        if (!ItemStack.isSame(stack, removed)) {
+            throw new GameTestAssertException("Removed item(%s) and inserted item(%s) must be same.".formatted(removed, stack));
+        }
+        if (tile.isEmpty()) {
+            helper.succeed();
+        } else {
+            var t = IntStream.range(0, tile.getContainerSize()).mapToObj(tile::getItem).toList();
+            throw new GameTestAssertException("Tile must be empty, %s".formatted(t));
+        }
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
+    public void setItem(GameTestHelper helper) {
+        var pos = new BlockPos(0, 1, 0);
+        helper.setBlock(pos, InfChest.accessor.CHEST());
+        var tile = (TileInfChestFabric) Objects.requireNonNull(helper.getBlockEntity(pos));
+        var stack = new ItemStack(Items.APPLE, 16);
+        tile.setItem(0, stack);
+        if (tile.getItem(0).isEmpty()) {
+            helper.succeed();
+        } else {
+            throw new GameTestAssertException("Slot 0 must be empty after inserting, but %s".formatted(tile.getItem(0)));
+        }
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
     public void addItem1(GameTestHelper helper) {
         var pos = new BlockPos(0, 1, 0);
         helper.setBlock(pos, InfChest.accessor.CHEST());
