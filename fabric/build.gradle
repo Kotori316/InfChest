@@ -1,0 +1,81 @@
+plugins {
+    // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
+    id "fabric-loom" version "0.13-SNAPSHOT"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+}
+
+archivesBaseName = "${rootProject.name}-Fabric-${project.minecraftVersion}"
+version = project.modVersion
+group = "com.kotori316"
+
+println("Java: " + System.getProperty("java.version") +
+        " JVM: " + System.getProperty("java.vm.version") +
+        "(" + System.getProperty("java.vendor") + ")" +
+        " Arch: " + System.getProperty("os.arch"))
+
+repositories {
+    maven {
+        name = 'ParchmentMC'
+        url = 'https://maven.parchmentmc.org'
+    }
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraftVersion}"
+    mappings loom.layered {
+        it.officialMojangMappings()
+        String[] parchmentVersion = String.valueOf(project.parchmentMapping).split("-")
+        String parchmentMC = parchmentVersion[0]
+        String parchmentDate = parchmentVersion[1]
+        it.parchment("org.parchmentmc.data:parchment-$parchmentMC:$parchmentDate@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    compileOnly project(":common")
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    source(project(":common").sourceSets.main.allSource)
+}
+
+java {
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+curseforge {
+    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    project {
+        id = "289078"
+        changelogType = "markdown"
+        changelog = "For Minecraft ${project.minecraftVersion} with Fabric ${project.fabric_version}"
+        addGameVersion(project.minecraftVersion)
+        addGameVersion "Fabric"
+        releaseType = "beta"
+        mainArtifact remapJar
+    }
+    options {
+        curseGradleOptions.debug = false // defaults to false
+        forgeGradleIntegration = false
+        javaVersionAutoDetect = false
+    }
+}
