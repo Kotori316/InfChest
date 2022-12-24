@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "c c",
+    "drd",
+    "c c"
+  ],
+  "key": {
+    "c": [
+      {"item": "minecraft:chest"},
+      {"item": "minecraft:trapped_chest"},
+      {"item": "minecraft:ender_chest"}
+    ],
+    "d": [
+      {"item": "minecraft:dispenser"},
+      {"item": "minecraft:dropper"}
+    ],
+    "r": [
+      {"item": "minecraft:repeater"},
+      {"item": "minecraft:comparator"}
+    ]
+  },
+  "result": {
+    "item": "infchest:deque",
+    "count": 1
+  }
+}
