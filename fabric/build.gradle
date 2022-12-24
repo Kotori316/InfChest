@@ -17,6 +17,23 @@ println("Java: " + System.getProperty("java.version") +
         "(" + System.getProperty("java.vendor") + ")" +
         " Arch: " + System.getProperty("os.arch"))
 
+loom {
+    runs {
+        client {
+            configName = "Client"
+            runDir = "run"
+        }
+        gameTest {
+            configName = "GameTest"
+            server()
+            //noinspection SpellCheckingInspection
+            vmArgs ("-ea", "-Dfabric-api.gametest", "-Dfabric-api.gametest.report-file=game_test/test-results/test/game_test.xml")
+            runDir = "game_test"
+            source sourceSets.test
+        }
+    }
+}
+
 repositories {
     maven {
         name = 'ParchmentMC'
@@ -56,6 +73,7 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     compileOnly project(":common")
+    testCompileOnly project(":common")
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

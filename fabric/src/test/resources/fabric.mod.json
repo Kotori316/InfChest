@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "infchest-test",
+  "name": "InfChest GameTest",
+  "version": "1.0.0",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "com.kotori316.infchest.fabric.ItemDamageTest",
+      "com.kotori316.infchest.fabric.tiles.TileInfChestTest",
+      "com.kotori316.infchest.fabric.tiles.ChestFabricOperation"
+    ]
+  }
+}

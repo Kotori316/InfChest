@@ -146,6 +146,7 @@ repositories {
 dependencies {
     minecraft("net.minecraftforge:forge:${project.forgeVersion}")
     compileOnly project(":common")
+    testCompileOnly project(":common")
     // Mixin
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 
