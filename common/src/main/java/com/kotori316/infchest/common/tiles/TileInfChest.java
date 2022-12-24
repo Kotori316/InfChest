@@ -28,7 +28,7 @@ import com.kotori316.infchest.common.guis.ContainerInfChest;
 
 public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, MenuProvider, Nameable {
 
-    private ItemStack holding = ItemStack.EMPTY;
+    protected ItemStack holding = ItemStack.EMPTY;
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
     private BigInteger count = BigInteger.ZERO;
     private Component customName;

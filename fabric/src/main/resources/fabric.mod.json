@@ -13,20 +13,20 @@
     "issues": "https://github.com/Kotori316/InfChest/issues"
   },
   "license": "All rights reserved",
-  "icon": "assets/infchest/textures/blocks/if.png",
+  "icon": "assets/infchest/textures/block/if.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.kotori316.infchest.common.InfChest"
+      "com.kotori316.infchest.fabric.InfChestFabric"
     ],
     "client": [
-      "com.kotori316.infchest.InfChestClient"
+      "com.kotori316.infchest.fabric.InfChestClient"
     ],
     "ae2": [
-      "com.kotori316.infchest.integration.AE2InfChestIntegration"
+      "com.kotori316.infchest.fabric.integration.AE2InfChestIntegration"
     ],
     "jade": [
-      "com.kotori316.infchest.integration.InfChestJadePlugin"
+      "com.kotori316.infchest.fabric.integration.InfChestJadePlugin"
     ]
   },
   "depends": {
@@ -38,7 +38,7 @@
     "waila:plugins": [
       {
         "id": "infchest:wthit_plugin",
-        "initializer": "com.kotori316.infchest.integration.InfChestWthitPlugin"
+        "initializer": "com.kotori316.infchest.fabric.integration.InfChestWthitPlugin"
       }
     ]
   }

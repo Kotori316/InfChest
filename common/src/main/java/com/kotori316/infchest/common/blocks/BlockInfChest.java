@@ -11,6 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -68,6 +69,14 @@ public abstract class BlockInfChest extends BaseEntityBlock {
             worldIn.getBlockEntity(pos, InfChest.accessor.INF_CHEST_TYPE())
                 .ifPresent(chest -> chest.setCustomName(stack.getDisplayName()));
         }
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
+        var pickBlock = super.getCloneItemStack(world, pos, state);
+        saveChestNbtToStack(world.getBlockEntity(pos), pickBlock);
+        saveCustomName(world.getBlockEntity(pos), pickBlock);
+        return pickBlock;
     }
 
     public static void saveCustomName(@Nullable BlockEntity te, ItemStack drop) {

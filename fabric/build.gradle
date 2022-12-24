@@ -1,6 +1,10 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 plugins {
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
     id "fabric-loom" version "0.13-SNAPSHOT"
+    id 'maven-publish'
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
@@ -17,6 +21,26 @@ repositories {
     maven {
         name = 'ParchmentMC'
         url = 'https://maven.parchmentmc.org'
+    }
+    maven {
+        name = "What The Hell Is That"
+        url = "https://maven.bai.lol"
+        content {
+            it.includeVersion("mcp.mobius.waila", "wthit-api", "fabric-${project.wthit_fabric_version}")
+            it.includeVersion("mcp.mobius.waila", "wthit", "fabric-${project.wthit_fabric_version}")
+            it.includeVersion("lol.bai", "badpackets", "fabric-${project.badpackets_fabric_version}")
+        }
+    }
+    maven {
+        url = "https://www.cursemaven.com"
+        content {
+            it.includeGroup("curse.maven")
+        }
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev/"
     }
 }
 
@@ -35,6 +59,15 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modCompileOnly("appeng:appliedenergistics2-fabric:${project.ae2_fabric_version}") {
+        transitive(false)
+    }
+    //noinspection SpellCheckingInspection
+    // modRuntimeOnly("teamreborn:energy:2.2.0") // For AE2
+    modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_fabric_version}")
+    // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_fabric_version}")
+    // modRuntimeOnly("lol.bai:badpackets:fabric-${project.badpackets_fabric_version}")
+    modCompileOnly("curse.maven:jade-324717:${project.jade_fabric_id}")
 }
 
 processResources {
@@ -65,17 +98,56 @@ java {
 curseforge {
     apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
     project {
-        id = "289078"
-        changelogType = "markdown"
-        changelog = "For Minecraft ${project.minecraftVersion} with Fabric ${project.fabric_version}"
-        addGameVersion(project.minecraftVersion)
-        addGameVersion "Fabric"
-        releaseType = "beta"
+        id = '312222'
+        changelogType = 'markdown'
+        changelog = file("temp_changelog.md")
+        addGameVersion 'Fabric'
+        addGameVersion project.minecraftVersion
+        releaseType = 'beta'
         mainArtifact remapJar
     }
     options {
-        curseGradleOptions.debug = false // defaults to false
-        forgeGradleIntegration = false
-        javaVersionAutoDetect = false
+        curseGradleOptions.debug = false
+        curseGradleOptions.javaVersionAutoDetect = false
+        curseGradleOptions.forgeGradleIntegration = false
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "AzureRepository"
+            url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+            credentials {
+                username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
+                password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.archivesBaseName.toLowerCase()
+            from components.java
+        }
+    }
+}
+
+tasks.register('checkOutput') {
+    doLast {
+        [remapJar, jar, sourcesJar].forEach { t ->
+            println("$t -> ${t.getArchiveFile().get().asFile}")
+        }
+        println("$remapSourcesJar -> ${remapSourcesJar.output}")
+    }
+}
+
+tasks.register('copyToDrive', Copy) {
+    dependsOn("build")
+    def PATH_NAME = "drive_path"
+    from(remapJar.getArchiveFile())
+    into(file(java.util.Optional.ofNullable(System.getenv(PATH_NAME)).orElse(".")))
+    onlyIf {
+        System.getenv(PATH_NAME) != null &&
+                Files.exists(Paths.get(System.getenv(PATH_NAME)))
     }
 }
