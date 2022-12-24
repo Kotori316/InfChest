@@ -63,3 +63,7 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: :fabric:build
+    - name: Game Test for fabric
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: :fabric:runGameTest
