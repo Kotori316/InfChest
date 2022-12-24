@@ -1,0 +1,65 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "1.19.3" ]
+  pull_request:
+    branches: [ "1.19.3" ]
+
+permissions:
+  contents: read
+
+jobs:
+  forge-build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/kotori316/fictional-meme/fictional-meme:1.19.3
+      credentials:
+        username: kotori316
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      FORGE_ONLY: true
+    steps:
+    - uses: actions/checkout@v3
+    # - name: Set Forge version
+    #   run: |
+    #     CI_FORGE=$(java -jar $(find / -maxdepth 1 -name "fictional*.jar") 1.19)
+    #     sed -i -e "s/forgeVersion=.*/forgeVersion=${CI_FORGE}/" gradle.properties
+    - name: Set executable
+      run: chmod +x ./gradlew
+    - name: javaToolchains
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: :forge:javaToolchains
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: :forge:build
+
+  fabric-build:
+    runs-on: ubuntu-latest
+    env:
+      FABRIC_ONLY: true
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    - name: Set executable
+      run: chmod +x ./gradlew
+    - name: javaToolchains
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: :fabric:javaToolchains
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: :fabric:build
