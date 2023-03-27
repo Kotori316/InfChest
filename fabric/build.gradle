@@ -118,7 +118,7 @@ curseforge {
     project {
         id = '312222'
         changelogType = 'markdown'
-        changelog = file("temp_changelog.md")
+        changelog = file("../temp_changelog.md")
         addGameVersion 'Fabric'
         addGameVersion project.minecraftVersion
         releaseType = 'beta'
