@@ -1,22 +1,15 @@
 package com.kotori316.infchest.fabric.integration;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.TooltipPosition;
-import snownee.jade.api.config.IPluginConfig;
-
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.integration.CommonTooltipPart;
 import com.kotori316.infchest.common.tiles.TileInfChest;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import snownee.jade.api.*;
+import snownee.jade.api.config.IPluginConfig;
 
-enum InfChestJadeProvider implements IServerDataProvider<BlockEntity>, IBlockComponentProvider {
+enum InfChestJadeProvider implements IServerDataProvider<BlockAccessor>, IBlockComponentProvider {
     INSTANCE;
 
     @Override
@@ -24,13 +17,13 @@ enum InfChestJadeProvider implements IServerDataProvider<BlockEntity>, IBlockCom
         BlockEntity t = accessor.getBlockEntity();
         if (t instanceof TileInfChest) {
             CommonTooltipPart.getTooltipBodyParts(accessor.getServerData())
-                .forEach(tooltip::add);
+                    .forEach(tooltip::add);
         }
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayer serverPlayer, Level world, BlockEntity te, boolean b) {
-        CommonTooltipPart.addTileData(tag, te);
+    public void appendServerData(CompoundTag tag, BlockAccessor accessor) {
+        CommonTooltipPart.addTileData(tag, accessor.getBlockEntity());
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.kotori316.infchest.common.blocks;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.integration.StorageBoxStack;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,20 +18,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.integration.StorageBoxStack;
-import com.kotori316.infchest.common.tiles.TileInfChest;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 public abstract class BlockInfChest extends BaseEntityBlock {
     public static final String name = InfChest.modID;
     public final BlockItem itemBlock;
 
     public BlockInfChest() {
-        super(Block.Properties.of(Material.METAL).strength(1.0f));
+        super(Block.Properties.of().mapColor(MapColor.METAL).pushReaction(PushReaction.BLOCK).strength(1.0f));
         itemBlock = new ItemInfChest(this);
     }
 
@@ -53,7 +53,7 @@ public abstract class BlockInfChest extends BaseEntityBlock {
             if (!worldIn.isClientSide) {
                 if (StorageBoxStack.moveToStorage(worldIn, pos, player, hand)) return InteractionResult.SUCCESS;
                 worldIn.getBlockEntity(pos, InfChest.accessor.INF_CHEST_TYPE()).ifPresent(t ->
-                    this.openGui(((ServerPlayer) player), t, pos));
+                        this.openGui(((ServerPlayer) player), t, pos));
             }
             return InteractionResult.SUCCESS;
         }
@@ -67,7 +67,7 @@ public abstract class BlockInfChest extends BaseEntityBlock {
         super.setPlacedBy(worldIn, pos, state, placer, stack);
         if (stack.hasCustomHoverName()) {
             worldIn.getBlockEntity(pos, InfChest.accessor.INF_CHEST_TYPE())
-                .ifPresent(chest -> chest.setCustomName(stack.getDisplayName()));
+                    .ifPresent(chest -> chest.setCustomName(stack.getDisplayName()));
         }
     }
 
@@ -81,17 +81,17 @@ public abstract class BlockInfChest extends BaseEntityBlock {
 
     public static void saveCustomName(@Nullable BlockEntity te, ItemStack drop) {
         Optional.ofNullable(te).filter(TileInfChest.class::isInstance).map(TileInfChest.class::cast)
-            .filter(TileInfChest::hasCustomName)
-            .map(TileInfChest::getName)
-            .ifPresent(drop::setHoverName);
+                .filter(TileInfChest::hasCustomName)
+                .map(TileInfChest::getName)
+                .ifPresent(drop::setHoverName);
     }
 
     public static void saveChestNbtToStack(@Nullable BlockEntity entity, ItemStack stack) {
         Optional.ofNullable(entity)
-            .filter(TileInfChest.class::isInstance)
-            .map(TileInfChest.class::cast)
-            .filter(Predicate.not(TileInfChest::isEmpty))
-            .map(TileInfChest::saveWithoutMetadata)
-            .ifPresent(tag -> stack.addTagElement("BlockEntityTag", tag));
+                .filter(TileInfChest.class::isInstance)
+                .map(TileInfChest.class::cast)
+                .filter(Predicate.not(TileInfChest::isEmpty))
+                .map(TileInfChest::saveWithoutMetadata)
+                .ifPresent(tag -> stack.addTagElement("BlockEntityTag", tag));
     }
 }

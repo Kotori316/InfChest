@@ -1,19 +1,16 @@
 package com.kotori316.infchest.common.guis;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.tiles.TileInfChest;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     private final TileInfChest infChest;
@@ -25,27 +22,24 @@ public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
-        super.renderLabels(matrixStack, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
         Optional.ofNullable(infChest).map(TileInfChest::getStack).filter(Predicate.not(ItemStack::isEmpty)).map(ItemStack::getDisplayName).ifPresent(itemName -> {
-                this.font.draw(matrixStack, itemName, (imageWidth - this.font.width(itemName)) / (float) 2, 20, 0x404040);
-                this.font.draw(matrixStack, "Item: " + infChest.itemCount(), 8, 60, 0x404040);
-            }
+                    graphics.drawString(this.font, itemName, (imageWidth - this.font.width(itemName)) / 2, 20, 0x404040, false);
+                    graphics.drawString(this.font, "Item: " + infChest.itemCount(), 8, 60, 0x404040, false);
+                }
         );
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, LOCATION);
-        blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        graphics.blit(LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
 
     @Override
-    public void render(PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
-        this.renderBackground(matrixStack);// background
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY); // render tooltip
+    public void render(GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTicks) {
+        this.renderBackground(graphics);// background
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(graphics, mouseX, mouseY); // render tooltip
     }
 }

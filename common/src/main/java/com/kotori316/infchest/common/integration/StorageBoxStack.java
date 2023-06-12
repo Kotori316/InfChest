@@ -39,7 +39,7 @@ public class StorageBoxStack {
         if (!Holder.modLoaded || holding.isEmpty()) return false;
         if (isStorageBox(maybeBox)) {
             ItemStack inBox = getItem(maybeBox);
-            return !inBox.isEmpty() && ItemStack.isSame(holding, inBox) && ItemStack.tagMatches(holding, inBox);
+            return !inBox.isEmpty() && ItemStack.isSameItemSameTags(holding, inBox);
         } else {
             return false;
         }

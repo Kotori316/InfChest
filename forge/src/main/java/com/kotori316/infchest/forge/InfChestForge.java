@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -130,8 +130,8 @@ public final class InfChestForge {
         }
 
         @SubscribeEvent
-        public static void creativeTab(CreativeModeTabEvent.BuildContents event) {
-            if (event.getTab().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
+        public static void creativeTab(BuildCreativeModeTabContentsEvent event) {
+            if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
                 event.accept(Register.CHEST);
                 event.accept(Register.DEQUE);
             }

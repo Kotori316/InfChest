@@ -12,7 +12,7 @@
     "sources": "https://github.com/Kotori316/InfChest",
     "issues": "https://github.com/Kotori316/InfChest/issues"
   },
-  "license": "All rights reserved",
+  "license": "MIT License (c) 2019-2023 Kotori316",
   "icon": "assets/infchest/textures/block/if.png",
   "environment": "*",
   "entrypoints": {
@@ -32,7 +32,7 @@
   "depends": {
     "fabricloader": ">=0.14",
     "fabric": "*",
-    "minecraft": "1.19.x"
+    "minecraft": "1.20.x"
   },
   "custom": {
     "waila:plugins": [

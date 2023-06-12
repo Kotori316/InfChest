@@ -1,7 +1,7 @@
 package com.kotori316.infchest.common.blocks;
 
-import java.util.List;
-
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.tiles.TileDeque;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
@@ -16,18 +16,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.Nullable;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.tiles.TileDeque;
+import java.util.List;
 
 public class BlockDeque extends BaseEntityBlock {
     public static final String name = "deque";
     public final BlockItem itemBlock;
 
     public BlockDeque() {
-        super(Block.Properties.of(Material.METAL).strength(1.0f));
+        super(Block.Properties.of().mapColor(MapColor.METAL).pushReaction(PushReaction.BLOCK).strength(1.0f));
         itemBlock = new BlockItem(this, new Item.Properties());
     }
 
@@ -46,8 +46,8 @@ public class BlockDeque extends BaseEntityBlock {
     public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             worldIn.getBlockEntity(pos, InfChest.accessor.DEQUE_TYPE())
-                .map(TileDeque::itemsList)
-                .ifPresent(l -> l.forEach(stack -> Containers.dropItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack)));
+                    .map(TileDeque::itemsList)
+                    .ifPresent(l -> l.forEach(stack -> Containers.dropItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack)));
             super.onRemove(state, worldIn, pos, newState, isMoving);
         }
     }

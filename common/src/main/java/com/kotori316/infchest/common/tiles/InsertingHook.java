@@ -1,20 +1,19 @@
 package com.kotori316.infchest.common.tiles;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.integration.StorageBoxStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.integration.StorageBoxStack;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public record InsertingHook(List<Hook> hooks) {
     private static final List<Hook> DEFAULT_HOOKS;
@@ -64,7 +63,7 @@ public record InsertingHook(List<Hook> hooks) {
             ItemStack holding = ItemStack.of(tag.getCompound(TileInfChest.NBT_ITEM));
             holding.setCount(1);
             BigInteger second;
-            if (ItemStack.isSame(secondStack, holding) && ItemStack.tagMatches(secondStack, holding))
+            if (ItemStack.isSameItemSameTags(secondStack, holding))
                 second = BigInteger.valueOf(secondStack.getCount());
             else
                 second = BigInteger.ZERO;
@@ -94,7 +93,7 @@ public record InsertingHook(List<Hook> hooks) {
                 return false;
             }
             ItemStack holding = ItemStack.of(tag.getCompound(TileInfChest.NBT_ITEM));
-            return ItemStack.isSame(chestContent, holding) && ItemStack.tagMatches(chestContent, holding);
+            return ItemStack.isSameItemSameTags(chestContent, holding);
         }
 
         private static ItemStack getSecondItem(CompoundTag nbt) {

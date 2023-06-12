@@ -1,11 +1,8 @@
 package com.kotori316.infchest.common.tiles;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.blocks.BlockInfChest;
+import com.kotori316.infchest.common.guis.ContainerInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -22,9 +19,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.blocks.BlockInfChest;
-import com.kotori316.infchest.common.guis.ContainerInfChest;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, MenuProvider, Nameable {
 
@@ -261,8 +260,8 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
             Optional<InsertingHook.Hook> hookObject = hook.findHookObject(stack);
             ItemStack secondStack = getStack(1);
             return (holding.isEmpty() && hookObject.isEmpty() && (secondStack.isEmpty() || stacksEqual(secondStack, stack)))
-                   || stacksEqual(holding, stack)
-                   || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
+                    || stacksEqual(holding, stack)
+                    || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
         }
         return false;
     }
@@ -281,7 +280,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     private static boolean stacksEqual(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSame(s1, s2) && ItemStack.tagMatches(s1, s2);
+        return ItemStack.isSameItemSameTags(s1, s2);
     }
 
     /**

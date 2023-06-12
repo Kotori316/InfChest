@@ -18,7 +18,7 @@ public class ContainerInfChest extends AbstractContainerMenu {
 
     public ContainerInfChest(int id, Inventory playerInventory, BlockPos pos) {
         super(InfChest.accessor.INF_CHEST_CONTAINER_TYPE(), id);
-        this.infChest = ((TileInfChest) playerInventory.player.level.getBlockEntity(pos));
+        this.infChest = ((TileInfChest) playerInventory.player.level().getBlockEntity(pos));
         if (infChest != null)
             infChest.startOpen(playerInventory.player);
         int oneBox = 18;

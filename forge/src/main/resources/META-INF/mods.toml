@@ -1,25 +1,25 @@
 modLoader = "javafml"
-loaderVersion = "[41,)"
+loaderVersion = "[46,)"
 issueTrackerURL = "https://github.com/Kotori316/InfChest/issues"
-license="MIT License (c) 2019-2022 Kotori316"
-[[mods]] 
-modId="infchest"
-version="${file.jarVersion}"
-displayName="InfChest"
-displayURL="https://github.com/Kotori316/InfChest"
-credits="Kotori316" 
-authors="Kotori316" 
-description='''
+license = "MIT License (c) 2019-2023 Kotori316"
+[[mods]]
+modId = "infchest"
+version = "${file.jarVersion}"
+displayName = "InfChest"
+displayURL = "https://github.com/Kotori316/InfChest"
+credits = "Kotori316"
+authors = "Kotori316"
+description = '''
 Add a infinite capacity chest.'''
 [[dependencies.infchest]]
-    modId="forge"
+modId = "forge"
 mandatory = true
-versionRange = "[41.0.94,)"
+versionRange = "[46,)"
 ordering = "NONE"
-    side="BOTH"
+side = "BOTH"
 [[dependencies.infchest]]
-    modId="minecraft"
+modId = "minecraft"
 mandatory = true
-versionRange = "[1.19, )"
+versionRange = "[1.20, )"
 ordering = "NONE"
-    side="BOTH"
+side = "BOTH"
