@@ -120,7 +120,7 @@ curseforge {
     project {
         id = '312222'
         changelogType = 'markdown'
-        changelog = file("temp_changelog.md")
+        changelog = file("../temp_changelog.md")
         addGameVersion 'Fabric'
         addGameVersion project.minecraftVersion
         releaseType = 'beta'
@@ -142,7 +142,7 @@ modrinth {
     uploadFile = tasks.remapJar
     getGameVersions().set([project.minecraftVersion])
     getLoaders().set(["fabric"])
-    changelog = file("temp_changelog.md").text
+    changelog = file("../temp_changelog.md").text
     debugMode = !Boolean.parseBoolean(project.releaseMode)
     dependencies {
     }
