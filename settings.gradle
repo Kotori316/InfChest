@@ -20,7 +20,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "InfChest"
+rootProject.name = "InfChest-1.20"
 include("common")
 if (!Boolean.parseBoolean(System.getenv("FABRIC_ONLY"))) {
     include("forge")
