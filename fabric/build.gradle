@@ -116,11 +116,11 @@ java {
 }
 
 curseforge {
-    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
         id = '312222'
         changelogType = 'markdown'
-        changelog = file("../temp_changelog.md")
+        changelog = file("temp_changelog.md")
         addGameVersion 'Fabric'
         addGameVersion project.minecraftVersion
         releaseType = 'beta'
@@ -130,6 +130,21 @@ curseforge {
         curseGradleOptions.debug = !Boolean.parseBoolean(project.releaseMode)
         curseGradleOptions.javaVersionAutoDetect = false
         curseGradleOptions.forgeGradleIntegration = false
+    }
+}
+
+modrinth {
+    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
+    projectId = "infchest"
+    versionType = "release"
+    versionName = "${project.version}-fabric"
+    versionNumber.set(project.version.toString())
+    uploadFile = tasks.remapJar
+    getGameVersions().set([project.minecraftVersion])
+    getLoaders().set(["fabric"])
+    changelog = file("temp_changelog.md").text
+    debugMode = !Boolean.parseBoolean(project.releaseMode)
+    dependencies {
     }
 }
 

@@ -51,7 +51,7 @@ public class TileInfChestTest implements FabricGameTest {
         var stack = new ItemStack(Items.APPLE, 10);
         tile.setItem(0, stack);
         var removed = tile.removeItem(1, 10);
-        if (!ItemStack.isSame(stack, removed)) {
+        if (!ItemStack.isSameItemSameTags(stack, removed)) {
             throw new GameTestAssertException("Removed item(%s) and inserted item(%s) must be same.".formatted(removed, stack));
         }
         if (tile.isEmpty()) {
@@ -119,7 +119,7 @@ public class TileInfChestTest implements FabricGameTest {
         tile.setItem(0, new ItemStack(Items.APPLE, 64));
         tile.setItem(0, new ItemStack(Items.APPLE, 32));
 
-        if (!ItemStack.isSame(tile.getItem(1), new ItemStack(Items.APPLE, 64))) {
+        if (!ItemStack.isSameItemSameTags(tile.getItem(1), new ItemStack(Items.APPLE, 64))) {
             throw new GameTestAssertException("Tile has unexpected item, %s".formatted(tile.getItem(1)));
         }
         if (!tile.getItem(0).isEmpty()) {
@@ -143,7 +143,7 @@ public class TileInfChestTest implements FabricGameTest {
         tile.setItem(0, new ItemStack(Items.APPLE, 32));
 
         var removed = tile.removeItem(1, 64);
-        if (!ItemStack.isSame(removed, stack)) {
+        if (!ItemStack.isSameItemSameTags(removed, stack)) {
             throw new GameTestAssertException("%s must be taken. %s".formatted(stack, removed));
         }
         tile.setChanged();

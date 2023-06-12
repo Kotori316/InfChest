@@ -222,11 +222,11 @@ artifacts {
 }
 
 curseforge {
-    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
         id = '312222'
         changelogType = 'markdown'
-        changelog = new File("temp_changelog.md")
+        changelog = file("temp_changelog.md")
         addGameVersion(project.minecraftVersion as String)
         addGameVersion 'Forge'
         releaseType = 'release'
@@ -237,6 +237,25 @@ curseforge {
     options {
         curseGradleOptions.debug = !Boolean.parseBoolean(project.releaseMode) // defaults to false
         javaVersionAutoDetect = false
+    }
+}
+
+modrinth {
+    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
+    projectId = "infchest"
+    versionType = "release"
+    versionName = "${project.version}-forge"
+    versionNumber.set(project.version.toString())
+    uploadFile = tasks.jar
+    getAdditionalFiles().set([
+            tasks.deobfJar,
+            tasks.srcJar,
+    ])
+    getGameVersions().set([project.minecraftVersion])
+    getLoaders().set(["forge"])
+    changelog = file("temp_changelog.md").text
+    debugMode = !Boolean.parseBoolean(project.releaseMode)
+    dependencies {
     }
 }
 
