@@ -1,5 +1,4 @@
 package com.kotori316.infchest.forge.integration;
-/*
 
 import com.kotori316.infchest.common.integration.CommonTooltipPart;
 import com.kotori316.infchest.common.tiles.TileInfChest;
@@ -19,4 +18,4 @@ public final class InfChestWthitProvider implements IDataProvider<TileInfChest>,
     public void appendData(IDataWriter data, IServerAccessor<TileInfChest> accessor, IPluginConfig config) {
         CommonTooltipPart.addTileData(data.raw(), accessor.getTarget());
     }
-}*/
+}

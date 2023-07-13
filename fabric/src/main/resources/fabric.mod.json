@@ -35,11 +35,5 @@
     "minecraft": "1.20.x"
   },
   "custom": {
-    "waila:plugins": [
-      {
-        "id": "infchest:wthit_plugin",
-        "initializer": "com.kotori316.infchest.fabric.integration.InfChestWthitPlugin"
-      }
-    ]
   }
 }

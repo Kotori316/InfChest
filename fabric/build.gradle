@@ -43,7 +43,7 @@ repositories {
     }
     maven {
         name = "What The Hell Is That"
-        url = "https://maven.bai.lol"
+        url = "https://maven2.bai.lol"
         content {
             it.includeVersion("mcp.mobius.waila", "wthit-api", "fabric-${project.wthit_fabric_version}")
             it.includeVersion("mcp.mobius.waila", "wthit", "fabric-${project.wthit_fabric_version}")

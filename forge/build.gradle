@@ -119,7 +119,7 @@ repositories {
     }
     maven {
         name = "What The Hell Is That"
-        url = "https://maven.bai.lol"
+        url = "https://maven2.bai.lol"
         content {
             it.includeModule("mcp.mobius.waila", "wthit-api")
             it.includeModule("mcp.mobius.waila", "wthit")
