@@ -1,22 +1,22 @@
 package com.kotori316.infchest.forge.integration;
 
-import java.math.BigInteger;
-import java.util.Objects;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
-import appeng.capabilities.Capabilities;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.integration.CommonAE2Part;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -25,9 +25,8 @@ import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.integration.CommonAE2Part;
-import com.kotori316.infchest.common.tiles.TileInfChest;
+import java.math.BigInteger;
+import java.util.Objects;
 
 public class AE2InfChestIntegration {
 
@@ -48,7 +47,9 @@ public class AE2InfChestIntegration {
 
 class AE2Capability implements ICapabilityProvider {
 
-    private final LazyOptional<IStorageMonitorableAccessor> accessorLazyOptional;
+    private static final Capability<MEStorage> ME_STORAGE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
+    });
+    private final LazyOptional<MEStorage> accessorLazyOptional;
 
     AE2Capability(TileInfChest chest) {
         accessorLazyOptional = LazyOptional.of(() -> new AEInfChestInv(chest));
@@ -57,19 +58,13 @@ class AE2Capability implements ICapabilityProvider {
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return Capabilities.STORAGE_MONITORABLE_ACCESSOR.orEmpty(cap, accessorLazyOptional.cast());
+        return ME_STORAGE_CAPABILITY.orEmpty(cap, accessorLazyOptional.cast());
     }
 
 }
 
-record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorableAccessor {
+record AEInfChestInv(TileInfChest chest) implements MEStorage {
     private static final BigInteger LONG_MAX = BigInteger.valueOf(9000000000000000000L);
-
-    // IStorageMonitorableAccessor
-    @Override
-    public MEStorage getInventory(IActionSource iActionSource) {
-        return this;
-    }
 
     // MEStorage
 

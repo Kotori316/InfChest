@@ -29,7 +29,7 @@ loom {
             configName = "GameTest"
             server()
             //noinspection SpellCheckingInspection
-            vmArgs ("-ea", "-Dfabric-api.gametest", "-Dfabric-api.gametest.report-file=game_test/test-results/test/game_test.xml")
+            vmArgs("-ea", "-Dfabric-api.gametest", "-Dfabric-api.gametest.report-file=game_test/test-results/test/game_test.xml")
             runDir = "game_test"
             source sourceSets.test
         }
@@ -68,7 +68,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraftVersion}"
     mappings loom.layered {
         it.officialMojangMappings()
-        String[] parchmentVersion = String.valueOf(project.parchmentMapping).split("-")
+        String[] parchmentVersion = String.valueOf(project.parchmentMapping).split("-", 2)
         String parchmentMC = parchmentVersion[0]
         String parchmentDate = parchmentVersion[1]
         it.parchment("org.parchmentmc.data:parchment-$parchmentMC:$parchmentDate@zip")
@@ -78,7 +78,7 @@ dependencies {
     testCompileOnly project(":common")
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
     modCompileOnly("appeng:appliedenergistics2-fabric:${project.ae2_fabric_version}") {
         transitive(false)
     }
@@ -87,7 +87,7 @@ dependencies {
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_fabric_version}")
     // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_fabric_version}")
     // modRuntimeOnly("lol.bai:badpackets:fabric-${project.badpackets_fabric_version}")
-    modCompileOnly("curse.maven:jade-324717:${project.jade_fabric_id}")
+    modImplementation("curse.maven:jade-324717:${project.jade_fabric_id}")
 }
 
 processResources {

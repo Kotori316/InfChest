@@ -9,7 +9,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
@@ -30,21 +29,15 @@ public class AE2InfChestIntegration implements IAEAddonEntrypoint {
 
 class AE2Capability {
     public static void event() {
-        IStorageMonitorableAccessor.SIDED.registerForBlockEntities((blockEntity, context) -> {
+        MEStorage.SIDED.registerForBlockEntities((blockEntity, context) -> {
             if (blockEntity instanceof TileInfChest chest) return new AEInfChestInv(chest);
             else return null;
         }, InfChest.accessor.INF_CHEST_TYPE());
     }
 }
 
-record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorableAccessor {
+record AEInfChestInv(TileInfChest chest) implements MEStorage {
     private static final BigInteger LONG_MAX = BigInteger.valueOf(9000000000000000000L);
-
-    // IStorageMonitorableAccessor
-    @Override
-    public MEStorage getInventory(IActionSource iActionSource) {
-        return this;
-    }
 
     // MEStorage
 
