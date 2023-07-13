@@ -253,7 +253,7 @@ modrinth {
     ])
     getGameVersions().set([project.minecraftVersion])
     getLoaders().set(["forge"])
-    changelog = file("../temp_changelog.md").text
+    changelog = file("../temp_changelog.md").text.split("# ")[1]
     debugMode = !Boolean.parseBoolean(project.releaseMode)
     dependencies {
     }

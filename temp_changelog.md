@@ -1,3 +1,10 @@
+# Version 20.2
+
+2023-07-13
+
+* Update for 1.20.1
+* Update code for latest AE2
+
 # Version 20.0
 
 2023-06-12
