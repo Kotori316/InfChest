@@ -25,6 +25,10 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Enable daemon
         run: sed -i -e 's/org.gradle.daemon=false/org.gradle.daemon=true/' gradle.properties
+      - name: Compile
+        run: ./gradlew testClasses
+      - name: GameTest
+        run: ./gradlew runGameTest
       - uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: ${{secrets.GCP_IDENTITY_PROVIDER}}
@@ -50,10 +54,6 @@ jobs:
             modrinth_token:kotori316-mods-resources/modrinth_token
             curseforge_token:kotori316-mods-resources/curseforge_token
             azure_token:kotori316-mods-resources/azure_token
-      - name: Compile
-        run: ./gradlew testClasses
-      - name: GameTest
-        run: ./gradlew runGameTest
       - name: Release
         run: >-
           ./gradlew
