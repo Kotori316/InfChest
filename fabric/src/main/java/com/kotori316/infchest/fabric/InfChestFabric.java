@@ -49,7 +49,7 @@ public class InfChestFabric implements ModInitializer {
         public static final BlockEntityType<TileInfChestFabric> INF_CHEST_TYPE = FabricBlockEntityTypeBuilder.create(TileInfChestFabric::new, CHEST).build(DSL.emptyPartType());
         public static final BlockEntityType<TileDeque> DEQUE_TYPE = FabricBlockEntityTypeBuilder.create(TileDeque::new, DEQUE).build(DSL.emptyPartType());
         public static final ExtendedScreenHandlerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(ContainerInfChest::create);
-        public static final LootItemFunctionType CHEST_FUNCTION = new LootItemFunctionType(new ContentInfChest.Serializer());
+        public static final LootItemFunctionType CHEST_FUNCTION = new LootItemFunctionType(ContentInfChest.CODEC);
 
         @Override
         public BlockEntityType<? extends TileInfChest> INF_CHEST_TYPE() {
