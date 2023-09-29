@@ -17,7 +17,15 @@ pluginManagement {
             name = "Sponge Snapshots"
             url = "https://repo.spongepowered.org/repository/maven-public/"
         }
+        maven {
+            name = "Kotori316 Plugin"
+            url = "https://storage.googleapis.com/kotori316-maven-storage/maven/"
+        }
     }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 
 rootProject.name = "InfChest-1.20"
