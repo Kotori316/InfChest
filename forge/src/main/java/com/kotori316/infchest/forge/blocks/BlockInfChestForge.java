@@ -1,5 +1,7 @@
 package com.kotori316.infchest.forge.blocks;
 
+import com.kotori316.infchest.common.blocks.BlockInfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
@@ -9,10 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.NetworkHooks;
-
-import com.kotori316.infchest.common.blocks.BlockInfChest;
-import com.kotori316.infchest.common.tiles.TileInfChest;
 
 public final class BlockInfChestForge extends BlockInfChest {
     @Override
@@ -30,6 +28,6 @@ public final class BlockInfChestForge extends BlockInfChest {
 
     @Override
     protected void openGui(ServerPlayer player, TileInfChest chest, BlockPos pos) {
-        NetworkHooks.openScreen(player, chest, pos);
+        player.openMenu(chest, pos);
     }
 }

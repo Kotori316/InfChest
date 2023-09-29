@@ -62,7 +62,7 @@ public final class InfChestForge {
         public static final BlockEntityType<TileDequeForge> DEQUE_TYPE = BlockEntityType.Builder.of(TileDequeForge::new, DEQUE).build(DSL.emptyPartType());
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeMenuType.create(ContainerInfChest::create);
         public static final LootItemFunctionType CHEST_FUNCTION = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
-            new LootItemFunctionType(new ContentInfChest.Serializer()));
+            new LootItemFunctionType(ContentInfChest.CODEC));
 
         @Override
         public BlockEntityType<? extends TileInfChest> INF_CHEST_TYPE() {
