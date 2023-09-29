@@ -35,6 +35,8 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: javaToolchains
         run: ./gradlew :forge:javaToolchains
+      - name: Check Version
+        run: ./gradlew :forge:checkReleaseVersion
       - name: Build with Gradle
         run: ./gradlew :forge:build
 
@@ -56,5 +58,9 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: javaToolchains
         run: ./gradlew :fabric:javaToolchains
+      - name: Check Version
+        run: ./gradlew :fabric:checkReleaseVersion
       - name: Build with Gradle
         run: ./gradlew :fabric:build
+      - name: Game Test
+        run: ./gradlew :fabric:runGameTest

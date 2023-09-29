@@ -12,6 +12,7 @@ plugins {
     id("org.parchmentmc.librarian.forgegradle") version("1.+")
     id("com.matthewprenger.cursegradle") version("1.4.0")
     id("com.modrinth.minotaur").version("2.+")
+    id("com.kotori316.plugin.cf").version("1.+")
 }
 
 version = project.modVersion
@@ -321,3 +322,23 @@ tasks.withType(AbstractPublishToMaven).configureEach {
         it.dependsOn(":forge:signDeobfJar")
     }
 }
+
+import com.kotori316.plugin.cf.CallVersionFunctionTask
+import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
+
+tasks.register("registerVersion", CallVersionFunctionTask.class) {
+    functionEndpoint = readVersionFunctionEndpoint(project)
+    gameVersion = project.findProperty("minecraftVersion")
+    platform = "forge"
+    modName = project.findProperty("mod_id")
+    changelog = "For ${project.findProperty("minecraftVersion")}"
+}
+
+tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
+    gameVersion = project.findProperty("minecraftVersion")
+    platform = "forge"
+    modName = project.findProperty("mod_id")
+    version = project.version
+    failIfExists = Boolean.parseBoolean(project.releaseMode)
+}
+
