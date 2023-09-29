@@ -27,8 +27,6 @@ jobs:
         run: sed -i -e 's/org.gradle.daemon=false/org.gradle.daemon=true/' gradle.properties
       - name: Compile
         run: ./gradlew testClasses
-      - name: Check version
-        run: ./gradlew checkReleaseVersion
       - name: GameTest
         run: ./gradlew runGameTest
       - uses: google-github-actions/auth@v1
@@ -45,6 +43,8 @@ jobs:
           gpg --import "${HOME}/pgp_public.pub"
       - name: Enable release
         run: sed -i -e 's/releaseMode=false/releaseMode=true/' gradle.properties
+      - name: Check version
+        run: ./gradlew checkReleaseVersion
       - name: Get credentials
         id: get-secrets
         uses: google-github-actions/get-secretmanager-secrets@v1
