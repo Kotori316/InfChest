@@ -318,6 +318,8 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
     platform = "forge"
     modName = modId
     changelog = "For $minecraft"
+    isDryRun = !releaseMode
+    homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {

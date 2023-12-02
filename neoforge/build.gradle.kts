@@ -237,6 +237,8 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
     platform = "neoforge"
     modName = modId
     changelog = "For $minecraft"
+    isDryRun = !releaseMode
+    homepage = "https://modrinth.com/mod/infchest"
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
