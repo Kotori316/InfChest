@@ -1,3 +1,16 @@
+# Version 20.4
+
+2023-12-02
+
+* Update for NeoForge
+* Change resource pack version to 18
+
+# Version 20.3
+
+2023-09-29
+
+* Update for 1.20.2
+
 # Version 20.2
 
 2023-07-13
