@@ -142,7 +142,7 @@ curseforge {
         addGameVersion("Fabric")
         addGameVersion(minecraft)
         releaseType = "beta"
-        mainArtifact(tasks.remapJar)
+        mainArtifact(tasks.remapJar.flatMap { it.archiveFile }.get())
     })
     options(closureOf<com.matthewprenger.cursegradle.Options> {
         curseGradleOptions.debug = !releaseMode

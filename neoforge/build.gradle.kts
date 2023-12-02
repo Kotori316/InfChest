@@ -155,9 +155,9 @@ curseforge {
         addGameVersion(minecraft)
         addGameVersion("NeoForge")
         releaseType = "release"
-        mainArtifact(jar)
-        addArtifact(srcJar)
-        addArtifact(deobfJar)
+        mainArtifact(jar.archiveFile.get())
+        addArtifact(srcJar.archiveFile.get())
+        addArtifact(deobfJar.archiveFile.get())
     })
     options(closureOf<com.matthewprenger.cursegradle.Options> {
         curseGradleOptions.debug = !releaseMode
