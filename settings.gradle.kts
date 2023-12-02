@@ -40,3 +40,6 @@ if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
 if (!(System.getenv("DISABLE_FABRIC") ?: "false").toBoolean()) {
     include("fabric")
 }
+if (!(System.getenv("DISABLE_NEOFORGE") ?: "false").toBoolean()) {
+    include("neoforge")
+}
