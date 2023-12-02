@@ -1,12 +1,14 @@
 plugins {
-    id "java"
-    id "org.spongepowered.gradle.vanilla" version "0.2.1-SNAPSHOT"
+    id("java")
+    id("org.spongepowered.gradle.vanilla") version ("0.2.1-SNAPSHOT")
 }
 
-archivesBaseName = "${project.baseName}-Common-${project.minecraftVersion}"
+base {
+    archivesName = "${project.property("baseName")}-Common-${project.property("minecraftVersion")}"
+}
 
 minecraft {
-    version(project.minecraftVersion)
+    version(project.property("minecraftVersion") as String)
 }
 
 dependencies {
