@@ -1,0 +1,7 @@
+{
+  "infchest:wthit_plugin": {
+    "initializer": "com.kotori316.infchest.neoforge.integration.InfChestWthitPlugin",
+    "side": "*",
+    "required": []
+  }
+}

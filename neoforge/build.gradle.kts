@@ -57,12 +57,24 @@ repositories {
             includeGroup("curse.maven")
         }
     }
+
+    maven {
+        name = "What The Hell Is That"
+        url = uri("https://maven2.bai.lol")
+        content {
+            includeModule("mcp.mobius.waila", "wthit-api")
+            includeModule("mcp.mobius.waila", "wthit")
+            includeModule("lol.bai", "badpackets")
+        }
+    }
 }
 
 dependencies {
     implementation("net.neoforged:neoforge:${project.property("neo_version")}")
-    compileOnly (project(":common"))
+    compileOnly(project(":common"))
     testCompileOnly(project(":common"))
+    implementation(group = "curse.maven", name = "jade-324717", version = project.property("jade_neoforge_id") as String)
+    compileOnly(group = "mcp.mobius.waila", name = "wthit-api", version = "neo-${project.property("wthit_forge_version")}")
 }
 
 tasks {
