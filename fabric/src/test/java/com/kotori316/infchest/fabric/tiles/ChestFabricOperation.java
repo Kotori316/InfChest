@@ -15,7 +15,6 @@ import net.minecraft.world.item.Items;
 
 import com.kotori316.infchest.common.InfChest;
 
-@SuppressWarnings("UnstableApiUsage")
 public final class ChestFabricOperation implements FabricGameTest {
 
     @GameTest(template = EMPTY_STRUCTURE)

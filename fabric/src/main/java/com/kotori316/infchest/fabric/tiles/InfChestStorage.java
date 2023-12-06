@@ -1,7 +1,6 @@
 package com.kotori316.infchest.fabric.tiles;
 
-import java.math.BigInteger;
-
+import com.kotori316.infchest.common.InfChest;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -10,9 +9,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import com.kotori316.infchest.common.InfChest;
+import java.math.BigInteger;
 
-@SuppressWarnings("UnstableApiUsage")
 public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.ChestItems> implements SingleSlotStorage<ItemVariant> {
     private final TileInfChestFabric chest;
 
@@ -91,7 +89,7 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
         return Long.MAX_VALUE;
     }
 
-    record ChestItems(ItemStack inputSlot, ItemStack outputSlot, ItemStack holding, BigInteger count) {
+    protected record ChestItems(ItemStack inputSlot, ItemStack outputSlot, ItemStack holding, BigInteger count) {
     }
 
     public static void register() {
