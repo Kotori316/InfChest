@@ -1,5 +1,16 @@
 package com.kotori316.infchest.neoforge;
 
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.blocks.BlockDeque;
+import com.kotori316.infchest.common.blocks.BlockInfChest;
+import com.kotori316.infchest.common.blocks.ContentInfChest;
+import com.kotori316.infchest.common.guis.ContainerInfChest;
+import com.kotori316.infchest.common.guis.GuiInfChest;
+import com.kotori316.infchest.common.tiles.TileDeque;
+import com.kotori316.infchest.common.tiles.TileInfChest;
+import com.kotori316.infchest.neoforge.blocks.BlockDequeNeoForge;
+import com.kotori316.infchest.neoforge.blocks.BlockInfChestNeoForge;
+import com.kotori316.infchest.neoforge.packets.PacketHandler;
 import com.kotori316.infchest.neoforge.tiles.TileDequeNeoForge;
 import com.kotori316.infchest.neoforge.tiles.TileInfChestNeoForge;
 import com.mojang.datafixers.DSL;
@@ -14,24 +25,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.blocks.BlockDeque;
-import com.kotori316.infchest.common.blocks.BlockInfChest;
-import com.kotori316.infchest.common.blocks.ContentInfChest;
-import com.kotori316.infchest.common.guis.ContainerInfChest;
-import com.kotori316.infchest.common.guis.GuiInfChest;
-import com.kotori316.infchest.common.tiles.TileDeque;
-import com.kotori316.infchest.common.tiles.TileInfChest;
-import com.kotori316.infchest.neoforge.blocks.BlockDequeNeoForge;
-import com.kotori316.infchest.neoforge.blocks.BlockInfChestNeoForge;
-import com.kotori316.infchest.neoforge.packets.PacketHandler;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -134,6 +135,12 @@ public final class InfChestNeoForge {
                 event.accept(Register.CHEST);
                 event.accept(Register.DEQUE);
             }
+        }
+
+        @SubscribeEvent
+        public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Register.INF_CHEST_TYPE, TileInfChestNeoForge::getCapability);
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Register.DEQUE_TYPE, TileDequeNeoForge::getCapability);
         }
     }
 

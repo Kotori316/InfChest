@@ -1,18 +1,15 @@
 package com.kotori316.infchest.neoforge.tiles;
 
+import com.kotori316.infchest.common.tiles.TileInfChest;
+import com.kotori316.infchest.neoforge.packets.ItemCountMessage;
+import com.kotori316.infchest.neoforge.packets.PacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import com.kotori316.infchest.common.tiles.TileInfChest;
-import com.kotori316.infchest.neoforge.packets.ItemCountMessage;
-import com.kotori316.infchest.neoforge.packets.PacketHandler;
 
 public final class TileInfChestNeoForge extends TileInfChest {
     private final InfItemHandler handler = new InfItemHandler(this);
@@ -28,12 +25,8 @@ public final class TileInfChestNeoForge extends TileInfChest {
     }
 
     @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == Capabilities.ITEM_HANDLER) {
-            return Capabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
-        }
-        return super.getCapability(cap, side);
+    public IItemHandlerModifiable getCapability(@Nullable Direction side) {
+        return this.handler;
     }
 
 }

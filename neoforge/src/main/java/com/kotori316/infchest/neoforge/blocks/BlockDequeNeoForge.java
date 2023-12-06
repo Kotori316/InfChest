@@ -9,6 +9,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.kotori316.infchest.common.blocks.BlockDeque;
 
 public final class BlockDequeNeoForge extends BlockDeque {
+    public BlockDequeNeoForge() {
+        super(BlockDequeNeoForge::new);
+    }
+
     @Override
     public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
         return false;

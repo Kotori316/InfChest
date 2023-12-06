@@ -3,6 +3,7 @@ package com.kotori316.infchest.common.blocks;
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.integration.StorageBoxStack;
 import com.kotori316.infchest.common.tiles.TileInfChest;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -25,14 +27,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public abstract class BlockInfChest extends BaseEntityBlock {
     public static final String name = InfChest.modID;
     public final BlockItem itemBlock;
+    protected final MapCodec<? extends BlockInfChest> blockCodec;
 
-    public BlockInfChest() {
+    public BlockInfChest(Supplier<? extends BlockInfChest> instanceSupplier) {
         super(Block.Properties.of().mapColor(MapColor.METAL).pushReaction(PushReaction.BLOCK).strength(1.0f));
         itemBlock = new ItemInfChest(this);
+        this.blockCodec = simpleCodec(p -> instanceSupplier.get());
     }
 
     @Override
@@ -72,7 +77,7 @@ public abstract class BlockInfChest extends BaseEntityBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
         var pickBlock = super.getCloneItemStack(world, pos, state);
         saveChestNbtToStack(world.getBlockEntity(pos), pickBlock);
         saveCustomName(world.getBlockEntity(pos), pickBlock);
@@ -93,5 +98,10 @@ public abstract class BlockInfChest extends BaseEntityBlock {
                 .filter(Predicate.not(TileInfChest::isEmpty))
                 .map(TileInfChest::saveWithoutMetadata)
                 .ifPresent(tag -> stack.addTagElement("BlockEntityTag", tag));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return this.blockCodec;
     }
 }
