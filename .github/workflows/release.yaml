@@ -81,10 +81,11 @@ jobs:
             echo "${f:0:-4}"
             gpg --verify "$f" "${f:0:-4}"
           done
-      - name: Verify Forge Main Jar
-        run: jarsigner -verify -keystore "${HOME}/kotori316_keystore.jks" "$(ls forge/build/libs/*.jar | grep -v "deobf" | grep -v "sources")" -strict
-      - name: Verify Fabric Main Jar
-        run: jarsigner -verify -keystore "${HOME}/kotori316_keystore.jks" "$(ls fabric/build/libs/*.jar | grep -v "deobf" | grep -v "sources")" -strict
+      - name: Verify Main Jar
+        run: |
+          for f in $(ls */build/libs/*.jar | grep -v -e "common" -e "deobf" -e "sources") ; do
+            jarsigner -verify -keystore "${HOME}/kotori316_keystore.jks" "$f" -strict
+          done
       - name: Verify Maven Local
         run: |
           for f in $(find ~/.m2 -name "*.asc") ; do
