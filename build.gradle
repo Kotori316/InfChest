@@ -1,3 +1,6 @@
+import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
+import com.kotori316.plugin.cf.CallVersionFunctionTask
+
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.ZonedDateTime
@@ -18,6 +21,8 @@ buildscript {
 plugins {
     id("maven-publish")
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id("com.modrinth.minotaur") version("2.+")
+    id("com.kotori316.plugin.cf") version("1.+")
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
@@ -98,7 +103,7 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev/"
         content {
-            it.includeModule("appeng", "appliedenergistics2")
+            it.includeModule("appeng", "appliedenergistics2-forge")
         }
     }
     maven {
@@ -120,17 +125,19 @@ repositories {
         content {
             it.includeModule("mcp.mobius.waila", "wthit-api")
             it.includeModule("mcp.mobius.waila", "wthit")
+            includeGroup("lol.bai")
         }
     }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.73'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.2.17'
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
-    implementation(fg.deobf("appeng:appliedenergistics2:${project.ae2Version}"))
-    compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-4.3.1"))
-    runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-4.3.1"))
-    implementation(fg.deobf("curse.maven:the-one-probe-245211:3550084"))
+    implementation(fg.deobf("appeng:appliedenergistics2-forge:${project.ae2Version}"))
+    compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-4.13.6"))
+    runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-4.13.6"))
+    runtimeOnly(fg.deobf("lol.bai:badpackets:forge-0.1.2"))
+    implementation(fg.deobf("curse.maven:the-one-probe-245211:3965688"))
     // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3430254".toLowerCase())
 }
 
@@ -210,8 +217,23 @@ curseforge {
         addArtifact deobfJar
     }
     options {
-        debug = false // defaults to false
-        javaVersionAutoDetect = false
+        curseGradleOptions.debug = false // defaults to false
+        curseGradleOptions.javaVersionAutoDetect = false
+    }
+}
+
+modrinth {
+    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
+    projectId = "infchest"
+    versionType = "release"
+    versionName = "${project.version}-forge"
+    versionNumber.set(project.version.toString())
+    uploadFile = jar
+    gameVersions = [project.minecraftVersion as String]
+    loaders = ["forge"]
+    changelog = "See https://github.com/Kotori316/InfChest/blob/1.18/temp_changelog.md"
+    debugMode = false
+    dependencies {
     }
 }
 
@@ -250,4 +272,22 @@ task copyToDrive(type: Copy, dependsOn: "build") {
         System.getenv(PATH_NAME) != null &&
                 Files.exists(Paths.get(System.getenv(PATH_NAME)))
     }
+}
+
+tasks.register("registerVersion", CallVersionFunctionTask.class) {
+    functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
+    gameVersion = project.minecraftVersion as String
+    platform = "forge"
+    modName = "infchest"
+    changelog = "For $minecraft"
+    isDryRun = false
+    homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
+}
+
+tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
+    gameVersion = project.minecraftVersion as String
+    platform = "forge"
+    modName = "infchest"
+    version = project.version as String
+    failIfExists = true
 }
