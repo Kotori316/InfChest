@@ -60,6 +60,6 @@ record InfItemHandler(TileInfChest infChest) implements IItemHandler {
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         var holding = infChest.getHolding();
-        return holding.isEmpty() && ItemHandlerHelper.canItemStacksStack(holding, stack);
+        return holding.isEmpty() || ItemHandlerHelper.canItemStacksStack(holding, stack);
     }
 }
