@@ -7,16 +7,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
+/**
+ * Has 2 slots, the first one must be always empty, and the second one has the actual item with stack size changed.
+ *
+ * @param infChest
+ */
 record InfItemHandler(TileInfChest infChest) implements IItemHandler {
 
     @Override
     public int getSlots() {
-        return 1;
+        return 2;
     }
 
     @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
+        if (slot != 1) {
+            return ItemStack.EMPTY;
+        }
         var stack = infChest.getHolding();
         stack.setCount(Math.min(stack.getCount(), stack.getMaxStackSize()));
         return stack;
@@ -36,6 +44,10 @@ record InfItemHandler(TileInfChest infChest) implements IItemHandler {
     @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (slot != 1) {
+            // Only slot 1 allows extracting
+            return ItemStack.EMPTY;
+        }
         var item = infChest.getHolding();
         if (item.isEmpty()) {
             // Nothing to extract
@@ -59,6 +71,10 @@ record InfItemHandler(TileInfChest infChest) implements IItemHandler {
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        if (slot != 0) {
+            // Only slot 0 allows inserting
+            return false;
+        }
         var holding = infChest.getHolding();
         return holding.isEmpty() || ItemHandlerHelper.canItemStacksStack(holding, stack);
     }
