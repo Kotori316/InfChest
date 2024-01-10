@@ -1,3 +1,6 @@
+import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
+import com.kotori316.plugin.cf.CallVersionFunctionTask
+
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.ZonedDateTime
@@ -16,6 +19,8 @@ plugins {
     id("maven-publish")
     id 'net.minecraftforge.gradle' version '5.+'
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id("com.modrinth.minotaur") version("2.+")
+    id("com.kotori316.plugin.cf") version("1.+")
 }
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
@@ -95,7 +100,7 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev/"
         content {
-            it.includeModule("appeng", "appliedenergistics2")
+            it.includeModule("appeng", "appliedenergistics2-forge")
         }
     }
     maven {
@@ -110,7 +115,17 @@ repositories {
         content {
             it.includeModule("mcp.mobius.waila", "wthit-api")
             it.includeModule("mcp.mobius.waila", "wthit")
-            it.includeModule("lol.bai", "badpackets")
+            includeGroup("lol.bai")
+        }
+    }
+    maven {
+        url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage")
+        credentials {
+            username = "anything"
+            password = "\u0067hp_oGjcDFCn8jeTzIj4Ke9pLoEVtpnZMP4VQgaX"
+        }
+        content {
+            includeGroup("com.refinedmods")
         }
     }
 }
@@ -119,6 +134,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.forgeVersion}"
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
     compileOnly(fg.deobf("appeng:appliedenergistics2:${project.ae2Version}"))
+    implementation(fg.deobf("com.refinedmods:refinedstorage:${project.rsVersion}") { transitive = false })
     implementation(fg.deobf("curse.maven:jade-324717:${project.jade_id}"))
     implementation(fg.deobf("curse.maven:the-one-probe-245211:${project.top_id}"))
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.wthit_version}"))
@@ -183,7 +199,7 @@ artifacts {
 }
 
 curseforge {
-    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
         id = '312222'
         changelogType = 'markdown'
@@ -197,7 +213,22 @@ curseforge {
     }
     options {
         curseGradleOptions.debug = false // defaults to false
-        javaVersionAutoDetect = false
+        curseGradleOptions.javaVersionAutoDetect = false
+    }
+}
+
+modrinth {
+    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
+    projectId = "infchest"
+    versionType = "release"
+    versionName = "${project.version}-forge"
+    versionNumber.set(project.version.toString())
+    uploadFile = jar
+    gameVersions = [project.minecraftVersion as String]
+    loaders = ["forge"]
+    changelog = "See https://github.com/Kotori316/InfChest/blob/1.18/temp_changelog.md"
+    debugMode = false
+    dependencies {
     }
 }
 
@@ -236,4 +267,22 @@ task copyToDrive(type: Copy, dependsOn: "build") {
         System.getenv(PATH_NAME) != null &&
                 Files.exists(Paths.get(System.getenv(PATH_NAME)))
     }
+}
+
+tasks.register("registerVersion", CallVersionFunctionTask.class) {
+    functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
+    gameVersion = project.minecraftVersion as String
+    platform = "forge"
+    modName = "infchest"
+    changelog = "For ${project.minecraftVersion}"
+    isDryRun = false
+    homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
+}
+
+tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
+    gameVersion = project.minecraftVersion as String
+    platform = "forge"
+    modName = "infchest"
+    version = project.version as String
+    failIfExists = true
 }

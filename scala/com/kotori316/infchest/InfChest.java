@@ -1,7 +1,15 @@
 package com.kotori316.infchest;
 
-import java.util.function.Predicate;
-
+import com.kotori316.infchest.blocks.BlockDeque;
+import com.kotori316.infchest.blocks.BlockInfChest;
+import com.kotori316.infchest.blocks.ContentInfChest;
+import com.kotori316.infchest.guis.ContainerInfChest;
+import com.kotori316.infchest.guis.GuiInfChest;
+import com.kotori316.infchest.integration.AE2InfChestIntegration;
+import com.kotori316.infchest.integration.RsInfChestIntegration;
+import com.kotori316.infchest.packets.PacketHandler;
+import com.kotori316.infchest.tiles.TileDeque;
+import com.kotori316.infchest.tiles.TileInfChest;
 import com.mojang.datafixers.DSL;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.Registry;
@@ -22,15 +30,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.kotori316.infchest.blocks.BlockDeque;
-import com.kotori316.infchest.blocks.BlockInfChest;
-import com.kotori316.infchest.blocks.ContentInfChest;
-import com.kotori316.infchest.guis.ContainerInfChest;
-import com.kotori316.infchest.guis.GuiInfChest;
-import com.kotori316.infchest.integration.AE2InfChestIntegration;
-import com.kotori316.infchest.packets.PacketHandler;
-import com.kotori316.infchest.tiles.TileDeque;
-import com.kotori316.infchest.tiles.TileInfChest;
+import java.util.function.Predicate;
 
 @Mod(InfChest.modID)
 public class InfChest {
@@ -48,6 +48,7 @@ public class InfChest {
     public void preInit(FMLCommonSetupEvent event) {
         PacketHandler.init();
         AE2InfChestIntegration.onAPIAvailable();
+        RsInfChestIntegration.onAPIAvailable();
     }
 
     public void clientInit(FMLClientSetupEvent event) {

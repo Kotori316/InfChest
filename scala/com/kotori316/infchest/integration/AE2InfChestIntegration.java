@@ -1,8 +1,5 @@
 package com.kotori316.infchest.integration;
 
-import java.math.BigInteger;
-import java.util.Objects;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
@@ -11,8 +8,8 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.capabilities.Capabilities;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.kotori316.infchest.InfChest;
+import com.kotori316.infchest.tiles.TileInfChest;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,8 +23,10 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.tiles.TileInfChest;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigInteger;
+import java.util.Objects;
 
 public class AE2InfChestIntegration {
 
@@ -98,33 +97,16 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (!(what instanceof AEItemKey itemKey)) return 0; // Key is not item.
         var definition = itemKey.toStack();
-        var holding = chest.getStack();
+        var holding = chest.getHolding();
         var out = chest.getItem(1);
         if (ItemStack.isSameItemSameTags(definition, holding)) {
-            BigInteger extractCount = BigInteger.valueOf(amount).min(chest.itemCount());
+            BigInteger extractCount = BigInteger.valueOf(amount).min(chest.totalCount());
             if (mode == Actionable.MODULATE) {
                 // do subtract.
                 chest.decrStack(extractCount);
                 chest.setChanged();
             }
-            if (extractCount.equals(chest.itemCount())) {
-                // The caller requests more items than this chest holds.
-                // Check the output slot and extract from it.
-                if (ItemStack.isSameItemSameTags(definition, out)) {
-                    var extraCount = BigInteger.valueOf(amount).subtract(chest.itemCount()).min(BigInteger.valueOf(out.getCount())).intValueExact();
-                    if (mode == Actionable.MODULATE) {
-                        this.chest.removeItem(1, extraCount);
-                        this.chest.setChanged();
-                    }
-                    return extractCount.longValue() + extraCount;
-                } else {
-                    // There is no extra item to be extracted.
-                    return extractCount.longValue();
-                }
-            } else {
-                // The demand is satisfied.
-                return extractCount.longValue();
-            }
+            return extractCount.longValue();
         } else if (ItemStack.isSameItemSameTags(definition, out)) {
             int extractCount = (int) Math.min(out.getCount(), amount);
             if (mode == Actionable.MODULATE) {
@@ -139,13 +121,9 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        var inSlot = this.chest.getItem(1);
-        if (!inSlot.isEmpty()) {
-            out.add(Objects.requireNonNull(AEItemKey.of(inSlot)), inSlot.getCount());
-        }
-        var holding = this.chest.getStack();
+        var holding = this.chest.getHolding();
         if (!holding.isEmpty()) {
-            var count = LONG_MAX.min(this.chest.itemCount());
+            var count = LONG_MAX.min(this.chest.totalCount());
             out.add(Objects.requireNonNull(AEItemKey.of(holding)), count.longValue());
         }
     }

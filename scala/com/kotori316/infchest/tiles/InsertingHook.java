@@ -1,12 +1,7 @@
 package com.kotori316.infchest.tiles;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
+import com.kotori316.infchest.InfChest;
+import com.kotori316.infchest.integration.StorageBoxStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
@@ -14,8 +9,12 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.integration.StorageBoxStack;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public record InsertingHook(List<Hook> hooks) {
     private static final List<Hook> DEFAULT_HOOKS;
@@ -61,20 +60,12 @@ public record InsertingHook(List<Hook> hooks) {
                 return BigInteger.ZERO;
             }
 
-            ItemStack secondStack = getSecondItem(tag);
-            ItemStack holding = ItemStack.of(tag.getCompound(TileInfChest.NBT_ITEM));
-            holding.setCount(1);
-            BigInteger second;
-            if (ItemStack.isSame(secondStack, holding) && ItemStack.tagMatches(secondStack, holding))
-                second = BigInteger.valueOf(secondStack.getCount());
-            else
-                second = BigInteger.ZERO;
             String itemCount = tag.getString(TileInfChest.NBT_COUNT);
             if (itemCount.isEmpty())
                 return BigInteger.ZERO;
             else
                 try {
-                    return (new BigDecimal(itemCount).toBigIntegerExact().add(second)).multiply(BigInteger.valueOf(Math.max(hookItem.getCount(), 1)));
+                    return (new BigDecimal(itemCount).toBigIntegerExact()).multiply(BigInteger.valueOf(Math.max(hookItem.getCount(), 1)));
                 } catch (NumberFormatException | ArithmeticException e) {
                     InfChest.LOGGER.error("Invalid item count.", e);
                     return BigInteger.ZERO;

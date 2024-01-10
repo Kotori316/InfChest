@@ -1,53 +1,67 @@
 package com.kotori316.infchest.tiles;
 
-import javax.annotation.Nonnull;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
-record InfItemHandler(TileInfChest infChest) implements IItemHandlerModifiable {
+import java.math.BigInteger;
 
-    @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-        infChest.setItem(slot, stack);
-    }
+/**
+ * Has 2 slots, the first one must be always empty, and the second one has the actual item with stack size changed.
+ *
+ * @param infChest
+ */
+record InfItemHandler(TileInfChest infChest) implements IItemHandler {
 
     @Override
     public int getSlots() {
-        return infChest.getContainerSize();
+        return 2;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return infChest.getItem(slot);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (isItemValid(0, stack)) {
-            if (!simulate) {
-                infChest.addStack(stack);
-                infChest.setChanged();
-            }
+        if (slot != 1) {
             return ItemStack.EMPTY;
         }
+        var stack = infChest.getHolding();
+        stack.setCount(Math.min(stack.getCount(), stack.getMaxStackSize()));
         return stack;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot == 1) {
-            if (!simulate) {
-                ItemStack stack = infChest.removeItem(slot, amount);
-                infChest.setChanged();
-                return stack;
-            } else {
-                return infChest.getStack().split(amount);
-            }
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        if (!isItemValid(slot, stack)) return stack;
+        if (!simulate) {
+            infChest.addStack(stack);
+            infChest.setChanged();
         }
         return ItemStack.EMPTY;
+    }
+
+    @NotNull
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (slot != 1) {
+            // Only slot 1 allows extracting
+            return ItemStack.EMPTY;
+        }
+        var item = infChest.getHolding();
+        if (item.isEmpty()) {
+            // Nothing to extract
+            return ItemStack.EMPTY;
+        }
+
+        var extractCount = infChest.totalCount().min(BigInteger.valueOf(amount));
+        if (!simulate) {
+            infChest.decrStack(extractCount);
+            infChest.setChanged();
+        }
+        // Safe to modify as item is already copied
+        item.setCount(extractCount.intValueExact());
+        return item;
     }
 
     @Override
@@ -56,7 +70,12 @@ record InfItemHandler(TileInfChest infChest) implements IItemHandlerModifiable {
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return infChest.canPlaceItem(slot, stack);
+    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        if (slot != 0) {
+            // Only slot 0 allows inserting
+            return false;
+        }
+        var holding = infChest.getHolding();
+        return holding.isEmpty() || ItemHandlerHelper.canItemStacksStack(holding, stack);
     }
 }

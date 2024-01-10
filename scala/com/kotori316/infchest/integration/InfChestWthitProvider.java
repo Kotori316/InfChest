@@ -1,19 +1,13 @@
 package com.kotori316.infchest.integration;
 
-import java.math.BigInteger;
-
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IBlockComponentProvider;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.IServerAccessor;
-import mcp.mobius.waila.api.IServerDataProvider;
-import mcp.mobius.waila.api.ITooltip;
+import com.kotori316.infchest.tiles.TileInfChest;
+import mcp.mobius.waila.api.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import com.kotori316.infchest.tiles.TileInfChest;
+import java.math.BigInteger;
 
 public final class InfChestWthitProvider implements IServerDataProvider<BlockEntity>, IBlockComponentProvider {
     private static final String NBT_ITEM = "wthit_item";
@@ -46,8 +40,8 @@ public final class InfChestWthitProvider implements IServerDataProvider<BlockEnt
     @Override
     public void appendServerData(CompoundTag tag, IServerAccessor<BlockEntity> accessor, IPluginConfig config) {
         if (accessor.getTarget() instanceof TileInfChest chest) {
-            tag.put(NBT_ITEM, chest.getStack(1).serializeNBT());
-            tag.putByteArray(NBT_COUNT, chest.itemCount().toByteArray());
+            tag.put(NBT_ITEM, chest.getHoldingWithOneCount().serializeNBT());
+            tag.putByteArray(NBT_COUNT, chest.totalCount().toByteArray());
         }
     }
 }

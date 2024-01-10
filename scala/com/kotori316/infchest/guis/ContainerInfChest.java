@@ -1,5 +1,7 @@
 package com.kotori316.infchest.guis;
 
+import com.kotori316.infchest.InfChest;
+import com.kotori316.infchest.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -8,9 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.tiles.TileInfChest;
 
 public class ContainerInfChest extends AbstractContainerMenu {
 
@@ -43,7 +42,7 @@ public class ContainerInfChest extends AbstractContainerMenu {
     public ItemStack quickMoveStack(Player playerIn, int index) {
         Slot from = getSlot(index);
         if (from.hasItem()) {
-            ItemStack current = from.getItem();
+            ItemStack current = from.getItem().copy();
             int originalSize = current.getCount();
             int originalSlot = 2;
             if (index < originalSlot) {
