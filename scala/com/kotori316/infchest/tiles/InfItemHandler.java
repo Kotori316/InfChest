@@ -2,7 +2,6 @@ package com.kotori316.infchest.tiles;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -75,7 +74,6 @@ record InfItemHandler(TileInfChest infChest) implements IItemHandler {
             // Only slot 0 allows inserting
             return false;
         }
-        var holding = infChest.getHolding();
-        return holding.isEmpty() || ItemHandlerHelper.canItemStacksStack(holding, stack);
+        return infChest.canInsertFromOutside(stack);
     }
 }

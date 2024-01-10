@@ -75,7 +75,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
         if (what instanceof AEItemKey itemKey) {
-            return this.chest.canPlaceItem(0, itemKey.toStack());
+            return this.chest.canInsertFromOutside(itemKey.toStack());
         } else {
             return false;
         }
@@ -85,7 +85,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         if (!(what instanceof AEItemKey itemKey)) return 0; // Key is not item.
         var definition = itemKey.toStack();
-        if (!this.chest.canPlaceItem(0, definition)) return 0; // The item is NOT acceptable.
+        if (!this.chest.canInsertFromOutside(definition)) return 0; // The item is NOT acceptable.
         if (mode == Actionable.MODULATE) {
             chest.addStack(definition, BigInteger.valueOf(amount));
             chest.setChanged();

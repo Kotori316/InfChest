@@ -298,6 +298,12 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         return false;
     }
 
+    public boolean canInsertFromOutside(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        if (holding.isEmpty()) return true;
+        return ItemHandlerHelper.canItemStacksStack(holding, stack);
+    }
+
     @Override
     public void clearContent() {
         inventory.clear();

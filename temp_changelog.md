@@ -24,6 +24,13 @@
 
 * For 1.19
 
+# Version 18.7
+
+2024-01-11
+
+* Improved RS integration
+* Fixed item disappearance in AE2 and RS
+
 # Version 18.6
 
 2024-01-10
