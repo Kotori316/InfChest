@@ -103,7 +103,7 @@ record RsInfChestInv(TileInfChest chest, IExternalStorageContext context,
     @Override
     public ItemStack insert(@NotNull ItemStack stack, int size, Action action) {
         if (stack.isEmpty()) return ItemStack.EMPTY;
-        if (!chest.canPlaceItem(0, stack)) return ItemHandlerHelper.copyStackWithSize(stack, size);
+        if (!chest.canInsertFromOutside(stack)) return ItemHandlerHelper.copyStackWithSize(stack, size);
 
         if (action == Action.PERFORM) {
             chest.addStack(stack, BigInteger.valueOf(size));
