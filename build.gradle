@@ -290,7 +290,7 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     gameVersion = project.minecraftVersion as String
     platform = "forge"
     modName = "infchest"
-    changelog = "For $minecraft"
+    changelog = "For ${project.minecraftVersion}"
     isDryRun = false
     homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
 }
