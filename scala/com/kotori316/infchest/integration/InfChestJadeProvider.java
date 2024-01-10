@@ -51,8 +51,8 @@ public class InfChestJadeProvider implements IServerDataProvider<BlockEntity>, I
     @Override
     public void appendServerData(CompoundTag tag, ServerPlayer serverPlayer, Level world, BlockEntity te, boolean b) {
         if (te instanceof TileInfChest chest) {
-            tag.put(NBT_ITEM, chest.getStack(1).serializeNBT());
-            tag.putByteArray(NBT_COUNT, chest.itemCount().toByteArray());
+            tag.put(NBT_ITEM, chest.getHoldingWithOneCount().serializeNBT());
+            tag.putByteArray(NBT_COUNT, chest.totalCount().toByteArray());
         }
     }
 

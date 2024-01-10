@@ -133,7 +133,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${project.forgeVersion}"
     //deobfCompile "com.mod-buildcraft:buildcraft:7.99.17"
-    compileOnly(fg.deobf("appeng:appliedenergistics2:${project.ae2Version}"))
+    implementation(fg.deobf("appeng:appliedenergistics2-forge:${project.ae2Version}") { transitive = false })
     implementation(fg.deobf("com.refinedmods:refinedstorage:${project.rsVersion}") { transitive = false })
     implementation(fg.deobf("curse.maven:jade-324717:${project.jade_id}"))
     implementation(fg.deobf("curse.maven:the-one-probe-245211:${project.top_id}"))
@@ -226,7 +226,7 @@ modrinth {
     uploadFile = jar
     gameVersions = [project.minecraftVersion as String]
     loaders = ["forge"]
-    changelog = "See https://github.com/Kotori316/InfChest/blob/1.18/temp_changelog.md"
+    changelog = "See https://github.com/Kotori316/InfChest/blob/1.19.2/temp_changelog.md"
     debugMode = false
     dependencies {
     }
