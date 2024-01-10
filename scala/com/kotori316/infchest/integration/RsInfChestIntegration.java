@@ -75,14 +75,24 @@ record RsInfChestInv(TileInfChest chest, IExternalStorageContext context,
 
             ItemStack holding = chest.getHolding();
             if (!ItemStack.matches(cached, holding)) {
-                if (!cached.isEmpty()) {
-                    network.getItemStorageCache().remove(cached, cached.getCount(), true);
-                }
-                if (!holding.isEmpty()) {
-                    network.getItemStorageCache().add(ItemHandlerHelper.copyStackWithSize(holding, 1), holding.getCount(), false, true);
+                if (!cached.isEmpty() && ItemHandlerHelper.canItemStacksStack(cached, holding)) {
+                    var delta = holding.getCount() - cached.getCount();
+                    if (delta > 0) {
+                        network.getItemStorageCache().add(cached, Math.abs(delta), false, true);
+                    } else {
+                        network.getItemStorageCache().remove(cached, Math.abs(delta), true);
+                    }
                     cache.set(holding);
                 } else {
-                    cache.set(ItemStack.EMPTY);
+                    if (!cached.isEmpty()) {
+                        network.getItemStorageCache().remove(cached, cached.getCount(), true);
+                    }
+                    if (!holding.isEmpty()) {
+                        network.getItemStorageCache().add(ItemHandlerHelper.copyStackWithSize(holding, 1), holding.getCount(), false, true);
+                        cache.set(holding);
+                    } else {
+                        cache.set(ItemStack.EMPTY);
+                    }
                 }
                 network.getItemStorageCache().flush();
             }
