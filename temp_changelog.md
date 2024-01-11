@@ -1,3 +1,10 @@
+# Version 19.4.1
+
+2024-01-11
+
+* Added RS integration
+* Fixed duplication in some conditions
+
 # Version 19.4
 
 2022-08-07
