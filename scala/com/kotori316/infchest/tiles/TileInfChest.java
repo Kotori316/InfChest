@@ -300,6 +300,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
 
     public boolean canInsertFromOutside(ItemStack stack) {
         if (stack.isEmpty()) return false;
+        if (!getItem(0).isEmpty()) return false; // To the disappearance of item in slot 0
         if (holding.isEmpty()) return true;
         return ItemHandlerHelper.canItemStacksStack(holding, stack);
     }
