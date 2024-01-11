@@ -1,3 +1,7 @@
+# Version 18.8
+
+* Disallow automatic item inserting when chest has items in slot 0
+
 # Version 18.7
 
 2024-01-11
