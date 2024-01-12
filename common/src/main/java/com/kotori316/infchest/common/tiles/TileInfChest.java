@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.kotori316.infchest.InfChest;
+import com.kotori316.infchest.blocks.BlockInfChest;
+import com.kotori316.infchest.guis.ContainerInfChest;
+import com.kotori316.infchest.packets.ItemCountMessage;
+import com.kotori316.infchest.packets.PacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -21,10 +26,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.blocks.BlockInfChest;
 import com.kotori316.infchest.common.guis.ContainerInfChest;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, MenuProvider, Nameable {
 
@@ -46,15 +60,8 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
 
     @Override
     protected void saveAdditional(CompoundTag compound) {
-        if (stacksEqual(holding, getItem(1))) {
-            ItemStack temp = removeItemNoUpdate(1);
-            ContainerHelper.saveAllItems(compound, inventory);
-            compound.putString(NBT_COUNT, count.add(BigInteger.valueOf(temp.getCount())).toString());
-            inventory.set(1, temp);
-        } else {
-            compound.putString(NBT_COUNT, count.toString());
-            ContainerHelper.saveAllItems(compound, inventory);
-        }
+        compound.putString(NBT_COUNT, count.toString());
+        ContainerHelper.saveAllItems(compound, inventory);
         compound.put(NBT_ITEM, holding.save(new CompoundTag()));
         Optional.ofNullable(customName).map(Component.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
         super.saveAdditional(compound);
@@ -132,17 +139,39 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
 
     @Override
     public ItemStack removeItem(int index, int count) {
-        return ContainerHelper.removeItem(inventory, index, count);
+        var s = ContainerHelper.removeItem(inventory, index, count);
+        if (index == 1) {
+            if (level != null && !level.isClientSide) {
+                decrStack(BigInteger.valueOf(s.getCount()));
+            }
+            setChanged();
+        }
+        return s;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
-        return ContainerHelper.takeItem(inventory, index);
+        var s = ContainerHelper.takeItem(inventory, index);
+        if (index == 1) {
+            if (level != null && !level.isClientSide) {
+                decrStack(BigInteger.valueOf(s.getCount()));
+            }
+            setChanged();
+        }
+        return s;
     }
 
     @Override
     public void setItem(int index, ItemStack stack) {
-        inventory.set(index, stack);
+        var before = inventory.set(index, stack);
+        if (index == 1) {
+            if (level != null && !level.isClientSide) {
+                if (!stack.isEmpty() && stacksEqual(holding, stack)) {
+                    count = count.add(BigInteger.valueOf(stack.getCount()));
+                }
+                decrStack(BigInteger.valueOf(before.getCount()));
+            }
+        }
         setChanged();
     }
 
@@ -166,23 +195,18 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
                 addStack(insert);
             }
         }
-        ItemStack out = getItem(1);
-        // Make sure out item is equal to holding.
-        boolean outFlag = out.isEmpty() || stacksEqual(holding, out);
-        if (outFlag && out.getCount() < holding.getMaxStackSize() && gt(count, 0)) {
-            int sub = holding.getMaxStackSize() - out.getCount();
-            if (gt(count, sub)) { //count > sub
-                ItemStack itemStack = copyAmount(holding, holding.getMaxStackSize());
-                count = count.subtract(BigInteger.valueOf(sub));
-                inventory.set(1, itemStack); // Don't need to call markDirty() more.
-            } else {
-                // count <= sub
-                ItemStack itemStack = copyAmount(holding, out.getCount() + count.intValueExact());
-                count = BigInteger.ZERO;
-                holding = ItemStack.EMPTY;
-                inventory.set(1, itemStack); // Don't need to call markDirty() more.
+        // Set stack in output slot
+        if (holding.isEmpty()) {
+            // Chest has no items. Set empty stack in output slot
+            inventory.set(1, ItemStack.EMPTY);
+        } else {
+            ItemStack out = getItem(1);
+            if (out.isEmpty() || stacksEqual(holding, out)) {
+                int expectedCount = totalCount().min(BigInteger.valueOf(holding.getMaxStackSize())).intValueExact();
+                inventory.set(1, ItemHandlerHelper.copyStackWithSize(holding, expectedCount));
             }
         }
+
         if (level != null && !level.isClientSide) {
             runUpdates();
         }
@@ -203,7 +227,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         } else {
             count = count.add(add);
             if (holding.isEmpty())
-                holding = copyAmount(insert, 1);
+                holding = ItemHandlerHelper.copyStackWithSize(insert, 1);
             inventory.set(0, ItemStack.EMPTY);
         }
     }
@@ -221,18 +245,31 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         if (count.equals(BigInteger.ZERO)) {
             holding = ItemStack.EMPTY;
         }
-        updateInv();
     }
 
-    public ItemStack getStack() {
-        return getStack(INT_MAX.min(count).intValueExact());
+    public ItemStack getHolding() {
+        if (!holding.isEmpty()) {
+            return ItemHandlerHelper.copyStackWithSize(holding, INT_MAX.min(totalCount()).intValueExact());
+        }
+        ItemStack out = getItem(1);
+        if (!out.isEmpty()) {
+            return out.copy();
+        }
+        return ItemStack.EMPTY;
     }
 
-    public ItemStack getStack(int amount) {
-        return copyAmount(holding, amount);
+    public ItemStack getHoldingWithOneCount() {
+        if (!holding.isEmpty()) {
+            return ItemHandlerHelper.copyStackWithSize(holding, 1);
+        }
+        ItemStack out = getItem(1);
+        if (!out.isEmpty()) {
+            return ItemHandlerHelper.copyStackWithSize(out, 1);
+        }
+        return ItemStack.EMPTY;
     }
 
-    public BigInteger itemCount() {
+    public BigInteger totalCount() {
         return count;
     }
 
@@ -259,12 +296,19 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     public boolean canPlaceItem(int index, ItemStack stack) {
         if (index == 0) {
             Optional<InsertingHook.Hook> hookObject = hook.findHookObject(stack);
-            ItemStack secondStack = getStack(1);
+            ItemStack secondStack = getItem(1);
             return (holding.isEmpty() && hookObject.isEmpty() && (secondStack.isEmpty() || stacksEqual(secondStack, stack)))
                    || stacksEqual(holding, stack)
                    || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
         }
         return false;
+    }
+
+    public boolean canInsertFromOutside(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        if (!getItem(0).isEmpty()) return false; // To the disappearance of item in slot 0
+        if (holding.isEmpty()) return true;
+        return ItemHandlerHelper.canItemStacksStack(holding, stack);
     }
 
     @Override

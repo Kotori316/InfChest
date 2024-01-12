@@ -141,6 +141,16 @@ repositories {
         name = "Mixin"
         url = "https://repo.spongepowered.org/maven"
     }
+    maven {
+        url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage")
+        credentials {
+            username = "anything"
+            password = "\u0067hp_oGjcDFCn8jeTzIj4Ke9pLoEVtpnZMP4VQgaX"
+        }
+        content {
+            includeGroup("com.refinedmods")
+        }
+    }
 }
 
 dependencies {
@@ -151,6 +161,7 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 
     compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${project.ae2Version}"))
+    compileOnly(fg.deobf("com.refinedmods:refinedstorage:${project.rsVersion}") { transitive = false })
     compileOnly(fg.deobf("curse.maven:jade-324717:${project.jade_forge_id}"))  // TODO change to implementation
     compileOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.top_id}"))  // TODO change to implementation
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.wthit_forge_version}"))

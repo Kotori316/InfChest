@@ -3,6 +3,8 @@ package com.kotori316.infchest.common.guis;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import com.kotori316.infchest.InfChest;
+import com.kotori316.infchest.tiles.TileInfChest;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -14,6 +16,8 @@ import net.minecraft.world.item.ItemStack;
 
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.TileInfChest;
+
+import java.util.Optional;
 
 public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     private final TileInfChest infChest;
@@ -27,9 +31,9 @@ public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
         super.renderLabels(matrixStack, mouseX, mouseY);
-        Optional.ofNullable(infChest).map(TileInfChest::getStack).filter(Predicate.not(ItemStack::isEmpty)).map(ItemStack::getDisplayName).ifPresent(itemName -> {
+        Optional.ofNullable(infChest).map(TileInfChest::getHolding).filter(Predicate.not(ItemStack::isEmpty)).map(ItemStack::getDisplayName).ifPresent(itemName -> {
                 this.font.draw(matrixStack, itemName, (imageWidth - this.font.width(itemName)) / (float) 2, 20, 0x404040);
-                this.font.draw(matrixStack, "Item: " + infChest.itemCount(), 8, 60, 0x404040);
+                this.font.draw(matrixStack, "Item: " + infChest.totalCount(), 8, 60, 0x404040);
             }
         );
     }

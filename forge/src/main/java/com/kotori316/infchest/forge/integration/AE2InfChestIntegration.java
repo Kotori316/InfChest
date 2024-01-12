@@ -1,8 +1,5 @@
 package com.kotori316.infchest.forge.integration;
 
-import java.math.BigInteger;
-import java.util.Objects;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
@@ -11,6 +8,8 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.capabilities.Capabilities;
+import com.kotori316.infchest.InfChest;
+import com.kotori316.infchest.tiles.TileInfChest;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +23,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigInteger;
+import java.util.Objects;
 
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.integration.CommonAE2Part;
@@ -76,7 +80,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
         if (what instanceof AEItemKey itemKey) {
-            return this.chest.canPlaceItem(0, itemKey.toStack());
+            return this.chest.canInsertFromOutside(itemKey.toStack());
         } else {
             return false;
         }
@@ -98,13 +102,9 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        var inSlot = this.chest.getItem(1);
-        if (!inSlot.isEmpty()) {
-            out.add(Objects.requireNonNull(AEItemKey.of(inSlot)), inSlot.getCount());
-        }
-        var holding = this.chest.getStack();
+        var holding = this.chest.getHolding();
         if (!holding.isEmpty()) {
-            var count = LONG_MAX.min(this.chest.itemCount());
+            var count = LONG_MAX.min(this.chest.totalCount());
             out.add(Objects.requireNonNull(AEItemKey.of(holding)), count.longValue());
         }
     }
