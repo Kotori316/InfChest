@@ -1,5 +1,6 @@
 package com.kotori316.infchest.forge;
 
+import com.kotori316.infchest.forge.integration.RsInfChestIntegration;
 import com.mojang.datafixers.DSL;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.Registry;
@@ -49,6 +50,7 @@ public final class InfChestForge {
     public void preInit(FMLCommonSetupEvent event) {
         PacketHandler.init();
         AE2InfChestIntegration.onAPIAvailable();
+        RsInfChestIntegration.onAPIAvailable();
     }
 
     public void clientInit(FMLClientSetupEvent event) {

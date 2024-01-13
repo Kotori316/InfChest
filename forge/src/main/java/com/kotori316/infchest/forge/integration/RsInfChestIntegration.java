@@ -1,5 +1,6 @@
 package com.kotori316.infchest.forge.integration;
 
+import com.kotori316.infchest.common.integration.CommonAE2Part;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.refinedmods.refinedstorage.api.IRSAPI;
 import com.refinedmods.refinedstorage.api.RSAPIInject;
@@ -18,7 +19,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
@@ -113,13 +113,8 @@ record RsInfChestInv(TileInfChest chest, IExternalStorageContext context,
     @Override
     public ItemStack insert(@NotNull ItemStack stack, int size, Action action) {
         if (stack.isEmpty()) return ItemStack.EMPTY;
-        if (!chest.canInsertFromOutside(stack)) return ItemHandlerHelper.copyStackWithSize(stack, size);
-
-        if (action == Action.PERFORM) {
-            chest.addStack(stack, BigInteger.valueOf(size));
-            chest.setChanged();
-        }
-        return ItemStack.EMPTY;
+        int inserted = (int) CommonAE2Part.insert(chest, size, stack, action == Action.PERFORM);
+        return ItemHandlerHelper.copyStackWithSize(stack, size - inserted);
     }
 
     @NotNull
@@ -128,13 +123,9 @@ record RsInfChestInv(TileInfChest chest, IExternalStorageContext context,
         if (stack.isEmpty()) return ItemStack.EMPTY;
         ItemStack holding = chest.getHolding();
         if (!RsInfChestIntegration.RsAccess.RS_API.getComparer().isEqual(stack, holding, flags)) return ItemStack.EMPTY;
-        BigInteger extractCount = chest.totalCount().min(BigInteger.valueOf(size));
 
-        if (action == Action.PERFORM) {
-            chest.decrStack(extractCount);
-            chest.setChanged();
-        }
-        return ItemHandlerHelper.copyStackWithSize(stack, extractCount.intValueExact());
+        int extracted = (int) CommonAE2Part.extract(chest, size, stack, action == Action.PERFORM);
+        return ItemHandlerHelper.copyStackWithSize(stack, extracted);
     }
 
     @Override

@@ -82,7 +82,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
-    modCompileOnly("appeng:appliedenergistics2-fabric:${project.ae2_fabric_version}") {
+    modImplementation("appeng:appliedenergistics2-fabric:${project.ae2_fabric_version}") {
         transitive(false)
     }
     //noinspection SpellCheckingInspection
