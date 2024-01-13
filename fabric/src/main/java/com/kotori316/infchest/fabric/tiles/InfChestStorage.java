@@ -22,7 +22,7 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
 
     @Override
     protected ChestItems createSnapshot() {
-        return new ChestItems(chest.getItem(0), chest.getHolding().copy(), chest.totalCount());
+        return new ChestItems(chest.getItem(0), chest.getHoldingWithOneCount().copy(), chest.totalCount());
     }
 
     @Override
@@ -30,6 +30,7 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
         chest.decrStack(chest.totalCount());
         chest.addStack(snapshot.holding, snapshot.count);
         chest.setItem(0, snapshot.inputSlot);
+        chest.setChanged();
     }
 
     @Override

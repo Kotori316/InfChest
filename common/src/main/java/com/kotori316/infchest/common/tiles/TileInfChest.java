@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, MenuProvider, Nameable {
 
@@ -328,6 +329,11 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     @Override
     public List<Runnable> getUpdates() {
         return updateRunnable;
+    }
+
+    @Override
+    public void runUpdateRemoveIf(Predicate<Runnable> predicate) {
+        updateRunnable.removeIf(predicate);
     }
 
     public static final String GUI_ID = InfChest.modID + ":gui_" + BlockInfChest.name;

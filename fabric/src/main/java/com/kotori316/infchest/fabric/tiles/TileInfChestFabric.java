@@ -38,7 +38,7 @@ public final class TileInfChestFabric extends TileInfChest implements ExtendedSc
     @Override
     public void stopOpen(Player player) {
         if (level != null && !level.isClientSide && player instanceof ServerPlayer) {
-            getUpdates().removeIf(r -> (r instanceof MessageSender m) && m.playerEqual(player));
+            runUpdateRemoveIf(r -> (r instanceof MessageSender m) && m.playerEqual(player));
         }
         super.stopOpen(player);
     }
