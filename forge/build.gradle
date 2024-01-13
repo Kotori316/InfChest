@@ -2,6 +2,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
+import com.kotori316.plugin.cf.CallVersionFunctionTask
 
 buildscript {
     repositories {
@@ -20,6 +22,8 @@ plugins {
     id "java"
     id "maven-publish"
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id("com.modrinth.minotaur") version("2.+")
+    id("com.kotori316.plugin.cf") version("2.+")
 }
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "org.spongepowered.mixin"
@@ -222,7 +226,7 @@ artifacts {
 }
 
 curseforge {
-    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
         id = '312222'
         changelogType = 'markdown'
@@ -237,6 +241,21 @@ curseforge {
     options {
         curseGradleOptions.debug = false // defaults to false
         javaVersionAutoDetect = false
+    }
+}
+
+modrinth {
+    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
+    projectId = "infchest"
+    versionType = "release"
+    versionName = "${project.version}-forge"
+    versionNumber.set(project.version.toString())
+    uploadFile = jar
+    gameVersions = [project.minecraftVersion as String]
+    loaders = ["forge"]
+    changelog = "See https://github.com/Kotori316/InfChest/blob/1.19.4/temp_changelog.md"
+    debugMode = false
+    dependencies {
     }
 }
 
@@ -276,4 +295,22 @@ tasks.register('copyToDrive', Copy) {
         System.getenv(PATH_NAME) != null &&
                 Files.exists(Paths.get(System.getenv(PATH_NAME)))
     }
+}
+
+tasks.register("registerVersion", CallVersionFunctionTask.class) {
+    functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
+    gameVersion = project.minecraftVersion as String
+    platform = "forge"
+    modName = "infchest"
+    changelog = "For ${project.minecraftVersion}"
+    isDryRun = false
+    homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
+}
+
+tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
+    gameVersion = project.minecraftVersion as String
+    platform = "forge"
+    modName = "infchest"
+    version = project.version as String
+    failIfExists = true
 }
