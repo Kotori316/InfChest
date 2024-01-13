@@ -1,7 +1,8 @@
-import java.nio.file.Files
-import java.nio.file.Paths
 import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 import com.kotori316.plugin.cf.CallVersionFunctionTask
+
+import java.nio.file.Files
+import java.nio.file.Paths
 
 plugins {
     id("maven-publish")
@@ -10,7 +11,7 @@ plugins {
     id("fabric-loom") version("1.2-SNAPSHOT")
     id("com.matthewprenger.cursegradle") version("1.4.0")
     id("com.modrinth.minotaur") version("2.+")
-    id("com.kotori316.plugin.cf") version("2.+")
+    id("com.kotori316.plugin.cf") version("2.3")
 }
 
 archivesBaseName = "${project.baseName}-Fabric-${project.minecraftVersion}"
@@ -239,9 +240,10 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
     gameVersion = project.minecraftVersion as String
     platform = "fabric"
+    platformVersion = project.property("fabric_version") as String
     modName = "infchest"
     changelog = "For ${project.minecraftVersion}"
-    isDryRun = false
+    isDryRun = !Boolean.parseBoolean(project.releaseMode)
     homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
 }
 
@@ -250,5 +252,5 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     platform = "fabric"
     modName = "infchest"
     version = project.version as String
-    failIfExists = true
+    failIfExists = Boolean.parseBoolean(project.releaseMode)
 }
