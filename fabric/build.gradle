@@ -86,7 +86,7 @@ dependencies {
         transitive(false)
     }
     //noinspection SpellCheckingInspection
-    // modRuntimeOnly("teamreborn:energy:2.2.0") // For AE2
+    modRuntimeOnly("teamreborn:energy:3.0.0") // For AE2
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_fabric_version}")
     // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_fabric_version}")
     // modRuntimeOnly("lol.bai:badpackets:fabric-${project.badpackets_fabric_version}")

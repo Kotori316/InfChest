@@ -57,4 +57,4 @@ jobs:
       - name: javaToolchains
         run: ./gradlew :fabric:javaToolchains
       - name: Build with Gradle
-        run: ./gradlew :fabric:build
+        run: ./gradlew :fabric:build :fabric:runGameTest
