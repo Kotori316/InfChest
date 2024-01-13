@@ -1,10 +1,7 @@
 package com.kotori316.infchest.common.guis;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.tiles.TileInfChest;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -14,10 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.tiles.TileInfChest;
-
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     private final TileInfChest infChest;

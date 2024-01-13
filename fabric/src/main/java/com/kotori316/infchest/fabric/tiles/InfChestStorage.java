@@ -1,7 +1,6 @@
 package com.kotori316.infchest.fabric.tiles;
 
-import java.math.BigInteger;
-
+import com.kotori316.infchest.common.InfChest;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -10,7 +9,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import com.kotori316.infchest.common.InfChest;
+import java.math.BigInteger;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.ChestItems> implements SingleSlotStorage<ItemVariant> {
@@ -23,15 +22,14 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
 
     @Override
     protected ChestItems createSnapshot() {
-        return new ChestItems(chest.getItem(0), chest.getItem(1), chest.getHolding().copy(), chest.itemCount());
+        return new ChestItems(chest.getItem(0), chest.getHolding().copy(), chest.totalCount());
     }
 
     @Override
     protected void readSnapshot(ChestItems snapshot) {
-        chest.decrStack(chest.itemCount());
+        chest.decrStack(chest.totalCount());
         chest.addStack(snapshot.holding, snapshot.count);
         chest.setItem(0, snapshot.inputSlot);
-        chest.setItem(1, snapshot.outputSlot);
     }
 
     @Override
@@ -47,43 +45,36 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
     @Override
     public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
         updateSnapshots(transaction);
-        long takeFromOutputSlot;
-        if (resource.matches(chest.getHolding())) {
+        long extracted;
+        if (resource.matches(chest.getHoldingWithOneCount())) {
             var toTake = BigInteger.valueOf(maxAmount);
-            if (chest.itemCount().compareTo(toTake) >= 0) {
+            if (chest.totalCount().compareTo(toTake) >= 0) {
                 // chest.itemCount() >= maxAmount
-                // takeFromOutputSlot = maxAmount;
+                extracted = maxAmount;
                 chest.decrStack(toTake);
-                return maxAmount;
             } else {
-                takeFromOutputSlot = chest.itemCount().longValueExact();
-                chest.decrStack(chest.itemCount());
+                extracted = chest.totalCount().longValueExact();
+                chest.decrStack(chest.totalCount());
             }
         } else {
-            takeFromOutputSlot = 0;
+            extracted = 0;
         }
-        long fromHolding = maxAmount - takeFromOutputSlot;
-        if (ItemStack.isSameItemSameTags(chest.getItem(1), resource.toStack(1))) {
-            // take from output slot.
-            var extracted = chest.removeItem(1, (int) Math.min(fromHolding, Integer.MAX_VALUE));
-            return takeFromOutputSlot + extracted.getCount();
-        }
-        return takeFromOutputSlot;
+        return extracted;
     }
 
     @Override
     public boolean isResourceBlank() {
-        return chest.itemCount().equals(BigInteger.ZERO);
+        return chest.totalCount().equals(BigInteger.ZERO);
     }
 
     @Override
     public ItemVariant getResource() {
-        return ItemVariant.of(chest.getStack(1));
+        return ItemVariant.of(chest.getHoldingWithOneCount());
     }
 
     @Override
     public long getAmount() {
-        return chest.itemCount().min(BigInteger.valueOf(Long.MAX_VALUE)).longValue();
+        return chest.totalCount().min(BigInteger.valueOf(Long.MAX_VALUE)).longValue();
     }
 
     @Override
@@ -91,7 +82,7 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
         return Long.MAX_VALUE;
     }
 
-    record ChestItems(ItemStack inputSlot, ItemStack outputSlot, ItemStack holding, BigInteger count) {
+    protected record ChestItems(ItemStack inputSlot, ItemStack holding, BigInteger count) {
     }
 
     public static void register() {

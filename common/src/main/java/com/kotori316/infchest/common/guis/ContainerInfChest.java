@@ -1,7 +1,7 @@
 package com.kotori316.infchest.common.guis;
 
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.tiles.TileInfChest;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -10,9 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.tiles.TileInfChest;
 
 public class ContainerInfChest extends AbstractContainerMenu {
 

@@ -1,16 +1,8 @@
 package com.kotori316.infchest.common.tiles;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.blocks.BlockInfChest;
-import com.kotori316.infchest.guis.ContainerInfChest;
-import com.kotori316.infchest.packets.ItemCountMessage;
-import com.kotori316.infchest.packets.PacketHandler;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.blocks.BlockInfChest;
+import com.kotori316.infchest.common.guis.ContainerInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -26,14 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.blocks.BlockInfChest;
-import com.kotori316.infchest.common.guis.ContainerInfChest;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -203,7 +188,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
             ItemStack out = getItem(1);
             if (out.isEmpty() || stacksEqual(holding, out)) {
                 int expectedCount = totalCount().min(BigInteger.valueOf(holding.getMaxStackSize())).intValueExact();
-                inventory.set(1, ItemHandlerHelper.copyStackWithSize(holding, expectedCount));
+                inventory.set(1, copyAmount(holding, expectedCount));
             }
         }
 
@@ -227,7 +212,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         } else {
             count = count.add(add);
             if (holding.isEmpty())
-                holding = ItemHandlerHelper.copyStackWithSize(insert, 1);
+                holding = copyAmount(insert, 1);
             inventory.set(0, ItemStack.EMPTY);
         }
     }
@@ -249,7 +234,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
 
     public ItemStack getHolding() {
         if (!holding.isEmpty()) {
-            return ItemHandlerHelper.copyStackWithSize(holding, INT_MAX.min(totalCount()).intValueExact());
+            return copyAmount(holding, INT_MAX.min(totalCount()).intValueExact());
         }
         ItemStack out = getItem(1);
         if (!out.isEmpty()) {
@@ -260,11 +245,11 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
 
     public ItemStack getHoldingWithOneCount() {
         if (!holding.isEmpty()) {
-            return ItemHandlerHelper.copyStackWithSize(holding, 1);
+            return copyAmount(holding, 1);
         }
         ItemStack out = getItem(1);
         if (!out.isEmpty()) {
-            return ItemHandlerHelper.copyStackWithSize(out, 1);
+            return copyAmount(out, 1);
         }
         return ItemStack.EMPTY;
     }
@@ -298,8 +283,8 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
             Optional<InsertingHook.Hook> hookObject = hook.findHookObject(stack);
             ItemStack secondStack = getItem(1);
             return (holding.isEmpty() && hookObject.isEmpty() && (secondStack.isEmpty() || stacksEqual(secondStack, stack)))
-                   || stacksEqual(holding, stack)
-                   || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
+                || stacksEqual(holding, stack)
+                || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
         }
         return false;
     }
@@ -308,7 +293,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         if (stack.isEmpty()) return false;
         if (!getItem(0).isEmpty()) return false; // To the disappearance of item in slot 0
         if (holding.isEmpty()) return true;
-        return ItemHandlerHelper.canItemStacksStack(holding, stack);
+        return ItemStack.isSameItemSameTags(holding, stack);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.kotori316.infchest.forge.packets;
 
-import com.kotori316.infchest.tiles.TileInfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -9,8 +9,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-
-import com.kotori316.infchest.common.tiles.TileInfChest;
 
 import java.math.BigInteger;
 import java.util.Optional;

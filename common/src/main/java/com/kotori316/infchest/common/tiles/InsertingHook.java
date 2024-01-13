@@ -1,13 +1,12 @@
 package com.kotori316.infchest.common.tiles;
 
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.integration.StorageBoxStack;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.integration.StorageBoxStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -15,15 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
-
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.integration.StorageBoxStack;
 
 public record InsertingHook(List<Hook> hooks) {
     private static final List<Hook> DEFAULT_HOOKS;

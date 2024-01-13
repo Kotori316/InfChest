@@ -3,7 +3,6 @@ package com.kotori316.infchest.forge.tiles;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
@@ -12,12 +11,7 @@ import java.math.BigInteger;
  *
  * @param infChest
  */
-record InfItemHandler(TileInfChestForge infChest) implements IItemHandlerModifiable {
-
-    @Override
-    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-        infChest.setItem(slot, stack);
-    }
+record InfItemHandler(TileInfChestForge infChest) implements IItemHandler {
 
     @Override
     public int getSlots() {

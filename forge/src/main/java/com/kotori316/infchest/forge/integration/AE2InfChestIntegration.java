@@ -8,8 +8,9 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.capabilities.Capabilities;
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.tiles.TileInfChest;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.integration.CommonAE2Part;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,14 +25,8 @@ import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.Objects;
-
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.integration.CommonAE2Part;
-import com.kotori316.infchest.common.tiles.TileInfChest;
 
 public class AE2InfChestIntegration {
 
@@ -67,7 +62,6 @@ class AE2Capability implements ICapabilityProvider {
 }
 
 record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorableAccessor {
-    private static final BigInteger LONG_MAX = BigInteger.valueOf(9000000000000000000L);
 
     // IStorageMonitorableAccessor
     @Override
@@ -80,7 +74,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
         if (what instanceof AEItemKey itemKey) {
-            return this.chest.canInsertFromOutside(itemKey.toStack());
+            return CommonAE2Part.isPreferredStorageFor(this.chest, itemKey.toStack());
         } else {
             return false;
         }
@@ -102,11 +96,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage, IStorageMonitorab
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        var holding = this.chest.getHolding();
-        if (!holding.isEmpty()) {
-            var count = LONG_MAX.min(this.chest.totalCount());
-            out.add(Objects.requireNonNull(AEItemKey.of(holding)), count.longValue());
-        }
+        CommonAE2Part.getAvailableStacks(AEItemKey::of, out::add, this.chest);
     }
 
     @Override

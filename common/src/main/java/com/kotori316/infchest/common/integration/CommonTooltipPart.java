@@ -38,7 +38,7 @@ public final class CommonTooltipPart {
     public static void addTileData(CompoundTag destination, BlockEntity maybeChest) {
         if (maybeChest instanceof TileInfChest chest) {
             destination.put(NBT_KEY_ITEM, chest.getItem(1).save(new CompoundTag()));
-            destination.putByteArray(NBT_KEY_COUNT, chest.itemCount().toByteArray());
+            destination.putByteArray(NBT_KEY_COUNT, chest.totalCount().toByteArray());
         }
     }
 }

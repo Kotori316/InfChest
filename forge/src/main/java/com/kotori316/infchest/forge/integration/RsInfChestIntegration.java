@@ -1,6 +1,6 @@
-package com.kotori316.infchest.integration;
+package com.kotori316.infchest.forge.integration;
 
-import com.kotori316.infchest.tiles.TileInfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.refinedmods.refinedstorage.api.IRSAPI;
 import com.refinedmods.refinedstorage.api.RSAPIInject;
 import com.refinedmods.refinedstorage.api.network.INetwork;

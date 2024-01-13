@@ -1,7 +1,8 @@
 package com.kotori316.infchest.common.integration;
 
-import com.kotori316.infchest.tiles.InsertingHook;
-import com.kotori316.infchest.tiles.TileInfChest;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.tiles.InsertingHook;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -10,10 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.tiles.InsertingHook;
-import com.kotori316.infchest.common.tiles.TileInfChest;
 
 import java.math.BigInteger;
 import java.util.Optional;

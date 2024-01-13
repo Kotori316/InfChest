@@ -1,7 +1,7 @@
 package com.kotori316.infchest.forge.integration;
 
-import com.kotori316.infchest.InfChest;
-import com.kotori316.infchest.tiles.TileInfChest;
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import mcjty.theoneprobe.api.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -9,9 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.tiles.TileInfChest;
 
 import java.util.Arrays;
 import java.util.function.Function;
