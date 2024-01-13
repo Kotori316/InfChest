@@ -1,3 +1,10 @@
+# Version 20.2.1
+
+2024-01-13
+
+* Added RS integration
+* Fix item duplication in some condition
+
 # Version 20.2
 
 2023-07-13
