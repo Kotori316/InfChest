@@ -1,12 +1,13 @@
 modLoader = "javafml"
 loaderVersion = "[46,)"
 issueTrackerURL = "https://github.com/Kotori316/InfChest/issues"
-license = "MIT License (c) 2019-2023 Kotori316"
+license = "MIT License (c) 2019-2024 Kotori316"
 [[mods]]
 modId = "infchest"
 version = "${file.jarVersion}"
 displayName = "InfChest"
 displayURL = "https://github.com/Kotori316/InfChest"
+updateJSONURL = "https://version.kotori316.com/get-version/1.20.1/forge/infchest"
 credits = "Kotori316"
 authors = "Kotori316"
 description = '''

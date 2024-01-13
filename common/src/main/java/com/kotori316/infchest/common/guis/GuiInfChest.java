@@ -24,10 +24,10 @@ public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
-        Optional.ofNullable(infChest).map(TileInfChest::getStack).filter(Predicate.not(ItemStack::isEmpty)).map(ItemStack::getDisplayName).ifPresent(itemName -> {
-                    graphics.drawString(this.font, itemName, (imageWidth - this.font.width(itemName)) / 2, 20, 0x404040, false);
-                    graphics.drawString(this.font, "Item: " + infChest.itemCount(), 8, 60, 0x404040, false);
-                }
+        Optional.ofNullable(infChest).map(TileInfChest::getHolding).filter(Predicate.not(ItemStack::isEmpty)).map(ItemStack::getDisplayName).ifPresent(itemName -> {
+                graphics.drawString(this.font, itemName, (imageWidth - this.font.width(itemName)) / 2, 20, 0x404040, false);
+                graphics.drawString(this.font, "Item: " + infChest.totalCount(), 8, 60, 0x404040, false);
+            }
         );
     }
 

@@ -25,6 +25,7 @@ pluginManagement {
             name = "Kotori316 Plugin"
             url = uri("https://storage.googleapis.com/kotori316-maven-storage/maven/")
         }
+        maven { url = "https://maven.kotori316.com" }
     }
 }
 

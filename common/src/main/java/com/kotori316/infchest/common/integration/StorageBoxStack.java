@@ -1,8 +1,8 @@
 package com.kotori316.infchest.common.integration;
 
-import java.math.BigInteger;
-import java.util.Optional;
-
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.tiles.InsertingHook;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -12,9 +12,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.tiles.InsertingHook;
-import com.kotori316.infchest.common.tiles.TileInfChest;
+import java.math.BigInteger;
+import java.util.Optional;
 
 /**
  * Integration class of mod <a href="https://www.curseforge.com/minecraft/mc-mods/break-all-of-the-same-block-and-more/files/2877188">"StorageBox"</a>.
@@ -76,18 +75,15 @@ public class StorageBoxStack {
         ItemStack stack = player.getItemInHand(hand);
         if (isStorageBox(stack)) {
             if (worldIn.getBlockEntity(pos) instanceof TileInfChest chest) {
-                if (checkHoldingItem(chest.getStack(1), stack)) {
+                if (checkHoldingItem(chest.getHolding(), stack)) {
                     // flag that checks if the item in second slot of inf check can be inserted to storage box.
-                    boolean flag = checkHoldingItem(chest.getItem(1), stack);
-                    BigInteger need = chest.itemCount().min(BigInteger.valueOf(2_000_000_000L).subtract(getCount(stack)));
+                    BigInteger need = chest.totalCount().min(BigInteger.valueOf(2_000_000_000L).subtract(getCount(stack)));
                     if (need.compareTo(BigInteger.ZERO) > 0) { // need > 0
                         chest.decrStack(need);
+                        chest.setChanged();
                         var nbt = stack.getOrCreateTag();
-                        nbt.putInt(KEYSIZE, need.add(getCount(stack)).add(flag ? BigInteger.valueOf(chest.getItem(1).getCount()) : BigInteger.ZERO).intValueExact());
+                        nbt.putInt(KEYSIZE, need.add(getCount(stack)).intValueExact());
                         stack.setTag(nbt);
-                        if (flag) {
-                            chest.setItem(1, ItemStack.EMPTY);
-                        }
                         return true;
                     }
                 }

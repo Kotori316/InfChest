@@ -25,9 +25,6 @@ import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigInteger;
-import java.util.Objects;
-
 public class AE2InfChestIntegration {
 
     public static void onAPIAvailable() {
@@ -64,14 +61,13 @@ class AE2Capability implements ICapabilityProvider {
 }
 
 record AEInfChestInv(TileInfChest chest) implements MEStorage {
-    private static final BigInteger LONG_MAX = BigInteger.valueOf(9000000000000000000L);
 
     // MEStorage
 
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
         if (what instanceof AEItemKey itemKey) {
-            return this.chest.canPlaceItem(0, itemKey.toStack());
+            return CommonAE2Part.isPreferredStorageFor(this.chest, itemKey.toStack());
         } else {
             return false;
         }
@@ -93,15 +89,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage {
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        var inSlot = this.chest.getItem(1);
-        if (!inSlot.isEmpty()) {
-            out.add(Objects.requireNonNull(AEItemKey.of(inSlot)), inSlot.getCount());
-        }
-        var holding = this.chest.getStack();
-        if (!holding.isEmpty()) {
-            var count = LONG_MAX.min(this.chest.itemCount());
-            out.add(Objects.requireNonNull(AEItemKey.of(holding)), count.longValue());
-        }
+        CommonAE2Part.getAvailableStacks(AEItemKey::of, out::add, this.chest);
     }
 
     @Override

@@ -2,6 +2,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
+import com.kotori316.plugin.cf.CallVersionFunctionTask
 
 plugins {
     id("maven-publish")
@@ -12,6 +14,7 @@ plugins {
     id("org.parchmentmc.librarian.forgegradle") version("1.+")
     id("com.matthewprenger.cursegradle") version("1.4.0")
     id("com.modrinth.minotaur").version("2.+")
+    id("com.kotori316.plugin.cf") version("2.+")
 }
 
 version = project.modVersion
@@ -130,6 +133,16 @@ repositories {
         name = "Mixin"
         url = "https://repo.spongepowered.org/maven"
     }
+    maven {
+        url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage")
+        credentials {
+            username = "anything"
+            password = "\u0067hp_oGjcDFCn8jeTzIj4Ke9pLoEVtpnZMP4VQgaX"
+        }
+        content {
+            includeGroup("com.refinedmods")
+        }
+    }
 }
 
 dependencies {
@@ -140,6 +153,7 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 
     compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${project.ae2Version}"))
+    compileOnly(fg.deobf("com.refinedmods:refinedstorage:${project.rsVersion}") { transitive = false })
     implementation(fg.deobf("curse.maven:jade-324717:${project.jade_forge_id}"))
     implementation(fg.deobf("curse.maven:the-one-probe-245211:${project.top_id}"))
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.wthit_forge_version}"))
@@ -320,4 +334,22 @@ tasks.withType(AbstractPublishToMaven).configureEach {
         it.dependsOn(":forge:signSrcJar")
         it.dependsOn(":forge:signDeobfJar")
     }
+}
+
+tasks.register("registerVersion", CallVersionFunctionTask.class) {
+    functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
+    gameVersion = project.minecraftVersion as String
+    platform = "forge"
+    modName = "infchest"
+    changelog = "For ${project.minecraftVersion}"
+    isDryRun = false
+    homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
+}
+
+tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
+    gameVersion = project.minecraftVersion as String
+    platform = "forge"
+    modName = "infchest"
+    version = project.version as String
+    failIfExists = true
 }
