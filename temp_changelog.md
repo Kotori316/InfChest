@@ -1,3 +1,10 @@
+# Version 19.8
+
+2024-01-13
+
+* Update for 1.19.4
+* Fix item duplication in some condition
+
 # Version 19.6
 
 2022-12-24
