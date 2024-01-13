@@ -235,6 +235,8 @@ artifacts {
     archives srcJar, deobfJar
 }
 
+boolean releaseDebug = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
+
 curseforge {
     apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
@@ -249,7 +251,7 @@ curseforge {
         addArtifact deobfJar
     }
     options {
-        curseGradleOptions.debug = !Boolean.parseBoolean(project.releaseMode) // defaults to false
+        curseGradleOptions.debug = releaseDebug
         javaVersionAutoDetect = false
     }
 }
@@ -268,13 +270,13 @@ modrinth {
     getGameVersions().set([project.minecraftVersion])
     getLoaders().set(["forge"])
     changelog = file("../temp_changelog.md").text.split("# ")[1]
-    debugMode = !Boolean.parseBoolean(project.releaseMode)
+    debugMode = releaseDebug
     dependencies {
     }
 }
 
 publishing {
-    if (Boolean.parseBoolean(project.releaseMode)) {
+    if (!releaseDebug) {
         repositories {
             maven {
                 name = "AzureRepository"
@@ -343,7 +345,7 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     platformVersion = project.property("forgeVersion") as String
     modName = "infchest"
     changelog = "For ${project.minecraftVersion}"
-    isDryRun = !Boolean.parseBoolean(project.releaseMode)
+    isDryRun = releaseDebug
     homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
 }
 
@@ -352,5 +354,5 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     platform = "forge"
     modName = "infchest"
     version = project.version as String
-    failIfExists = Boolean.parseBoolean(project.releaseMode)
+    failIfExists = !releaseDebug
 }
