@@ -1,5 +1,19 @@
 package com.kotori316.infchest.fabric.tiles;
 
+import com.kotori316.infchest.common.InfChest;
+import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+import java.math.BigInteger;
+import java.util.Objects;
+
 public final class ChestFabricOperation implements FabricGameTest {
 
     @GameTest(template = EMPTY_STRUCTURE)

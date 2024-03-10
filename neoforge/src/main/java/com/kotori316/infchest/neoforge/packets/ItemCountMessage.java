@@ -29,7 +29,7 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
             Optional.ofNullable(chest.getLevel()).map(Level::dimension).orElse(Level.OVERWORLD),
             integer.toByteArray(),
             chest.getItem(1),
-            chest.getStack(1)
+            chest.getHoldingWithOneCount()
         );
     }
 

@@ -4,6 +4,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigInteger;
+
 record InfItemHandler(TileInfChestNeoForge infChest) implements IItemHandlerModifiable {
 
     @Override
@@ -38,16 +40,24 @@ record InfItemHandler(TileInfChestNeoForge infChest) implements IItemHandlerModi
     @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot == 1) {
-            if (!simulate) {
-                ItemStack stack = infChest.removeItem(slot, amount);
-                infChest.setChanged();
-                return stack;
-            } else {
-                return infChest.getStack().split(amount);
-            }
+        if (slot != 1) {
+            // Only slot 1 allows extracting
+            return ItemStack.EMPTY;
         }
-        return ItemStack.EMPTY;
+        var item = infChest.getHolding();
+        if (item.isEmpty()) {
+            // Nothing to extract
+            return ItemStack.EMPTY;
+        }
+
+        var extractCount = infChest.totalCount().min(BigInteger.valueOf(amount));
+        if (!simulate) {
+            infChest.decrStack(extractCount);
+            infChest.setChanged();
+        }
+        // Safe to modify as item is already copied
+        item.setCount(extractCount.intValueExact());
+        return item;
     }
 
     @Override

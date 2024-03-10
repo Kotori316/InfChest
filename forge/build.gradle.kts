@@ -19,7 +19,7 @@ plugins {
 
 val modId = project.property("mod_id") as String
 val minecraft = project.property("minecraftVersion") as String
-val releaseMode = project.property("releaseMode").toString().toBoolean()
+val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
 
 base {
     version = project.property("modVersion") as String
@@ -119,6 +119,17 @@ repositories {
         name = "Mixin"
         url = uri("https://repo.spongepowered.org/maven")
     }
+
+    maven {
+        url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage")
+        credentials {
+            username = "anything"
+            password = "\u0067hp_oGjcDFCn8jeTzIj4Ke9pLoEVtpnZMP4VQgaX"
+        }
+        content {
+            includeGroup("com.refinedmods")
+        }
+    }
 }
 
 dependencies {
@@ -132,6 +143,13 @@ dependencies {
     implementation(fg.deobf("curse.maven:jade-324717:${project.property("jade_forge_id")}"))
     compileOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.property("top_id")}"))
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.property("wthit_forge_version")}"))
+    implementation(
+        fg.deobf(
+            "com.refinedmods:refinedstorage:${project.property("rsVersion")}",
+            closureOf<ExternalModuleDependency> {
+                isTransitive = false
+            })
+    )
     // runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-${project.wthit_version}"))
     // runtimeOnly(fg.deobf("lol.bai:badpackets:forge-${project.badpackets_forge_version}"))
     // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3430254".toLowerCase())
