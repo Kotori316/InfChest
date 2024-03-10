@@ -14,7 +14,7 @@ plugins {
     id("org.parchmentmc.librarian.forgegradle") version ("1.+")
     id("com.matthewprenger.cursegradle") version ("1.4.0")
     id("com.modrinth.minotaur") version ("2.+")
-    id("com.kotori316.plugin.cf") version ("1.+")
+    id("com.kotori316.plugin.cf") version ("2.+")
 }
 
 val modId = project.property("mod_id") as String

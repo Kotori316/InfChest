@@ -10,7 +10,7 @@ plugins {
     id("fabric-loom") version ("1.4-SNAPSHOT")
     id("com.matthewprenger.cursegradle") version ("1.4.0")
     id("com.modrinth.minotaur") version ("2.+")
-    id("com.kotori316.plugin.cf") version ("1.+")
+    id("com.kotori316.plugin.cf") version ("2.+")
 }
 
 val baseName: String by project
