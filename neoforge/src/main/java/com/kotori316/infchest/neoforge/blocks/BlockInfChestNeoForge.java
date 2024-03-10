@@ -12,7 +12,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 public final class BlockInfChestNeoForge extends BlockInfChest {
     public BlockInfChestNeoForge() {
@@ -34,6 +33,6 @@ public final class BlockInfChestNeoForge extends BlockInfChest {
 
     @Override
     protected void openGui(ServerPlayer player, TileInfChest chest, BlockPos pos) {
-        NetworkHooks.openScreen(player, chest, pos);
+        player.openMenu(chest, pos);
     }
 }

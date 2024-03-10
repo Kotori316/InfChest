@@ -14,7 +14,6 @@ import com.kotori316.infchest.neoforge.packets.PacketHandler;
 import com.kotori316.infchest.neoforge.tiles.TileDequeNeoForge;
 import com.kotori316.infchest.neoforge.tiles.TileInfChestNeoForge;
 import com.mojang.datafixers.DSL;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -25,34 +24,34 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import static com.kotori316.infchest.common.InfChest.modID;
 
 @Mod(modID)
 public final class InfChestNeoForge {
-    public InfChestNeoForge() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
+    public InfChestNeoForge(IEventBus modBus) {
+        modBus.addListener(this::preInit);
+        modBus.addListener(this::clientInit);
     }
 
     public void preInit(FMLCommonSetupEvent event) {
-        PacketHandler.init();
         // AE2InfChestIntegration.onAPIAvailable();
     }
 
     public void clientInit(FMLClientSetupEvent event) {
-        MenuScreens.register(Register.INF_CHEST_CONTAINER_TYPE, GuiInfChest::new);
     }
 
     public static class Register implements InfChest.TypeAccessor {
@@ -141,6 +140,16 @@ public final class InfChestNeoForge {
         public static void registerCapabilities(RegisterCapabilitiesEvent event) {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Register.INF_CHEST_TYPE, TileInfChestNeoForge::getCapability);
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Register.DEQUE_TYPE, TileDequeNeoForge::getCapability);
+        }
+
+        @SubscribeEvent
+        public static void registerMenu(RegisterMenuScreensEvent event) {
+            event.register(Register.INF_CHEST_CONTAINER_TYPE, GuiInfChest::new);
+        }
+
+        @SubscribeEvent
+        public static void registerPacket(RegisterPayloadHandlerEvent event) {
+            PacketHandler.init(event);
         }
     }
 
