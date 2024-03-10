@@ -1,9 +1,6 @@
 package com.kotori316.infchest.fabric.tiles;
 
-import java.math.BigInteger;
-import java.util.Objects;
-import java.util.stream.IntStream;
-
+import com.kotori316.infchest.common.InfChest;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
@@ -12,7 +9,8 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import com.kotori316.infchest.common.InfChest;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class TileInfChestTest implements FabricGameTest {
     @GameTest(template = EMPTY_STRUCTURE)
@@ -102,11 +100,11 @@ public class TileInfChestTest implements FabricGameTest {
         tile.setItem(0, new ItemStack(Items.APPLE, 64));
 
         var stack = tile.getItem(1);
-        if (ItemStack.matches(stack, new ItemStack(Items.APPLE, 64)) && tile.itemCount().equals(BigInteger.valueOf(4))) {
-            helper.succeed();
-        } else {
-            throw new GameTestAssertException("Tile has unexpected item, %s, %s".formatted(stack, tile.itemCount()));
+        if (!ItemStack.matches(stack, new ItemStack(Items.APPLE, 64))) {
+            throw new GameTestAssertException("Tile has unexpected item, %s, %s".formatted(stack, tile.totalCount()));
         }
+        CheckHelper.checkTotalCount(helper, tile, 64 + 4);
+        helper.succeed();
     }
 
     @GameTest(template = EMPTY_STRUCTURE)
@@ -142,6 +140,8 @@ public class TileInfChestTest implements FabricGameTest {
         tile.setItem(0, stack.copy());
         tile.setItem(0, new ItemStack(Items.APPLE, 32));
 
+        CheckHelper.checkTotalCount(helper, tile, 160);
+
         var removed = tile.removeItem(1, 64);
         if (!ItemStack.isSameItemSameTags(removed, stack)) {
             throw new GameTestAssertException("%s must be taken. %s".formatted(stack, removed));
@@ -151,9 +151,7 @@ public class TileInfChestTest implements FabricGameTest {
         if (!ItemStack.matches(out, stack)) {
             throw new GameTestAssertException("Out slot must be updated. %s".formatted(out));
         }
-        if (!tile.itemCount().equals(BigInteger.valueOf(32))) {
-            throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 32));
-        }
+        CheckHelper.checkTotalCount(helper, tile, 96);
 
         helper.succeed();
     }

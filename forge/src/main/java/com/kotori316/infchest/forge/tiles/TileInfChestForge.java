@@ -1,5 +1,8 @@
 package com.kotori316.infchest.forge.tiles;
 
+import com.kotori316.infchest.common.tiles.TileInfChest;
+import com.kotori316.infchest.forge.packets.ItemCountMessage;
+import com.kotori316.infchest.forge.packets.PacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -10,18 +13,17 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.kotori316.infchest.common.tiles.TileInfChest;
-import com.kotori316.infchest.forge.packets.ItemCountMessage;
-import com.kotori316.infchest.forge.packets.PacketHandler;
-
 public final class TileInfChestForge extends TileInfChest {
     private final InfItemHandler handler = new InfItemHandler(this);
 
     public TileInfChestForge(BlockPos pos, BlockState state) {
         super(pos, state);
-        addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.itemCount())));
+        addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.totalCount())));
     }
 
+    /*
+     * Just here to allow access from handlers in this package
+     */
     @Override
     protected void addStack(ItemStack insert) {
         super.addStack(insert);

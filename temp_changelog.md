@@ -23,6 +23,13 @@
 
 * Update for 1.20.2
 
+# Version 20.2.1
+
+2024-01-13
+
+* Added RS integration
+* Fix item duplication in some condition
+
 # Version 20.2
 
 2023-07-13
@@ -36,11 +43,25 @@
 
 * Update for 1.20
 
+# Version 19.8
+
+2024-01-13
+
+* Update for 1.19.4
+* Fix item duplication in some condition
+
 # Version 19.6
 
 2022-12-24
 
 * Update for 1.19.3
+
+# Version 19.4.1
+
+2024-01-11
+
+* Added RS integration
+* Fixed duplication in some conditions
 
 # Version 19.4
 
@@ -67,6 +88,24 @@
 2022-06-10
 
 * For 1.19
+
+# Version 18.8
+
+* Disallow automatic item inserting when chest has items in slot 0
+
+# Version 18.7
+
+2024-01-11
+
+* Improved RS integration
+* Fixed item disappearance in AE2 and RS
+
+# Version 18.6
+
+2024-01-10
+
+* Added RS integration
+* Fixed duplication in some conditions
 
 # Version 18.4
 

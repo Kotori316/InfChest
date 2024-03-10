@@ -1,20 +1,5 @@
 package com.kotori316.infchest.fabric.tiles;
 
-import java.math.BigInteger;
-import java.util.Objects;
-
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestAssertException;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
-import com.kotori316.infchest.common.InfChest;
-
 public final class ChestFabricOperation implements FabricGameTest {
 
     @GameTest(template = EMPTY_STRUCTURE)
@@ -26,9 +11,7 @@ public final class ChestFabricOperation implements FabricGameTest {
         var item = Items.CRIMSON_PLANKS;
         tile.addStack(new ItemStack(item), BigInteger.valueOf(2000));
         tile.setChanged();
-        if (!tile.itemCount().equals(BigInteger.valueOf(2000 - 64))) {
-            throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 2000 - 64));
-        }
+        CheckHelper.checkTotalCount(helper, tile, 2000);
 
         var storage = new InfChestStorage(tile);
         // Simulation
@@ -38,30 +21,22 @@ public final class ChestFabricOperation implements FabricGameTest {
             if (inserted != i) {
                 throw new GameTestAssertException("Insertion failed. %d".formatted(inserted));
             }
-            if (!tile.itemCount().equals(BigInteger.valueOf(2000 - 64 + i))) {
-                throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 2000 - 64 + i));
-            }
+            CheckHelper.checkTotalCount(helper, tile, 2000 + i);
             transaction.abort();
         }
-        if (!tile.itemCount().equals(BigInteger.valueOf(2000 - 64))) {
-            throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 2000 - 64));
-        }
+        CheckHelper.checkTotalCount(helper, tile, 2000);
 
         // Execution
+        var i = 400;
         try (Transaction transaction = Transaction.openOuter()) {
-            var i = 400;
             var inserted = storage.insert(ItemVariant.of(item), i, transaction);
             if (inserted != i) {
                 throw new GameTestAssertException("Insertion failed. %d".formatted(inserted));
             }
-            if (!tile.itemCount().equals(BigInteger.valueOf(2000 - 64 + i))) {
-                throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 2000 - 64 + i));
-            }
+            CheckHelper.checkTotalCount(helper, tile, 2000 + i);
             transaction.commit();
         }
-        if (!tile.itemCount().equals(BigInteger.valueOf(2400 - 64))) {
-            throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 2400 - 64));
-        }
+        CheckHelper.checkTotalCount(helper, tile, 2000 + i);
 
         helper.succeed();
     }
@@ -84,9 +59,7 @@ public final class ChestFabricOperation implements FabricGameTest {
             }
             // abort
         }
-        if (!tile.itemCount().equals(BigInteger.valueOf(2000 - 64))) {
-            throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 2000 - 64));
-        }
+        CheckHelper.checkTotalCount(helper, tile, 2000);
         helper.succeed();
     }
 
@@ -137,9 +110,7 @@ public final class ChestFabricOperation implements FabricGameTest {
             transaction.commit();
         }
         tile.setChanged();
-        if (!tile.itemCount().equals(BigInteger.valueOf(300 - 64))) {
-            throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 300 - 64));
-        }
+        CheckHelper.checkTotalCount(helper, tile, 300);
         helper.succeed();
     }
 
@@ -179,25 +150,20 @@ public final class ChestFabricOperation implements FabricGameTest {
             if (extracted != i) {
                 throw new GameTestAssertException("Extraction failed. " + extracted);
             }
-            if (!tile.itemCount().equals(BigInteger.valueOf(initial - 64 - i))) {
-                throw new GameTestAssertException("Violation of extracted count. " + tile.itemCount());
-            }
+            CheckHelper.checkTotalCount(helper, tile, initial - i);
             transaction.abort();
         }
-        if (!tile.itemCount().equals(BigInteger.valueOf(initial - 64))) {
-            throw new GameTestAssertException("Abort failed. Actual %s, Expected: %s".formatted(tile.itemCount(), initial - 64));
-        }
+        CheckHelper.checkTotalCount(helper, tile, initial);
         try (Transaction transaction = Transaction.openOuter()) {
             var i = 100;
             var extracted = storage.extract(ItemVariant.of(item), i, transaction);
             if (extracted != i) {
                 throw new GameTestAssertException("Extraction failed. %d, expected: %d".formatted(extracted, i));
             }
+            CheckHelper.checkTotalCount(helper, tile, initial - i);
             transaction.commit();
         }
-        if (!tile.itemCount().equals(BigInteger.valueOf(initial - 64 - 100))) {
-            throw new GameTestAssertException("Violation of extracted count. " + tile.itemCount());
-        }
+        CheckHelper.checkTotalCount(helper, tile, initial - 100);
 
         helper.succeed();
     }
@@ -223,8 +189,8 @@ public final class ChestFabricOperation implements FabricGameTest {
             transaction.commit();
             tile.setChanged();
         }
-        if (!tile.getHolding().isEmpty()) {
-            throw new GameTestAssertException("Holding must be empty. " + tile.getHolding());
+        if (!tile.getHolding().is(item)) {
+            throw new GameTestAssertException("Holding must be valid item. " + tile.getHolding());
         }
         if (!ItemStack.matches(tile.getItem(1), new ItemStack(item, 64))) {
             throw new GameTestAssertException("Output slot. " + tile.getItem(1));
@@ -242,9 +208,7 @@ public final class ChestFabricOperation implements FabricGameTest {
         var initial = 2064;
         tile.addStack(new ItemStack(item), BigInteger.valueOf(initial));
         tile.setChanged();
-        if (!tile.itemCount().equals(BigInteger.valueOf(2000))) {
-            throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 2000));
-        }
+        CheckHelper.checkTotalCount(helper, tile, initial);
 
         var storage = new InfChestStorage(tile);
 
@@ -257,8 +221,8 @@ public final class ChestFabricOperation implements FabricGameTest {
             transaction.commit();
             tile.setChanged();
         }
-        if (!tile.getHolding().isEmpty()) {
-            throw new GameTestAssertException("Holding must be empty. " + tile.getHolding());
+        if (!tile.getHolding().is(item)) {
+            throw new GameTestAssertException("Holding must be valid item. " + tile.getHolding());
         }
         if (!ItemStack.matches(tile.getItem(1), new ItemStack(item, 32))) {
             throw new GameTestAssertException("Output slot. " + tile.getItem(1));
@@ -275,8 +239,6 @@ public final class ChestFabricOperation implements FabricGameTest {
         var item = Items.CRIMSON_PLANKS;
         var initial = 2064;
         tile.addStack(new ItemStack(item), BigInteger.valueOf(initial));
-        var secondItem = Items.APPLE;
-        tile.setItem(1, new ItemStack(secondItem, 64));
         tile.setChanged();
         var storage = new InfChestStorage(tile);
 
@@ -286,29 +248,32 @@ public final class ChestFabricOperation implements FabricGameTest {
             if (extracted != i) {
                 throw new GameTestAssertException("Extraction failed. %d, expected: %d".formatted(extracted, i));
             }
+            CheckHelper.checkTotalCount(helper, tile, initial - i);
             transaction.commit();
             tile.setChanged();
         }
         if (tile.getHolding().isEmpty()) {
             throw new GameTestAssertException("Holding must not be empty. " + tile.getHolding());
         }
-        if (!tile.itemCount().equals(BigInteger.valueOf(32))) {
-            throw new GameTestAssertException("ItemCount, A: %s, E: %s".formatted(tile.itemCount(), 32));
-        }
-        if (!ItemStack.matches(tile.getItem(1), new ItemStack(secondItem, 64))) {
+        CheckHelper.checkTotalCount(helper, tile, 32);
+        if (!ItemStack.matches(tile.getItem(1), new ItemStack(item, 32))) {
             throw new GameTestAssertException("Output slot. " + tile.getItem(1));
         }
         try (Transaction transaction = Transaction.openOuter()) {
             var i = 40;
-            var extracted = storage.extract(ItemVariant.of(secondItem), i, transaction);
-            if (extracted != i) {
+            var extracted = storage.extract(ItemVariant.of(item), i, transaction);
+            if (extracted != 32) {
                 throw new GameTestAssertException("Extraction failed. %d, expected: %d".formatted(extracted, i));
             }
             transaction.commit();
             tile.setChanged();
         }
-        if (!ItemStack.matches(tile.getItem(1), new ItemStack(secondItem, 24))) {
-            throw new GameTestAssertException("Extracted Output slot. " + tile.getItem(1));
+        CheckHelper.checkTotalCount(helper, tile, 0);
+        if (!tile.getHolding().isEmpty()) {
+            throw new GameTestAssertException("Tile must be empty after extracting");
+        }
+        if (!tile.isEmpty()) {
+            throw new GameTestAssertException("Tile must be empty after extracting");
         }
         helper.succeed();
     }

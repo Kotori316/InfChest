@@ -1,9 +1,6 @@
 package com.kotori316.infchest.forge.packets;
 
-import java.math.BigInteger;
-import java.util.Optional;
-import java.util.function.Supplier;
-
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -11,9 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraftforge.event.network.CustomPayloadEvent;
+
+import java.math.BigInteger;
+import java.util.Optional;
 
 /**
  * To Client Only
@@ -26,7 +24,7 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
             Optional.ofNullable(chest.getLevel()).map(Level::dimension).orElse(Level.OVERWORLD),
             integer.toByteArray(),
             chest.getItem(1),
-            chest.getStack(1)
+            chest.getHoldingWithOneCount()
         );
     }
 

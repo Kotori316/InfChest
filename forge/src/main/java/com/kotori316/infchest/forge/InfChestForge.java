@@ -1,5 +1,20 @@
 package com.kotori316.infchest.forge;
 
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.blocks.BlockDeque;
+import com.kotori316.infchest.common.blocks.BlockInfChest;
+import com.kotori316.infchest.common.blocks.ContentInfChest;
+import com.kotori316.infchest.common.guis.ContainerInfChest;
+import com.kotori316.infchest.common.guis.GuiInfChest;
+import com.kotori316.infchest.common.tiles.TileDeque;
+import com.kotori316.infchest.common.tiles.TileInfChest;
+import com.kotori316.infchest.forge.blocks.BlockDequeForge;
+import com.kotori316.infchest.forge.blocks.BlockInfChestForge;
+import com.kotori316.infchest.forge.integration.AE2InfChestIntegration;
+import com.kotori316.infchest.forge.integration.RsInfChestIntegration;
+import com.kotori316.infchest.forge.packets.PacketHandler;
+import com.kotori316.infchest.forge.tiles.TileDequeForge;
+import com.kotori316.infchest.forge.tiles.TileInfChestForge;
 import com.mojang.datafixers.DSL;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.Registry;
@@ -22,21 +37,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.blocks.BlockDeque;
-import com.kotori316.infchest.common.blocks.BlockInfChest;
-import com.kotori316.infchest.common.blocks.ContentInfChest;
-import com.kotori316.infchest.common.guis.ContainerInfChest;
-import com.kotori316.infchest.common.guis.GuiInfChest;
-import com.kotori316.infchest.common.tiles.TileDeque;
-import com.kotori316.infchest.common.tiles.TileInfChest;
-import com.kotori316.infchest.forge.blocks.BlockDequeForge;
-import com.kotori316.infchest.forge.blocks.BlockInfChestForge;
-import com.kotori316.infchest.forge.integration.AE2InfChestIntegration;
-import com.kotori316.infchest.forge.packets.PacketHandler;
-import com.kotori316.infchest.forge.tiles.TileDequeForge;
-import com.kotori316.infchest.forge.tiles.TileInfChestForge;
-
 import static com.kotori316.infchest.common.InfChest.modID;
 
 @Mod(modID)
@@ -49,6 +49,7 @@ public final class InfChestForge {
     public void preInit(FMLCommonSetupEvent event) {
         PacketHandler.init();
         AE2InfChestIntegration.onAPIAvailable();
+        RsInfChestIntegration.onAPIAvailable();
     }
 
     public void clientInit(FMLClientSetupEvent event) {
