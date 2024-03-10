@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
+  check:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -21,90 +21,28 @@ jobs:
       - run: chmod +x ./gradlew
       - uses: gradle/gradle-build-action@v2
         with:
-          cache-read-only: false
-          gradle-home-cache-cleanup: true
+          cache-read-only: true
       - name: Enable daemon
         run: sed -i -e 's/org.gradle.daemon=false/org.gradle.daemon=true/' gradle.properties
       - name: Compile
         run: ./gradlew testClasses
       - name: GameTest
         run: ./gradlew runGameTest
-      - uses: google-github-actions/auth@v1
-        with:
-          workload_identity_provider: ${{secrets.GCP_IDENTITY_PROVIDER}}
-          service_account: ${{secrets.GCP_SERVICE_ACCOUNT}}
-      - name: Download Private Key
-        run: gcloud storage cp gs://kotori316-resources/secring.gpg "${HOME}/secring.gpg"
-      - name: Download JKS
-        run: gcloud storage cp gs://kotori316-resources/kotori316_keystore.jks "${HOME}/kotori316_keystore.jks"
-      - name: Download Public Key
-        run: |
-          gcloud storage cp gs://kotori316-resources/pgp_public.pub "${HOME}/pgp_public.pub"
-          gpg --import "${HOME}/pgp_public.pub"
-      - name: Enable release
-        run: sed -i -e 's/releaseMode=false/releaseMode=true/' gradle.properties
       - name: Check version
         run: ./gradlew checkReleaseVersion
-      - name: Get credentials
-        id: get-secrets
-        uses: google-github-actions/get-secretmanager-secrets@v1
-        with:
-          secrets: |-
-            key_id:kotori316-mods-resources/signing-key-id
-            key_password:kotori316-mods-resources/signing-password
-            jar_password:kotori316-mods-resources/jar-sign-key-password
-            modrinth_token:kotori316-mods-resources/modrinth_token
-            curseforge_token:kotori316-mods-resources/curseforge_token
-            azure_token:kotori316-mods-resources/azure_token
-      - name: Release
-        run: >-
-          ./gradlew
-          -Psigning.secretKeyRingFile="${HOME}/secring.gpg"
-          -Psigning.password="${KEY_PASSWORD}"
-          -Psigning.keyId="${KEY_ID}"
-          -PjarSign.keyLocation="${HOME}/kotori316_keystore.jks"
-          -PjarSign.keyAlias="ko316"
-          -PjarSign.storePass="${JAR_PASSWORD}"
-          build publishToMavenLocal registerVersion curseforge modrinth publish
         env:
-          KEY_PASSWORD: ${{steps.get-secrets.outputs.key_password}}
-          KEY_ID: ${{steps.get-secrets.outputs.key_id}}
-          JAR_PASSWORD: ${{steps.get-secrets.outputs.jar_password}}
-          AZURE_TOKEN: ${{steps.get-secrets.outputs.azure_token}}
-          CURSE_TOKEN: ${{steps.get-secrets.outputs.curseforge_token}}
-          MODRINTH_TOKEN: ${{steps.get-secrets.outputs.modrinth_token}}
-          VERSION_FUNCTION_ENDPOINT: ${{ secrets.GCP_VERSION_FUNCTION_ENDPOINT }}
-          SERVICE_ACCOUNT: ${{ secrets.GCP_FUNCTION_EXECUTION_ACCOUNT }}
-      - name: Verify Build Files
-        run: |
-          for f in $(find ./ -name "*.asc") ; do
-            echo "${f:0:-4}"
-            gpg --verify "$f" "${f:0:-4}"
-          done
-      - name: Verify Main Jar
-        run: |
-          for f in $(ls */build/libs/*.jar | grep -v -e "common" -e "deobf" -e "sources") ; do
-            jarsigner -verify -keystore "${HOME}/kotori316_keystore.jks" "$f" -strict
-          done
-      - name: Verify Maven Local
-        run: |
-          for f in $(find ~/.m2 -name "*.asc") ; do
-            echo "${f:0:-4}"
-            gpg --verify "$f" "${f:0:-4}"
-          done
-      - name: Upload Artifacts
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: InfChest-Release-${{ github.run_number }}
-          retention-days: 7
-          path: |
-            */build/*libs/*.jar
-            */build/*libs/*.asc
-      - name: Upload Local Maven
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: InfChest-Maven-${{ github.run_number }}
-          retention-days: 1
-          path: ~/.m2
+          RELEASE_DEBUG: false
+
+  release:
+    needs: [ check ]
+    permissions:
+      id-token: write
+      contents: write
+      packages: write
+    # See https://github.com/Kotori316/common-script/blob/main/.github/workflows/release-prod-gradle.yaml
+    uses: 'Kotori316/common-script/.github/workflows/release-prod-gradle.yaml@main'
+    with:
+      sign_check_command: 'assemble publishToMavenLocal'
+      release_command: 'assemble publishToMavenLocal githubRelease publishMods registerVersion publish --continue'
+      enable_signature_check: true
+    secrets: inherit

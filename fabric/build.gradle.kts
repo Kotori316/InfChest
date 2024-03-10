@@ -17,7 +17,7 @@ val baseName: String by project
 val minecraft: String by extra { project.property("minecraftVersion") as String }
 val modId: String by extra { project.property("mod_id") as String }
 val modVersion: String by project
-val releaseMode: Boolean by extra { project.property("releaseMode").toString().toBoolean() }
+val releaseMode: Boolean = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
 
 base {
     archivesName = "${baseName}-Fabric-${minecraft}"
