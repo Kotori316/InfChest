@@ -14,13 +14,7 @@ description = '''
 Add a infinite capacity chest.'''
 [[dependencies.infchest]]
 modId = "neoforge"
-mandatory = true
-versionRange = "[20.3,)"
-ordering = "NONE"
-side = "BOTH"
-[[dependencies.infchest]]
-modId = "minecraft"
-mandatory = true
-versionRange = "[1.20.3, )"
+type = "required"
+versionRange = "[20.4.70-beta, )"
 ordering = "NONE"
 side = "BOTH"

@@ -75,6 +75,11 @@ dependencies {
     testCompileOnly(project(":common"))
     implementation(group = "curse.maven", name = "jade-324717", version = project.property("jade_neoforge_id") as String)
     compileOnly(group = "mcp.mobius.waila", name = "wthit-api", version = "neo-${project.property("wthit_forge_version")}")
+    implementation(
+        group = "curse.maven",
+        name = "the-one-probe-245211",
+        version = project.property("top_neoforge_id") as String
+    )
 }
 
 tasks {
