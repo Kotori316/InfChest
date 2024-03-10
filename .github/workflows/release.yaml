@@ -94,7 +94,7 @@ jobs:
           done
       - name: Upload Artifacts
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: InfChest-Release-${{ github.run_number }}
           retention-days: 7
@@ -103,7 +103,7 @@ jobs:
             */build/*libs/*.asc
       - name: Upload Local Maven
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: InfChest-Maven-${{ github.run_number }}
           retention-days: 1
