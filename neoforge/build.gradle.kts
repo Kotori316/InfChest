@@ -235,6 +235,7 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
     functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
     gameVersion = minecraft
     platform = "neoforge"
+    platformVersion = project.property("neo_version").toString()
     modName = modId
     changelog = "For $minecraft"
     isDryRun = !releaseMode

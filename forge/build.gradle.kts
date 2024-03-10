@@ -271,7 +271,7 @@ publishing {
     }
     publications {
         create("mavenJava", MavenPublication::class) {
-            artifactId = base.archivesName.get().toLowerCase()
+            artifactId = base.archivesName.get().lowercase()
             artifact(srcJar)
             artifact(deobfJar)
             artifact(reobfArtifact)
@@ -316,6 +316,7 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
     functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
     gameVersion = minecraft
     platform = "forge"
+    platformVersion = project.property("forgeVersion").toString()
     modName = modId
     changelog = "For $minecraft"
     isDryRun = !releaseMode
