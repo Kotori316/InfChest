@@ -10,6 +10,7 @@ import com.kotori316.infchest.common.tiles.TileDeque;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.kotori316.infchest.neoforge.blocks.BlockDequeNeoForge;
 import com.kotori316.infchest.neoforge.blocks.BlockInfChestNeoForge;
+import com.kotori316.infchest.neoforge.integration.AE2InfChestIntegration;
 import com.kotori316.infchest.neoforge.packets.PacketHandler;
 import com.kotori316.infchest.neoforge.tiles.TileDequeNeoForge;
 import com.kotori316.infchest.neoforge.tiles.TileInfChestNeoForge;
@@ -45,10 +46,10 @@ public final class InfChestNeoForge {
     public InfChestNeoForge(IEventBus modBus) {
         modBus.addListener(this::preInit);
         modBus.addListener(this::clientInit);
+        AE2InfChestIntegration.onAPIAvailable(modBus);
     }
 
     public void preInit(FMLCommonSetupEvent event) {
-        // AE2InfChestIntegration.onAPIAvailable();
     }
 
     public void clientInit(FMLClientSetupEvent event) {

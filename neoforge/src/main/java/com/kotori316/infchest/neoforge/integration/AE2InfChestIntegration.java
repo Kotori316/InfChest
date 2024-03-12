@@ -1,77 +1,50 @@
 package com.kotori316.infchest.neoforge.integration;
-/*
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
+import appeng.capabilities.AppEngCapabilities;
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.integration.CommonAE2Part;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.math.BigInteger;
-import java.util.Objects;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class AE2InfChestIntegration {
 
-    public static void onAPIAvailable() {
-        if (ModList.get().isLoaded("ae2"))
-            MinecraftForge.EVENT_BUS.register(new AE2InfChestIntegration());
-    }
-
-    private static final ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "attach_ae2");
-
-    @SubscribeEvent
-    public void attachCapability(AttachCapabilitiesEvent<BlockEntity> event) {
-        if (event.getObject() instanceof TileInfChest infChest) {
-            event.addCapability(LOCATION, new AE2Capability(infChest));
+    public static void onAPIAvailable(IEventBus modBus) {
+        if (ModList.get().isLoaded("ae2")) {
+            modBus.register(new AE2Capability());
         }
     }
 }
 
-class AE2Capability implements ICapabilityProvider {
-
-    private static final Capability<MEStorage> ME_STORAGE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
-    });
-    private final LazyOptional<MEStorage> accessorLazyOptional;
-
-    AE2Capability(TileInfChest chest) {
-        accessorLazyOptional = LazyOptional.of(() -> new AEInfChestInv(chest));
+class AE2Capability {
+    @SubscribeEvent
+    public void attachCapability(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(AppEngCapabilities.ME_STORAGE, InfChest.accessor.INF_CHEST_TYPE(), AE2Capability::create);
     }
 
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return ME_STORAGE_CAPABILITY.orEmpty(cap, accessorLazyOptional.cast());
+    private static MEStorage create(TileInfChest chest, Direction ignored) {
+        return new AEInfChestInv(chest);
     }
-
 }
 
 record AEInfChestInv(TileInfChest chest) implements MEStorage {
-    private static final BigInteger LONG_MAX = BigInteger.valueOf(9000000000000000000L);
 
     // MEStorage
 
     @Override
     public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
         if (what instanceof AEItemKey itemKey) {
-            return this.chest.canPlaceItem(0, itemKey.toStack());
+            return CommonAE2Part.isPreferredStorageFor(this.chest, itemKey.toStack());
         } else {
             return false;
         }
@@ -93,15 +66,7 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage {
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        var inSlot = this.chest.getItem(1);
-        if (!inSlot.isEmpty()) {
-            out.add(Objects.requireNonNull(AEItemKey.of(inSlot)), inSlot.getCount());
-        }
-        var holding = this.chest.getStack();
-        if (!holding.isEmpty()) {
-            var count = LONG_MAX.min(this.chest.itemCount());
-            out.add(Objects.requireNonNull(AEItemKey.of(holding)), count.longValue());
-        }
+        CommonAE2Part.getAvailableStacks(AEItemKey::of, out::add, this.chest);
     }
 
     @Override
@@ -109,4 +74,4 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage {
         return this.chest.getName();
     }
 }
-*/
+
