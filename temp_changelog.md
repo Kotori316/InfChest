@@ -1,3 +1,11 @@
+# Version 20.8
+
+2024-03-12
+
+* Update for latest NeoForge
+* Add support of TOP and AE2 in NeoForge
+* Update dependencies
+
 # Version 20.7
 
 2023-12-08
