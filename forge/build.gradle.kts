@@ -19,7 +19,7 @@ plugins {
 
 val modId = project.property("mod_id") as String
 val minecraft = project.property("minecraftVersion") as String
-val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
+val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean().not()
 
 base {
     version = project.property("modVersion") as String
