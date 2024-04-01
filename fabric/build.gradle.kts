@@ -7,7 +7,7 @@ plugins {
     id("maven-publish")
     id("signing")
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
-    id("fabric-loom") version ("1.6.3")
+    id("fabric-loom") version ("1.6.4")
     id("com.matthewprenger.cursegradle") version ("1.4.0")
     id("com.modrinth.minotaur") version ("2.+")
     id("com.kotori316.plugin.cf") version ("3.+")
