@@ -1,7 +1,7 @@
 package com.kotori316.infchest.neoforge.tiles;
 
+import com.kotori316.infchest.common.packets.ItemCountMessage;
 import com.kotori316.infchest.common.tiles.TileInfChest;
-import com.kotori316.infchest.neoforge.packets.ItemCountMessage;
 import com.kotori316.infchest.neoforge.packets.PacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
