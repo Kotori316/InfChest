@@ -19,11 +19,6 @@ public final class BlockInfChestForge extends BlockInfChest {
     }
 
     @Override
-    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
-        return false;
-    }
-
-    @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world, BlockPos pos, Player player) {
         ItemStack pickBlock = super.getCloneItemStack(state, target, world, pos, player);
         saveChestNbtToStack(world.getBlockEntity(pos), pickBlock);

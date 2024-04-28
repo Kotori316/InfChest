@@ -27,7 +27,7 @@ base {
     archivesName = "${project.property("baseName")}-Forge-$minecraft"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println(
     "Java: " + System.getProperty("java.version") +

@@ -12,9 +12,4 @@ public final class BlockDequeForge extends BlockDeque {
         super(BlockDequeForge::new);
     }
 
-    @Override
-    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
-        return false;
-    }
-
 }
