@@ -1,7 +1,7 @@
 package com.kotori316.infchest.common.blocks;
 
 import com.kotori316.infchest.common.InfChest;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ContentInfChest extends LootItemConditionalFunction {
     public static final ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "content_infchest");
-    public static final Codec<ContentInfChest> CODEC = RecordCodecBuilder.create(instance ->
+    public static final MapCodec<ContentInfChest> CODEC = RecordCodecBuilder.mapCodec(instance ->
         commonFields(instance).apply(instance, ContentInfChest::new)
     );
 
@@ -32,7 +32,7 @@ public class ContentInfChest extends LootItemConditionalFunction {
     }
 
     @Override
-    public LootItemFunctionType getType() {
+    public LootItemFunctionType<ContentInfChest> getType() {
         return InfChest.accessor.CHEST_FUNCTION();
     }
 

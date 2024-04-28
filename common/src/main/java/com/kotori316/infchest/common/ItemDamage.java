@@ -1,23 +1,22 @@
 package com.kotori316.infchest.common;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
-
-public record ItemDamage(Item item, @Nullable CompoundTag compound) {
+public record ItemDamage(Item item, @NotNull DataComponentPatch component) {
 
     public ItemDamage(ItemStack stack) {
-        this(stack.getItem(), stack.getTag());
+        this(stack.getItem(), stack.getComponentsPatch());
     }
 
     public ItemStack toStack(int count) {
-        ItemStack stack = new ItemStack(item, count);
-        stack.setTag(compound);
-        return stack;
+        return new ItemStack(Holder.direct(item), count, component);
     }
 
     public Stream<ItemStack> toStacks(long count) {

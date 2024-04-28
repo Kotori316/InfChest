@@ -16,7 +16,7 @@ public final class TileInfChestNeoForge extends TileInfChest {
 
     public TileInfChestNeoForge(BlockPos pos, BlockState state) {
         super(pos, state);
-        addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.totalCount())));
+        addUpdate(() -> PacketHandler.sendToPoint(new ItemCountMessage(this, this.totalCount()), getLevel()));
     }
 
     @Override

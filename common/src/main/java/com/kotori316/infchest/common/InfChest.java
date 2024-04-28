@@ -1,15 +1,15 @@
 package com.kotori316.infchest.common;
 
+import com.kotori316.infchest.common.blocks.BlockInfChest;
+import com.kotori316.infchest.common.blocks.ContentInfChest;
+import com.kotori316.infchest.common.guis.ContainerInfChest;
+import com.kotori316.infchest.common.tiles.TileDeque;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.kotori316.infchest.common.blocks.BlockInfChest;
-import com.kotori316.infchest.common.guis.ContainerInfChest;
-import com.kotori316.infchest.common.tiles.TileDeque;
-import com.kotori316.infchest.common.tiles.TileInfChest;
 
 public final class InfChest {
     public static final String MOD_NAME = "InfChest";
@@ -31,7 +31,7 @@ public final class InfChest {
 
         BlockInfChest CHEST();
 
-        LootItemFunctionType CHEST_FUNCTION();
+        LootItemFunctionType<ContentInfChest> CHEST_FUNCTION();
         MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE();
 
         boolean isModLoaded(String modId);

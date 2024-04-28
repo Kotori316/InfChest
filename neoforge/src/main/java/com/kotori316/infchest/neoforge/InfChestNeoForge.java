@@ -28,6 +28,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -36,7 +37,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import static com.kotori316.infchest.common.InfChest.modID;
@@ -61,8 +62,8 @@ public final class InfChestNeoForge {
         public static final BlockDequeNeoForge DEQUE = new BlockDequeNeoForge();
         public static final BlockEntityType<TileDequeNeoForge> DEQUE_TYPE = BlockEntityType.Builder.of(TileDequeNeoForge::new, DEQUE).build(DSL.emptyPartType());
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IMenuTypeExtension.create(ContainerInfChest::create);
-        public static final LootItemFunctionType CHEST_FUNCTION = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
-            new LootItemFunctionType(ContentInfChest.CODEC));
+        public static final LootItemFunctionType<ContentInfChest> CHEST_FUNCTION = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
+            new LootItemFunctionType<>(ContentInfChest.CODEC));
 
         @Override
         public BlockEntityType<? extends TileInfChest> INF_CHEST_TYPE() {
@@ -80,7 +81,7 @@ public final class InfChestNeoForge {
         }
 
         @Override
-        public LootItemFunctionType CHEST_FUNCTION() {
+        public LootItemFunctionType<ContentInfChest> CHEST_FUNCTION() {
             return CHEST_FUNCTION;
         }
 
@@ -99,7 +100,7 @@ public final class InfChestNeoForge {
         }
     }
 
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = modID)
     public static class EventHandlers {
 
         @SubscribeEvent
@@ -149,7 +150,7 @@ public final class InfChestNeoForge {
         }
 
         @SubscribeEvent
-        public static void registerPacket(RegisterPayloadHandlerEvent event) {
+        public static void registerPacket(RegisterPayloadHandlersEvent event) {
             PacketHandler.init(event);
         }
     }

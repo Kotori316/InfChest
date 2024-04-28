@@ -4,6 +4,7 @@ import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.blocks.BlockInfChest;
 import com.kotori316.infchest.common.guis.ContainerInfChest;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -45,18 +46,18 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         compound.putString(NBT_COUNT, count.toString());
-        ContainerHelper.saveAllItems(compound, inventory);
-        compound.put(NBT_ITEM, holding.save(new CompoundTag()));
-        Optional.ofNullable(customName).map(Component.Serializer::toJson).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
-        super.saveAdditional(compound);
+        ContainerHelper.saveAllItems(compound, inventory, provider);
+        compound.put(NBT_ITEM, holding.saveOptional(provider));
+        Optional.ofNullable(customName).map(c -> Component.Serializer.toJson(c, provider)).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
+        super.saveAdditional(compound, provider);
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
-        holding = ItemStack.of(compound.getCompound(NBT_ITEM));
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
+        holding = ItemStack.parseOptional(provider, compound.getCompound(NBT_ITEM));
         if (compound.contains(NBT_COUNT)) {
             try {
                 count = new BigDecimal(compound.getString(NBT_COUNT)).toBigIntegerExact();
@@ -68,8 +69,8 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
             count = BigInteger.ZERO;
         }
         if (compound.contains(NBT_CUSTOM_NAME))
-            customName = Component.Serializer.fromJson(compound.getString(NBT_CUSTOM_NAME));
-        ContainerHelper.loadAllItems(compound, inventory);
+            customName = Component.Serializer.fromJson(compound.getString(NBT_CUSTOM_NAME), provider);
+        ContainerHelper.loadAllItems(compound, inventory, provider);
         updateInv();
     }
 
@@ -79,8 +80,8 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithFullMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        return saveWithFullMetadata(provider);
     }
 
     @Override
@@ -285,7 +286,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
             ItemStack secondStack = getItem(1);
             return (holding.isEmpty() && hookObject.isEmpty() && (secondStack.isEmpty() || stacksEqual(secondStack, stack)))
                 || stacksEqual(holding, stack)
-                || hookObject.filter(h -> h.checkItemAcceptable(holding, stack)).isPresent();
+                || hookObject.filter(h -> h.checkItemAcceptable(holding, stack, TileUtil.providerFromEntity(this))).isPresent();
         }
         return false;
     }
@@ -294,7 +295,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         if (stack.isEmpty()) return false;
         if (!getItem(0).isEmpty()) return false; // To the disappearance of item in slot 0
         if (holding.isEmpty()) return true;
-        return ItemStack.isSameItemSameTags(holding, stack);
+        return ItemStack.isSameItemSameComponents(holding, stack);
     }
 
     @Override
@@ -311,7 +312,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     private static boolean stacksEqual(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSameItemSameTags(s1, s2);
+        return ItemStack.isSameItemSameComponents(s1, s2);
     }
 
     /**

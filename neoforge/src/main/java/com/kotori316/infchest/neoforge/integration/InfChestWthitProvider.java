@@ -8,8 +8,8 @@ public final class InfChestWthitProvider implements IDataProvider<TileInfChest>,
 
     @Override
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
-        if (accessor.getBlockEntity() instanceof TileInfChest) {
-            CommonTooltipPart.getTooltipBodyParts(accessor.getData().raw())
+        if (accessor.getBlockEntity() instanceof TileInfChest chest) {
+            CommonTooltipPart.getTooltipBodyParts(accessor.getData().raw(), chest)
                     .forEach(tooltip::addLine);
         }
     }

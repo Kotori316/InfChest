@@ -23,7 +23,7 @@ public final class CommonAE2Part {
     public static long extract(TileInfChest chest, long amount, ItemStack definition, boolean execute) {
         var holding = chest.getHolding();
         var out = chest.getItem(1);
-        if (ItemStack.isSameItemSameTags(definition, holding)) {
+        if (ItemStack.isSameItemSameComponents(definition, holding)) {
             BigInteger extractCount = BigInteger.valueOf(amount).min(chest.totalCount());
             if (execute) {
                 // do subtract.
@@ -31,7 +31,7 @@ public final class CommonAE2Part {
                 chest.setChanged();
             }
             return extractCount.longValue();
-        } else if (ItemStack.isSameItemSameTags(definition, out)) {
+        } else if (ItemStack.isSameItemSameComponents(definition, out)) {
             int extractCount = (int) Math.min(out.getCount(), amount);
             if (execute) {
                 chest.removeItem(1, extractCount);

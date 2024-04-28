@@ -25,7 +25,7 @@ base {
     archivesName = "${project.property("baseName")}-NeoForge-$minecraft"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println(
     "Java: " + System.getProperty("java.version") +
@@ -80,7 +80,7 @@ dependencies {
     implementation("net.neoforged:neoforge:${project.property("neo_version")}")
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
-    implementation(
+    compileOnly(
         group = "curse.maven",
         name = "jade-324717",
         version = project.property("jade_neoforge_id") as String
@@ -90,12 +90,12 @@ dependencies {
         name = "wthit-api",
         version = "neo-${project.property("wthit_forge_version")}"
     )
-    implementation(
+    compileOnly(
         group = "curse.maven",
         name = "the-one-probe-245211",
         version = project.property("top_neoforge_id") as String
     )
-    implementation(
+    compileOnly(
         group = "appeng",
         name = "appliedenergistics2-neoforge",
         version = project.property("ae2_neoforge_version") as String,

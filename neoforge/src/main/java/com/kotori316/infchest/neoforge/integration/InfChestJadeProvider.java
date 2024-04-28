@@ -12,9 +12,9 @@ public class InfChestJadeProvider implements IServerDataProvider<BlockAccessor>,
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (accessor.getBlockEntity() instanceof TileInfChest) {
-            CommonTooltipPart.getTooltipBodyParts(accessor.getServerData())
-                    .forEach(tooltip::add);
+        if (accessor.getBlockEntity() instanceof TileInfChest chest) {
+            CommonTooltipPart.getTooltipBodyParts(accessor.getServerData(), chest)
+                .forEach(tooltip::add);
         }
     }
 

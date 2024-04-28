@@ -2,8 +2,8 @@ package com.kotori316.infchest.common.integration;
 
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.InsertingHook;
-import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.math.BigInteger;
-import java.util.Optional;
 
 /**
  * Integration class of mod <a href="https://www.curseforge.com/minecraft/mc-mods/break-all-of-the-same-block-and-more/files/2877188">"StorageBox"</a>.
@@ -38,20 +37,21 @@ public class StorageBoxStack {
         if (!Holder.modLoaded || holding.isEmpty()) return false;
         if (isStorageBox(maybeBox)) {
             ItemStack inBox = getItem(maybeBox);
-            return !inBox.isEmpty() && ItemStack.isSameItemSameTags(holding, inBox);
+            return !inBox.isEmpty() && ItemStack.isSameItemSameComponents(holding, inBox);
         } else {
             return false;
         }
     }
 
     public static BigInteger getCount(ItemStack maybeBox) {
-        if (isStorageBox(maybeBox)) {
+        /*if (isStorageBox(maybeBox)) {
             return Optional.ofNullable(maybeBox.getTag())
                 .map(n -> n.getInt(KEYSIZE))
                 .filter(i -> i > 0)
                 .map(BigInteger::valueOf)
                 .orElse(BigInteger.ZERO);
-        } else {
+        } else*/
+        {
             return BigInteger.ZERO;
         }
     }
@@ -61,19 +61,20 @@ public class StorageBoxStack {
      * @return copied stack that has no item in storage.
      */
     public static ItemStack removeAllItems(ItemStack maybeBox) {
-        if (isStorageBox(maybeBox)) {
+        /*if (isStorageBox(maybeBox)) {
             ItemStack box = maybeBox.copy();
             box.removeTagKey(KEY_ITEM_DATA);
             box.getOrCreateTag(); // Storage box should always have tag.
             return box;
-        } else {
+        } else*/
+        {
             return ItemStack.EMPTY;
         }
     }
 
     public static boolean moveToStorage(Level worldIn, BlockPos pos, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (isStorageBox(stack)) {
+        /*if (isStorageBox(stack)) {
             if (worldIn.getBlockEntity(pos) instanceof TileInfChest chest) {
                 if (checkHoldingItem(chest.getHolding(), stack)) {
                     // flag that checks if the item in second slot of inf check can be inserted to storage box.
@@ -88,12 +89,13 @@ public class StorageBoxStack {
                     }
                 }
             }
-        }
+        }*/
         return false;
     }
 
     private static ItemStack getItem(ItemStack box) {
-        if (!Holder.modLoaded) return ItemStack.EMPTY;
+        return ItemStack.EMPTY;
+        /*if (!Holder.modLoaded) return ItemStack.EMPTY;
         return Optional.ofNullable(box.getTagElement(KEY_ITEM_DATA))
             .map(ItemStack::of)
             .flatMap(s ->
@@ -105,7 +107,7 @@ public class StorageBoxStack {
                         return s;
                     }))
             .filter(s -> !s.isEmpty())
-            .orElse(ItemStack.EMPTY);
+            .orElse(ItemStack.EMPTY);*/
     }
 
     public static class StorageBoxHook implements InsertingHook.Hook {
@@ -126,7 +128,7 @@ public class StorageBoxStack {
         }
 
         @Override
-        public boolean checkItemAcceptable(ItemStack chestContent, ItemStack hookItem) {
+        public boolean checkItemAcceptable(ItemStack chestContent, ItemStack hookItem, HolderLookup.Provider provider) {
             return StorageBoxStack.checkHoldingItem(chestContent, hookItem);
         }
     }

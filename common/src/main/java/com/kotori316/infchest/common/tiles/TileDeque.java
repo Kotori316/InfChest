@@ -1,11 +1,9 @@
 package com.kotori316.infchest.common.tiles;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
+import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.ItemDamage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -14,8 +12,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.ItemDamage;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class TileDeque extends BlockEntity implements HasInv {
 
@@ -28,23 +28,23 @@ public class TileDeque extends BlockEntity implements HasInv {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
         inventory = compound.getList(NBT_ITEMS, Tag.TAG_COMPOUND).stream()
             .map(CompoundTag.class::cast)
-            .map(ItemStack::of)
+            .map(t -> ItemStack.parseOptional(provider, t))
             .filter(Predicate.not(ItemStack::isEmpty))
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound) {
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         var list1 = inventory.stream()
             .filter(Predicate.not(ItemStack::isEmpty))
-            .map(i -> i.save(new CompoundTag()))
+            .map(i -> i.saveOptional(provider))
             .collect(Collectors.toCollection(ListTag::new));
         compound.put(NBT_ITEMS, list1);
-        super.saveAdditional(compound);
+        super.saveAdditional(compound, provider);
     }
 
     @Override

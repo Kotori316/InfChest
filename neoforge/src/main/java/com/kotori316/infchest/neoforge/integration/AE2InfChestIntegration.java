@@ -1,12 +1,12 @@
 package com.kotori316.infchest.neoforge.integration;
 
+import appeng.api.AECapabilities;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
-import appeng.capabilities.AppEngCapabilities;
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.integration.CommonAE2Part;
 import com.kotori316.infchest.common.tiles.TileInfChest;
@@ -29,7 +29,7 @@ public class AE2InfChestIntegration {
 class AE2Capability {
     @SubscribeEvent
     public void attachCapability(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(AppEngCapabilities.ME_STORAGE, InfChest.accessor.INF_CHEST_TYPE(), AE2Capability::create);
+        event.registerBlockEntity(AECapabilities.ME_STORAGE, InfChest.accessor.INF_CHEST_TYPE(), AE2Capability::create);
     }
 
     private static MEStorage create(TileInfChest chest, Direction ignored) {
