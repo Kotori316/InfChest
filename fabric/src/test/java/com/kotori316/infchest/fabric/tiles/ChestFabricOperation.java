@@ -92,7 +92,7 @@ public final class ChestFabricOperation implements FabricGameTest {
                 if (inserted != 300) {
                     throw new GameTestAssertException("1: Insertion failed. %d".formatted(inserted));
                 }
-                if (!ItemStack.isSameItemSameTags(new ItemStack(Items.APPLE), tile.getHolding())) {
+                if (!ItemStack.isSameItemSameComponents(new ItemStack(Items.APPLE), tile.getHolding())) {
                     throw new GameTestAssertException("1: Invalid items were inserted. %s".formatted(tile.getHolding()));
                 }
                 transaction.abort();
@@ -109,7 +109,7 @@ public final class ChestFabricOperation implements FabricGameTest {
                 if (inserted != 300) {
                     throw new GameTestAssertException("2: Insertion failed. %d".formatted(inserted));
                 }
-                if (!ItemStack.isSameItemSameTags(new ItemStack(Items.APPLE), tile.getHolding())) {
+                if (!ItemStack.isSameItemSameComponents(new ItemStack(Items.APPLE), tile.getHolding())) {
                     throw new GameTestAssertException("2: Invalid items were inserted. %s".formatted(tile.getHolding()));
                 }
                 transaction.abort();

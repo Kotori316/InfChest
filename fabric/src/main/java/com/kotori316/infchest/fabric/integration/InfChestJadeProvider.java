@@ -16,7 +16,7 @@ enum InfChestJadeProvider implements IServerDataProvider<BlockAccessor>, IBlockC
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         BlockEntity t = accessor.getBlockEntity();
         if (t instanceof TileInfChest) {
-            CommonTooltipPart.getTooltipBodyParts(accessor.getServerData())
+            CommonTooltipPart.getTooltipBodyParts(accessor.getServerData(), t)
                     .forEach(tooltip::add);
         }
     }

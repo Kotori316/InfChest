@@ -1,16 +1,15 @@
 package com.kotori316.infchest.fabric.tiles;
 
+import com.kotori316.infchest.common.packets.ItemCountMessage;
 import com.kotori316.infchest.common.tiles.TileInfChest;
-import com.kotori316.infchest.fabric.packets.ItemCountMessage;
 import com.kotori316.infchest.fabric.packets.PacketHandler;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
-public final class TileInfChestFabric extends TileInfChest implements ExtendedScreenHandlerFactory {
+public final class TileInfChestFabric extends TileInfChest implements ExtendedScreenHandlerFactory<BlockPos> {
     public TileInfChestFabric(BlockPos pos, BlockState state) {
         super(pos, state);
     }
@@ -44,7 +43,7 @@ public final class TileInfChestFabric extends TileInfChest implements ExtendedSc
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-        buf.writeBlockPos(worldPosition);
+    public BlockPos getScreenOpeningData(ServerPlayer player) {
+        return worldPosition;
     }
 }

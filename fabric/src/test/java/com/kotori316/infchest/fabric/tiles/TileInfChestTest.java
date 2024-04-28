@@ -49,7 +49,7 @@ public class TileInfChestTest implements FabricGameTest {
         var stack = new ItemStack(Items.APPLE, 10);
         tile.setItem(0, stack);
         var removed = tile.removeItem(1, 10);
-        if (!ItemStack.isSameItemSameTags(stack, removed)) {
+        if (!ItemStack.isSameItemSameComponents(stack, removed)) {
             throw new GameTestAssertException("Removed item(%s) and inserted item(%s) must be same.".formatted(removed, stack));
         }
         if (tile.isEmpty()) {
@@ -117,13 +117,13 @@ public class TileInfChestTest implements FabricGameTest {
         tile.setItem(0, new ItemStack(Items.APPLE, 64));
         tile.setItem(0, new ItemStack(Items.APPLE, 32));
 
-        if (!ItemStack.isSameItemSameTags(tile.getItem(1), new ItemStack(Items.APPLE, 64))) {
+        if (!ItemStack.isSameItemSameComponents(tile.getItem(1), new ItemStack(Items.APPLE, 64))) {
             throw new GameTestAssertException("Tile has unexpected item, %s".formatted(tile.getItem(1)));
         }
         if (!tile.getItem(0).isEmpty()) {
             throw new GameTestAssertException("Tile has unexpected item, %s".formatted(tile.getItem(0)));
         }
-        if (!ItemStack.isSameItemSameTags(new ItemStack(Items.APPLE), tile.getHolding())) {
+        if (!ItemStack.isSameItemSameComponents(new ItemStack(Items.APPLE), tile.getHolding())) {
             throw new GameTestAssertException("Holding of tile, Actual: %s, Expected: %s".formatted(tile.getHolding(), Items.APPLE));
         }
         helper.succeed();
@@ -143,7 +143,7 @@ public class TileInfChestTest implements FabricGameTest {
         CheckHelper.checkTotalCount(helper, tile, 160);
 
         var removed = tile.removeItem(1, 64);
-        if (!ItemStack.isSameItemSameTags(removed, stack)) {
+        if (!ItemStack.isSameItemSameComponents(removed, stack)) {
             throw new GameTestAssertException("%s must be taken. %s".formatted(stack, removed));
         }
         tile.setChanged();

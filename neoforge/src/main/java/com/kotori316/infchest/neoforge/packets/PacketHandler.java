@@ -1,6 +1,7 @@
 package com.kotori316.infchest.neoforge.packets;
 
 import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.packets.ItemCountMessage;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -15,7 +16,7 @@ public class PacketHandler {
         registrar.playToClient(
             ItemCountMessage.TYPE,
             ItemCountMessage.STREAM_CODEC,
-            ItemCountMessage::onReceive
+            ItemCountMessageNeoForge::onReceive
         );
     }
 

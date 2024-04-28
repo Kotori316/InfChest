@@ -85,4 +85,8 @@ public class ContainerInfChest extends AbstractContainerMenu {
     public static ContainerInfChest create(int windowId, Inventory inv, FriendlyByteBuf data) {
         return new ContainerInfChest(windowId, inv, data.readBlockPos());
     }
+
+    public static ContainerInfChest createFabric(int windowId, Inventory inv, BlockPos pos) {
+        return new ContainerInfChest(windowId, inv, pos);
+    }
 }

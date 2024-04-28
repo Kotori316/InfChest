@@ -1,19 +1,5 @@
 package com.kotori316.infchest.fabric;
 
-import com.mojang.datafixers.DSL;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.blocks.BlockDeque;
 import com.kotori316.infchest.common.blocks.BlockInfChest;
@@ -24,6 +10,20 @@ import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.kotori316.infchest.fabric.blocks.BlockInfChestFabric;
 import com.kotori316.infchest.fabric.tiles.InfChestStorage;
 import com.kotori316.infchest.fabric.tiles.TileInfChestFabric;
+import com.mojang.datafixers.DSL;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 import static com.kotori316.infchest.common.InfChest.modID;
 
@@ -46,10 +46,10 @@ public class InfChestFabric implements ModInitializer {
     public static class Register implements InfChest.TypeAccessor {
         public static final BlockInfChestFabric CHEST = new BlockInfChestFabric();
         public static final BlockDeque DEQUE = new BlockDeque();
-        public static final BlockEntityType<TileInfChestFabric> INF_CHEST_TYPE = FabricBlockEntityTypeBuilder.create(TileInfChestFabric::new, CHEST).build(DSL.emptyPartType());
-        public static final BlockEntityType<TileDeque> DEQUE_TYPE = FabricBlockEntityTypeBuilder.create(TileDeque::new, DEQUE).build(DSL.emptyPartType());
-        public static final ExtendedScreenHandlerType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(ContainerInfChest::create);
-        public static final LootItemFunctionType CHEST_FUNCTION = new LootItemFunctionType(ContentInfChest.CODEC);
+        public static final BlockEntityType<TileInfChestFabric> INF_CHEST_TYPE = BlockEntityType.Builder.of(TileInfChestFabric::new, CHEST).build(DSL.emptyPartType());
+        public static final BlockEntityType<TileDeque> DEQUE_TYPE = BlockEntityType.Builder.of(TileDeque::new, DEQUE).build(DSL.emptyPartType());
+        public static final ExtendedScreenHandlerType<ContainerInfChest, BlockPos> INF_CHEST_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(ContainerInfChest::createFabric, BlockPos.STREAM_CODEC.mapStream(RegistryFriendlyByteBuf::asByteBuf));
+        public static final LootItemFunctionType<ContentInfChest> CHEST_FUNCTION = new LootItemFunctionType<>(ContentInfChest.CODEC);
 
         @Override
         public BlockEntityType<? extends TileInfChest> INF_CHEST_TYPE() {
@@ -67,7 +67,7 @@ public class InfChestFabric implements ModInitializer {
         }
 
         @Override
-        public LootItemFunctionType CHEST_FUNCTION() {
+        public LootItemFunctionType<ContentInfChest> CHEST_FUNCTION() {
             return CHEST_FUNCTION;
         }
 

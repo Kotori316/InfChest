@@ -1,8 +1,7 @@
-package com.kotori316.infchest.neoforge.packets;
+package com.kotori316.infchest.common.packets;
 
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.TileInfChest;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -12,7 +11,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -23,8 +21,8 @@ import java.util.Optional;
 public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] bytes, ItemStack out,
                                ItemStack holding) implements CustomPacketPayload {
     public static final ResourceLocation NAME = new ResourceLocation(InfChest.modID, "item_count_message");
-    static final CustomPacketPayload.Type<ItemCountMessage> TYPE = new Type<>(NAME);
-    static final StreamCodec<RegistryFriendlyByteBuf, ItemCountMessage> STREAM_CODEC = CustomPacketPayload.codec(
+    public static final Type<ItemCountMessage> TYPE = new Type<>(NAME);
+    public static final StreamCodec<RegistryFriendlyByteBuf, ItemCountMessage> STREAM_CODEC = CustomPacketPayload.codec(
         ItemCountMessage::write, ItemCountMessage::new
     );
 
@@ -56,19 +54,16 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
     }
 
     @Override
-    public CustomPacketPayload.Type<ItemCountMessage> type() {
+    public Type<ItemCountMessage> type() {
         return TYPE;
     }
 
-    void onReceive(IPayloadContext context) {
-        assert Minecraft.getInstance().level != null;
-        var entity = Minecraft.getInstance().level.getBlockEntity(pos);
-        if (Minecraft.getInstance().level.dimension().equals(dim) && entity instanceof TileInfChest chest) {
-            context.enqueueWork(() -> {
-                chest.setCount(new BigInteger(bytes));
-                chest.setItem(1, out);
-                chest.setHolding(holding);
-            });
+    public void onReceive(Level level) {
+        var entity = level.getBlockEntity(this.pos());
+        if (level.dimension().equals(this.dim()) && entity instanceof TileInfChest chest) {
+            chest.setCount(new BigInteger(this.bytes()));
+            chest.setItem(1, this.out());
+            chest.setHolding(this.holding());
         }
     }
 }
