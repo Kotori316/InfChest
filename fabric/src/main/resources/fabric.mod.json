@@ -35,5 +35,6 @@
     "minecraft": "1.20.x"
   },
   "custom": {
+    "kotori316_version_checker": "https://version.kotori316.com/get-version/${minecraftVersion}/fabric/infchest"
   }
 }

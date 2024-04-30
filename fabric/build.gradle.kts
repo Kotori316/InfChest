@@ -1,6 +1,7 @@
 import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 import com.kotori316.plugin.cf.CallVersionFunctionTask
 import com.matthewprenger.cursegradle.CurseProject
+import com.matthewprenger.cursegradle.CurseRelation
 import org.gradle.jvm.tasks.Jar
 
 plugins {
@@ -78,6 +79,13 @@ repositories {
         name = "ModMaven"
         url = uri("https://modmaven.dev/")
     }
+    maven {
+        name = "Kotori316 Plugin"
+        url = uri("https://maven.kotori316.com/")
+        content {
+            includeGroup("com.kotori316")
+        }
+    }
 }
 
 dependencies {
@@ -106,6 +114,9 @@ dependencies {
     // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_fabric_version}")
     // modRuntimeOnly("lol.bai:badpackets:fabric-${project.badpackets_fabric_version}")
     modImplementation("curse.maven:jade-324717:${project.property("jade_fabric_id")}")
+    modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
+        isTransitive = false
+    }
 }
 
 tasks.processResources {
@@ -113,7 +124,12 @@ tasks.processResources {
     inputs.property("version", project.version)
 
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to project.version))
+        expand(
+            mapOf(
+                "version" to project.version,
+                "minecraftVersion" to minecraft
+            )
+        )
     }
 }
 
@@ -143,6 +159,9 @@ curseforge {
         addGameVersion(minecraft)
         releaseType = "beta"
         mainArtifact(tasks.remapJar.flatMap { it.archiveFile }.get())
+        relations(closureOf<CurseRelation> {
+            requiredDependency("automatic-potato")
+        })
     })
     options(closureOf<com.matthewprenger.cursegradle.Options> {
         curseGradleOptions.debug = !releaseMode
@@ -163,6 +182,7 @@ modrinth {
     changelog = file("../temp_changelog.md").useLines { it.joinToString(System.lineSeparator()).split("# ")[1] }
     debugMode = !releaseMode
     dependencies {
+        required.project("automatic-potato")
     }
 }
 
