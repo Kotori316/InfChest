@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter
 
 plugins {
     id("com.kotori316.common")
-    `maven-publish`
     signing
     id("net.neoforged.gradle.userdev") version ("[7.0.57, 8)")
     id("net.neoforged.gradle.mixin") version ("[7.0.57, 8)")
@@ -43,33 +42,8 @@ runs {
     }
 }
 
-repositories {
-    maven {
-        url = uri("https://www.cursemaven.com")
-        content {
-            includeGroup("curse.maven")
-        }
-    }
-
-    maven {
-        name = "What The Hell Is That"
-        url = uri("https://maven2.bai.lol")
-        content {
-            includeModule("mcp.mobius.waila", "wthit-api")
-            includeModule("mcp.mobius.waila", "wthit")
-            includeModule("lol.bai", "badpackets")
-        }
-    }
-    maven {
-        name = "ModMaven"
-        url = uri("https://modmaven.dev/")
-        content {
-            includeModule("appeng", "appliedenergistics2-neoforge")
-        }
-    }
-}
-
 dependencies {
+    // See com.kotori316.common.gradle.kts for repositories
     implementation("net.neoforged:neoforge:${project.property("neo_version")}")
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
@@ -206,20 +180,6 @@ modrinth {
 }
 
 publishing {
-    if (releaseMode) {
-        repositories {
-            maven {
-                name = "AzureRepository"
-                url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
-                val user = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
-                val pass = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
-                credentials {
-                    username = user.toString()
-                    password = pass.toString()
-                }
-            }
-        }
-    }
     publications {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()

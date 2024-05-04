@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter
 
 plugins {
     id("com.kotori316.common")
-    id("maven-publish")
     id("signing")
     id("net.minecraftforge.gradle") version ("[6.0,6.2)")
     id("org.spongepowered.mixin") version ("0.7.+")
@@ -84,48 +83,8 @@ tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-repositories {
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = uri("https://modmaven.dev/")
-        content {
-            includeModule("appeng", "appliedenergistics2-forge")
-        }
-    }
-    maven {
-        url = uri("https://www.cursemaven.com")
-        content {
-            includeGroup("curse.maven")
-        }
-    }
-    maven {
-        name = "What The Hell Is That"
-        url = uri("https://maven2.bai.lol")
-        content {
-            includeModule("mcp.mobius.waila", "wthit-api")
-            includeModule("mcp.mobius.waila", "wthit")
-            includeModule("lol.bai", "badpackets")
-        }
-    }
-    maven {
-        name = "Mixin"
-        url = uri("https://repo.spongepowered.org/maven")
-    }
-
-    maven {
-        url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage")
-        credentials {
-            username = "anything"
-            password = "\u0067hp_oGjcDFCn8jeTzIj4Ke9pLoEVtpnZMP4VQgaX"
-        }
-        content {
-            includeGroup("com.refinedmods")
-        }
-    }
-}
-
 dependencies {
+    // See com.kotori316.common.gradle.kts for repositories
     minecraft("net.minecraftforge:forge:${project.property("forgeVersion")}")
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
@@ -271,20 +230,6 @@ modrinth {
 }
 
 publishing {
-    if (releaseMode) {
-        repositories {
-            maven {
-                name = "AzureRepository"
-                url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
-                val user = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
-                val pass = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
-                credentials {
-                    username = user.toString()
-                    password = pass.toString()
-                }
-            }
-        }
-    }
     publications {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()

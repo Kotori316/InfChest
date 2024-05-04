@@ -6,7 +6,6 @@ import org.gradle.jvm.tasks.Jar
 
 plugins {
     id("com.kotori316.common")
-    id("maven-publish")
     id("signing")
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
     id("fabric-loom") version ("1.6.11")
@@ -48,41 +47,8 @@ loom {
     }
 }
 
-repositories {
-    maven {
-        name = "ParchmentMC"
-        url = uri("https://maven.parchmentmc.org")
-    }
-    maven {
-        name = "What The Hell Is That"
-        url = uri("https://maven2.bai.lol")
-        content {
-            includeVersion("mcp.mobius.waila", "wthit-api", "fabric-${project.property("wthit_fabric_version")}")
-            includeVersion("mcp.mobius.waila", "wthit", "fabric-${project.property("wthit_fabric_version")}")
-            includeVersion("lol.bai", "badpackets", "fabric-${project.property("badpackets_fabric_version")}")
-        }
-    }
-    maven {
-        url = uri("https://www.cursemaven.com")
-        content {
-            includeGroup("curse.maven")
-        }
-    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = uri("https://modmaven.dev/")
-    }
-    maven {
-        name = "Kotori316 Plugin"
-        url = uri("https://maven.kotori316.com/")
-        content {
-            includeGroup("com.kotori316")
-        }
-    }
-}
-
 dependencies {
+    // See com.kotori316.common.gradle.kts for repositories
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:$minecraft")
     mappings(loom.layered {
@@ -170,34 +136,6 @@ modrinth {
 }
 
 publishing {
-    if (releaseMode) {
-        repositories {
-            maven {
-                name = "AzureRepository"
-                url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
-                val name = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
-                val pass = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
-                credentials {
-                    username = name.toString()
-                    password = pass.toString()
-                }
-            }
-            if (System.getenv("CLOUDFLARE_S3_ENDPOINT") != null) {
-                val r2AccessKey =
-                    (project.findProperty("r2_access_key") ?: System.getenv("R2_ACCESS_KEY") ?: "") as String
-                val r2SecretKey =
-                    (project.findProperty("r2_secret_key") ?: System.getenv("R2_SECRET_KEY") ?: "") as String
-                maven {
-                    name = "kotori316-maven"
-                    url = uri("s3://kotori316-maven")
-                    credentials(AwsCredentials::class) {
-                        accessKey = r2AccessKey
-                        secretKey = r2SecretKey
-                    }
-                }
-            }
-        }
-    }
     publications {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()
