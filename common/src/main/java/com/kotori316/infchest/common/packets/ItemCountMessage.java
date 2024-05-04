@@ -4,7 +4,7 @@ import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
@@ -22,7 +22,7 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
                                ItemStack holding) implements CustomPacketPayload {
     public static final ResourceLocation NAME = new ResourceLocation(InfChest.modID, "item_count_message");
     public static final Type<ItemCountMessage> TYPE = new Type<>(NAME);
-    public static final StreamCodec<RegistryFriendlyByteBuf, ItemCountMessage> STREAM_CODEC = CustomPacketPayload.codec(
+    public static final StreamCodec<FriendlyByteBuf, ItemCountMessage> STREAM_CODEC = CustomPacketPayload.codec(
         ItemCountMessage::write, ItemCountMessage::new
     );
 
@@ -36,7 +36,7 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
         );
     }
 
-    public ItemCountMessage(RegistryFriendlyByteBuf p) {
+    public <T extends FriendlyByteBuf> ItemCountMessage(T p) {
         this(
             p.readBlockPos(),
             ResourceKey.create(Registries.DIMENSION, p.readResourceLocation()),
@@ -46,7 +46,7 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
         );
     }
 
-    void write(RegistryFriendlyByteBuf p) {
+    <T extends FriendlyByteBuf> void write(T p) {
         p.writeBlockPos(pos).writeResourceLocation(dim.location());
         p.writeByteArray(bytes);
         p.writeJsonWithCodec(ItemStack.OPTIONAL_CODEC, out);

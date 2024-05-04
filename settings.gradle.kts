@@ -33,9 +33,10 @@ plugins {
 }
 
 rootProject.name = "InfChest-1.20"
+includeBuild("build-logic")
 include("common")
 if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
-    // include("forge")
+    include("forge")
 }
 if (!(System.getenv("DISABLE_FABRIC") ?: "false").toBoolean()) {
     include("fabric")
