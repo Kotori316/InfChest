@@ -55,8 +55,9 @@ minecraft {
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
-        configureEach{
-            val mixinRefMap = layout.buildDirectory.map { it.file("createSrgToMcp/output.srg").asFile.absolutePath }.get()
+        configureEach {
+            val mixinRefMap =
+                layout.buildDirectory.map { it.file("createSrgToMcp/output.srg").asFile.absolutePath }.get()
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", mixinRefMap)
             property("forge.logging.markers", "REGISTRIES")
@@ -67,7 +68,6 @@ minecraft {
             mods {
                 create(modId) {
                     source(sourceSets.getAt("main"))
-                    source(project(":common").sourceSets.getAt("main"))
                 }
             }
         }
@@ -140,10 +140,10 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 
     compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${project.property("ae2Version")}"))
-    implementation(fg.deobf("curse.maven:jade-324717:${project.property("jade_forge_id")}"))
+    compileOnly(fg.deobf("curse.maven:jade-324717:${project.property("jade_forge_id")}"))
     compileOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.property("top_id")}"))
     compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.property("wthit_forge_version")}"))
-    implementation(
+    compileOnly(
         fg.deobf(
             "com.refinedmods:refinedstorage:${project.property("rsVersion")}",
             closureOf<ExternalModuleDependency> {
@@ -153,6 +153,11 @@ dependencies {
     // runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-${project.wthit_version}"))
     // runtimeOnly(fg.deobf("lol.bai:badpackets:forge-${project.badpackets_forge_version}"))
     // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3430254".toLowerCase())
+    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") {
+        version {
+            strictly("5.0.4")
+        }
+    }
 }
 
 tasks.withType(JavaCompile::class) {
@@ -347,4 +352,10 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
     modName = modId
     version = project.version as String
     failIfExists = releaseMode
+}
+
+sourceSets.forEach {
+    val dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.setResourcesDir(dir)
+    it.java.destinationDirectory = dir
 }

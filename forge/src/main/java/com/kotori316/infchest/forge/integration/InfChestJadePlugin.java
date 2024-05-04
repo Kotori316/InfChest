@@ -1,15 +1,12 @@
 package com.kotori316.infchest.forge.integration;
 
+import com.kotori316.infchest.common.blocks.BlockInfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
-import snownee.jade.api.WailaPlugin;
 
-import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.blocks.BlockInfChest;
-import com.kotori316.infchest.common.tiles.TileInfChest;
-
-@WailaPlugin(InfChest.modID)
+// @WailaPlugin(InfChest.modID) // wrong parchment mapping?
 public class InfChestJadePlugin implements IWailaPlugin {
     @Override
     public void register(IWailaCommonRegistration registration) {

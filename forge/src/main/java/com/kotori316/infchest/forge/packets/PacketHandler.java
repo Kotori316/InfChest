@@ -1,6 +1,7 @@
 package com.kotori316.infchest.forge.packets;
 
 import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.packets.ItemCountMessage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.Channel;
 import net.minecraftforge.network.ChannelBuilder;
@@ -15,9 +16,9 @@ public class PacketHandler {
         .simpleChannel()
         // ItemCountMessage
         .messageBuilder(ItemCountMessage.class)
-        .decoder(ItemCountMessage::new)
-        .encoder(ItemCountMessage::toBytes)
-        .consumerNetworkThread(ItemCountMessage::onReceive)
+        .decoder(ItemCountMessage.STREAM_CODEC::decode)
+        .encoder((message, friendlyByteBuf) -> ItemCountMessage.STREAM_CODEC.encode(friendlyByteBuf, message))
+        .consumerMainThread(ItemCountMessageForge::onReceive)
         .add();
 
     public static void init() {
