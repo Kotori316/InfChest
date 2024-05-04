@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    java
+    id("com.kotori316.common")
     `maven-publish`
     signing
     id("net.neoforged.gradle.userdev") version ("[7.0.57, 8)")
@@ -26,13 +26,6 @@ base {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
-println(
-    "Java: " + System.getProperty("java.version") +
-            " JVM: " + System.getProperty("java.vm.version") +
-            "(" + System.getProperty("java.vendor") + ")" +
-            " Arch: " + System.getProperty("os.arch")
-)
 
 minecraft {
     mappings {

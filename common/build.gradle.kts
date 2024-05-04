@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    id("com.kotori316.common")
     id("org.spongepowered.gradle.vanilla") version ("0.2.1-SNAPSHOT")
 }
 

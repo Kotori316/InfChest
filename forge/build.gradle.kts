@@ -6,9 +6,9 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
+    id("com.kotori316.common")
     id("maven-publish")
     id("signing")
-    id("java")
     id("net.minecraftforge.gradle") version ("[6.0,6.2)")
     id("org.spongepowered.mixin") version ("0.7.+")
     id("org.parchmentmc.librarian.forgegradle") version ("1.+")
@@ -28,13 +28,6 @@ base {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
-println(
-    "Java: " + System.getProperty("java.version") +
-            " JVM: " + System.getProperty("java.vm.version") +
-            "(" + System.getProperty("java.vendor") + ")" +
-            " Arch: " + System.getProperty("os.arch")
-)
 
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
@@ -355,7 +348,7 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
 }
 
 sourceSets.forEach {
-    val dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    val dir = layout.buildDirectory.dir("sourcesSets/${it.name}")
     it.output.setResourcesDir(dir)
     it.java.destinationDirectory = dir
 }

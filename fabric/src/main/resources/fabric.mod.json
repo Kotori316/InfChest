@@ -12,7 +12,7 @@
     "sources": "https://github.com/Kotori316/InfChest",
     "issues": "https://github.com/Kotori316/InfChest/issues"
   },
-  "license": "MIT License (c) 2019-2023 Kotori316",
+  "license": "MIT License (c) 2019-${currentYear} Kotori316",
   "icon": "assets/infchest/textures/block/if.png",
   "environment": "*",
   "entrypoints": {

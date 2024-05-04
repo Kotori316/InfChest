@@ -5,6 +5,7 @@ import com.matthewprenger.cursegradle.CurseRelation
 import org.gradle.jvm.tasks.Jar
 
 plugins {
+    id("com.kotori316.common")
     id("maven-publish")
     id("signing")
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
@@ -25,13 +26,6 @@ base {
     version = modVersion
     group = "com.kotori316"
 }
-
-println(
-    "Java: " + System.getProperty("java.version") +
-            " JVM: " + System.getProperty("java.vm.version") +
-            "(" + System.getProperty("java.vendor") + ")" +
-            " Arch: " + System.getProperty("os.arch")
-)
 
 loom {
     runs {
@@ -121,16 +115,6 @@ dependencies {
 
 tasks.processResources {
     from(project(":common").sourceSets.main.map { it.resources })
-    inputs.property("version", project.version)
-
-    filesMatching("fabric.mod.json") {
-        expand(
-            mapOf(
-                "version" to project.version,
-                "minecraftVersion" to minecraft
-            )
-        )
-    }
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
@@ -146,7 +130,6 @@ java {
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
 curseforge {
