@@ -1,3 +1,13 @@
+# Version 20.11
+
+2024-05-04
+
+* Update forge
+  * Support for tooltip mod is unavailable
+* Update dependencies
+* Enabled AE2 integration in NeoForge
+* Change version checker URL
+
 # Version 20.10
 
 2024-04-30

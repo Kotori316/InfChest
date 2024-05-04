@@ -42,6 +42,7 @@ jobs:
         with:
           cache-read-only: false
           gradle-home-cache-cleanup: true
+          add-job-summary: 'on-failure'
       - name: javaToolchains
         run: ./gradlew :${{ matrix.platform }}:javaToolchains
       - name: Check Version
