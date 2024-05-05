@@ -24,8 +24,6 @@ base {
     archivesName = "${project.property("baseName")}-NeoForge-$minecraft"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
 minecraft {
     mappings {
         version("minecraft", project.property("minecraftVersion") as String)

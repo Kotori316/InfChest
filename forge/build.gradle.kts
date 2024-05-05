@@ -26,8 +26,6 @@ base {
     archivesName = "${project.property("baseName")}-Forge-$minecraft"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   Snapshot are built nightly.
@@ -41,6 +39,7 @@ minecraft {
     )
     // mappings channel: "official", version: "1.18.2"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    reobf = false
 
     // accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
 
@@ -139,18 +138,8 @@ tasks.jar {
     }
 }
 
-// Example configuration to allow publishing using the maven-publish task
-// we define a custom artifact that is sourced from the reobfJar output task
-// and then declare that to be published
-// Note you'll need to add a repository here
-val reobfFile = layout.buildDirectory.file("reobfJar/output.jar")
-val reobfArtifact = artifacts.add("default", reobfFile) {
-    type = "jar"
-    builtBy("reobfJar")
-}
-
 val jksSignJar by tasks.register("jksSignJar") {
-    dependsOn("reobfJar")
+    dependsOn("jar")
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
@@ -235,7 +224,7 @@ publishing {
             artifactId = base.archivesName.get().lowercase()
             artifact(srcJar)
             artifact(deobfJar)
-            artifact(reobfArtifact)
+            artifact(jar)
         }
     }
 }

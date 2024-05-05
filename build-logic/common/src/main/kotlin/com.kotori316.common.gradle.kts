@@ -23,7 +23,7 @@ java {
 }
 
 val minecraftVersion = project.property("minecraftVersion") as String
-val currentDate = ZonedDateTime.now(ZoneOffset.UTC)
+val currentDate: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
 tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
