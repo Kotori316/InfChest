@@ -13,10 +13,12 @@ public class PacketHandler {
     @Environment(EnvType.CLIENT)
     public static class Client {
         public static void initClient() {
-            PayloadTypeRegistry.playS2C().register(ItemCountMessage.TYPE, ItemCountMessage.STREAM_CODEC);
-
             ClientPlayNetworking.registerGlobalReceiver(ItemCountMessage.TYPE, ItemCountMessageFabric.HandlerHolder.HANDLER);
         }
+    }
+
+    public static void register() {
+        PayloadTypeRegistry.playS2C().register(ItemCountMessage.TYPE, ItemCountMessage.STREAM_CODEC);
     }
 
     public static void sendToClientPlayer(@NotNull ItemCountMessage message, @NotNull ServerPlayer player) {

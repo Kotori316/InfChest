@@ -8,6 +8,7 @@ import com.kotori316.infchest.common.guis.ContainerInfChest;
 import com.kotori316.infchest.common.tiles.TileDeque;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.kotori316.infchest.fabric.blocks.BlockInfChestFabric;
+import com.kotori316.infchest.fabric.packets.PacketHandler;
 import com.kotori316.infchest.fabric.tiles.InfChestStorage;
 import com.kotori316.infchest.fabric.tiles.TileInfChestFabric;
 import com.mojang.datafixers.DSL;
@@ -41,6 +42,7 @@ public class InfChestFabric implements ModInitializer {
         Registry.register(BuiltInRegistries.MENU, new ResourceLocation(TileInfChestFabric.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
 
         InfChestStorage.register();
+        PacketHandler.register();
     }
 
     public static class Register implements InfChest.TypeAccessor {
