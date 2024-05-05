@@ -1,3 +1,10 @@
+# Version 20.12
+
+2024-05-05
+
+* Fix connection error in fabric server
+* Update dependencies
+
 # Version 20.11
 
 2024-05-04
