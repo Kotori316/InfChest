@@ -40,6 +40,7 @@ jobs:
       id-token: write
       contents: write
       packages: write
+      attestations: write
     # See https://github.com/Kotori316/common-script/blob/main/.github/workflows/release-prod-gradle.yaml
     uses: 'Kotori316/common-script/.github/workflows/release-prod-gradle.yaml@main'
     with:
@@ -47,4 +48,5 @@ jobs:
       release_command: 'checkReleaseVersion assemble publishToMavenLocal curseforge modrinth registerVersion publish --continue'
       enable_signature_check: true
       java_version: '21'
+      use_attestation: true
     secrets: inherit
