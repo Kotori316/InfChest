@@ -102,7 +102,7 @@ if (project.name != "common") {
     publishing {
         if (releaseMode) {
             repositories {
-                maven {
+                /*maven {
                     name = "AzureRepository"
                     url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
                     val user = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
@@ -111,7 +111,7 @@ if (project.name != "common") {
                         username = user.toString()
                         password = pass.toString()
                     }
-                }
+                }*/
                 if (System.getenv("CLOUDFLARE_S3_ENDPOINT") != null) {
                     val r2AccessKey =
                         (project.findProperty("r2_access_key") ?: System.getenv("R2_ACCESS_KEY") ?: "") as String
