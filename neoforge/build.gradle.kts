@@ -36,7 +36,7 @@ runs {
         systemProperties.put("forge.enabledGameTestNamespaces", modId)
         systemProperties.put("mixin.debug.export", "true")
         jvmArguments.add("-XstartOnFirstThread")
-        modSources.add(project.sourceSets.main)
+        // modSources.add(project.sourceSets.main)
     }
 }
 

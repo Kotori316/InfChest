@@ -25,6 +25,7 @@ jobs:
           - forge
           - fabric
           - neoforge
+      fail-fast: false
     env:
       DISABLE_FORGE: ${{ matrix.platform != 'forge' }}
       DISABLE_FABRIC: ${{ matrix.platform != 'fabric' }}
