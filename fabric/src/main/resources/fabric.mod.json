@@ -32,7 +32,7 @@
   "depends": {
     "fabricloader": ">=0.14",
     "fabric": "*",
-    "minecraft": "1.20.x"
+    "minecraft": "1.21.x"
   },
   "custom": {
     "kotori316_version_checker": "https://version.kotori316.com/get-version/${minecraftVersion}/fabric/infchest"
