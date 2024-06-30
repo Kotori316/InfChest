@@ -93,7 +93,7 @@ dependencies {
     compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${project.property("ae2Version")}"))
     compileOnly(fg.deobf("curse.maven:jade-324717:${project.property("jade_forge_id")}"))
     compileOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.property("top_id")}"))
-    compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.property("wthit_forge_version")}"))
+    // compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.property("wthit_forge_version")}"))
     compileOnly(
         fg.deobf(
             "com.refinedmods:refinedstorage:${project.property("rsVersion")}",
