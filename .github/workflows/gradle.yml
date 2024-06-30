@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "1.20" ]
+    branches: [ "1.21" ]
   pull_request:
-    branches: [ "1.20" ]
+    branches: [ "1.21" ]
 
 permissions:
   contents: read
@@ -41,7 +41,7 @@ jobs:
         run: chmod +x ./gradlew
       - uses: gradle/actions/setup-gradle@v3
         with:
-          cache-read-only: false
+          cache-read-only: ${{ github.event_name != 'push' }}
           gradle-home-cache-cleanup: true
           add-job-summary: 'on-failure'
       - name: javaToolchains
