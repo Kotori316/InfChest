@@ -10,7 +10,7 @@ import net.minecraftforge.network.SimpleChannel;
 
 public class PacketHandler {
     public static final int PROTOCOL = 1;
-    private static final SimpleChannel WRAPPER = ChannelBuilder.named(new ResourceLocation(InfChest.modID, "main"))
+    private static final SimpleChannel WRAPPER = ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(InfChest.modID, "main"))
         .networkProtocolVersion(PROTOCOL)
         .acceptedVersions(Channel.VersionTest.exact(PROTOCOL))
         .simpleChannel()

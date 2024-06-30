@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     private final TileInfChest infChest;
-    private final static ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "textures/gui/infchest.png");
+    private final static ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "textures/gui/infchest.png");
 
     public GuiInfChest(ContainerInfChest container, Inventory inventory, Component component) {
         super(container, inventory, component);

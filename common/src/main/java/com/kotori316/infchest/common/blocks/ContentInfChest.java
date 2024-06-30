@@ -14,7 +14,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import java.util.List;
 
 public class ContentInfChest extends LootItemConditionalFunction {
-    public static final ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "content_infchest");
+    public static final ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "content_infchest");
     public static final MapCodec<ContentInfChest> CODEC = RecordCodecBuilder.mapCodec(instance ->
         commonFields(instance).apply(instance, ContentInfChest::new)
     );

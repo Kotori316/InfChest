@@ -32,7 +32,7 @@ public class AE2InfChestIntegration {
             MinecraftForge.EVENT_BUS.register(new AE2InfChestIntegration());
     }
 
-    private static final ResourceLocation LOCATION = new ResourceLocation(InfChest.modID, "attach_ae2");
+    private static final ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "attach_ae2");
 
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<BlockEntity> event) {

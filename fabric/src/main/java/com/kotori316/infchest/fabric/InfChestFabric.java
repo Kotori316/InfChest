@@ -32,14 +32,14 @@ public class InfChestFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(modID, BlockInfChestFabric.name), Register.CHEST);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(modID, BlockDeque.name), Register.DEQUE);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(modID, BlockInfChestFabric.name), Register.CHEST.itemBlock);
-        Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(modID, BlockDeque.name), Register.DEQUE.itemBlock);
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation(modID, "tile." + BlockInfChestFabric.name), Register.INF_CHEST_TYPE);
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
+        Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(modID, BlockInfChestFabric.name), Register.CHEST);
+        Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modID, BlockInfChestFabric.name), Register.CHEST.itemBlock);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE.itemBlock);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(modID, "tile." + BlockInfChestFabric.name), Register.INF_CHEST_TYPE);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
         Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION, Register.CHEST_FUNCTION);
-        Registry.register(BuiltInRegistries.MENU, new ResourceLocation(TileInfChestFabric.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
+        Registry.register(BuiltInRegistries.MENU, ResourceLocation.parse(TileInfChestFabric.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
 
         InfChestStorage.register();
         PacketHandler.register();

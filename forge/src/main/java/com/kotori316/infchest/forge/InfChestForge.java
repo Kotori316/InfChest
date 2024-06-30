@@ -112,22 +112,22 @@ public final class InfChestForge {
         }
 
         public static void registerBlock(RegisterEvent.RegisterHelper<Block> event) {
-            event.register(new ResourceLocation(modID, BlockInfChest.name), Register.CHEST);
-            event.register(new ResourceLocation(modID, BlockDeque.name), Register.DEQUE);
+            event.register(ResourceLocation.fromNamespaceAndPath(modID, BlockInfChest.name), Register.CHEST);
+            event.register(ResourceLocation.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE);
         }
 
         public static void registerItem(RegisterEvent.RegisterHelper<Item> event) {
-            event.register(new ResourceLocation(modID, BlockInfChest.name), Register.CHEST.itemBlock);
-            event.register(new ResourceLocation(modID, BlockDeque.name), Register.DEQUE.itemBlock);
+            event.register(ResourceLocation.fromNamespaceAndPath(modID, BlockInfChest.name), Register.CHEST.itemBlock);
+            event.register(ResourceLocation.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE.itemBlock);
         }
 
         public static void registerTile(RegisterEvent.RegisterHelper<BlockEntityType<?>> event) {
-            event.register(new ResourceLocation(modID, "tile." + BlockInfChest.name), Register.INF_CHEST_TYPE);
-            event.register(new ResourceLocation(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
+            event.register(ResourceLocation.fromNamespaceAndPath(modID, "tile." + BlockInfChest.name), Register.INF_CHEST_TYPE);
+            event.register(ResourceLocation.fromNamespaceAndPath(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
         }
 
         public static void registerContainer(RegisterEvent.RegisterHelper<MenuType<?>> event) {
-            event.register(new ResourceLocation(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
+            event.register(ResourceLocation.parse(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
         }
 
         @SubscribeEvent

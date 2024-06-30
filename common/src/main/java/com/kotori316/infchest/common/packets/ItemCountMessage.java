@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] bytes, ItemStack out,
                                ItemStack holding) implements CustomPacketPayload {
-    public static final ResourceLocation NAME = new ResourceLocation(InfChest.modID, "item_count_message");
+    public static final ResourceLocation NAME = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "item_count_message");
     public static final Type<ItemCountMessage> TYPE = new Type<>(NAME);
     public static final StreamCodec<FriendlyByteBuf, ItemCountMessage> STREAM_CODEC = CustomPacketPayload.codec(
         ItemCountMessage::write, ItemCountMessage::new

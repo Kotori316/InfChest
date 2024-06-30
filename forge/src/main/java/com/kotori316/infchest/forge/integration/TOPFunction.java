@@ -23,7 +23,7 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
 
         @Override
         public ResourceLocation getID() {
-            return new ResourceLocation(InfChest.modID, "top_chest");
+            return ResourceLocation.fromNamespaceAndPath(InfChest.modID, "top_chest");
         }
 
         @Override

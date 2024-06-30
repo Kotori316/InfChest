@@ -30,7 +30,7 @@ public class StorageBoxStack {
     public static boolean isStorageBox(ItemStack maybeBox) {
         if (!Holder.modLoaded) return false;
         Item item = maybeBox.getItem();
-        return item == BuiltInRegistries.ITEM.get(new ResourceLocation(modId, "storagebox"));
+        return item == BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(modId, "storagebox"));
     }
 
     public static boolean checkHoldingItem(ItemStack holding, ItemStack maybeBox) {

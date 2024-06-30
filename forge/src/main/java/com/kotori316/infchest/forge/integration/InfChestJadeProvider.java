@@ -25,7 +25,7 @@ public class InfChestJadeProvider implements IServerDataProvider<BlockAccessor>,
 
     @Override
     public ResourceLocation getUid() {
-        return new ResourceLocation(InfChest.modID, "jade_plugin");
+        return ResourceLocation.fromNamespaceAndPath(InfChest.modID, "jade_plugin");
     }
 
     @Override
