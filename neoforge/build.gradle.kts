@@ -33,10 +33,15 @@ minecraft {
 runs {
     create("client") {
         workingDirectory = file("run")
-        systemProperties.put("forge.enabledGameTestNamespaces", modId)
+        systemProperties.put("neoforge.enabledGameTestNamespaces", modId)
         systemProperties.put("mixin.debug.export", "true")
         jvmArguments.add("-XstartOnFirstThread")
         // modSources.add(project.sourceSets.main)
+    }
+    create("gameTestServer") {
+        workingDirectory = file("runs/gameTestServer")
+        systemProperties.put("neoforge.enabledGameTestNamespaces", "$modId,minecraft")
+        modSources.add(project.sourceSets.test.get())
     }
 }
 

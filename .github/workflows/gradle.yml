@@ -51,5 +51,5 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew :${{ matrix.platform }}:build
       - name: Game Test
-        if: ${{ matrix.platform == 'fabric' }}
+        if: ${{ matrix.platform != 'forge' }}
         run: ./gradlew :${{ matrix.platform }}:runGameTest
