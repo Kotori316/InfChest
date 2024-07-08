@@ -24,6 +24,13 @@ base {
     archivesName = "${project.property("baseName")}-NeoForge-$minecraft"
 }
 
+sourceSets {
+    create("gameTest") {
+        compileClasspath += main.get().compileClasspath
+        runtimeClasspath += main.get().runtimeClasspath
+    }
+}
+
 minecraft {
     mappings {
         version("minecraft", project.property("minecraftVersion") as String)
@@ -41,7 +48,7 @@ runs {
     create("gameTestServer") {
         workingDirectory = file("runs/gameTestServer")
         systemProperties.put("neoforge.enabledGameTestNamespaces", "$modId,minecraft")
-        modSources.add(project.sourceSets.test.get())
+        modSources.add(project.sourceSets.getByName("gameTest"))
     }
 }
 
@@ -72,6 +79,8 @@ dependencies {
     ) {
         isTransitive = false
     }
+
+    "gameTestImplementation"(project(":neoforge"))
 }
 
 tasks {
