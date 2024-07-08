@@ -1,3 +1,9 @@
+# Version 21.0.2
+
+2024-07-08
+
+* Fix recipes in Fabric and NeoForge
+
 # Version 21.0.1
 
 2024-07-05
