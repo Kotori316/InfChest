@@ -32,8 +32,8 @@ loom {
             configName = "Client"
             runDir = "run"
         }
-        create("gameTest") {
-            configName = "GameTest"
+        create("gameTestServer") {
+            configName = "GameTestServer"
             server()
             //noinspection SpellCheckingInspection
             vmArgs(
