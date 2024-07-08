@@ -176,7 +176,7 @@ modrinth {
     token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
     projectId = "infchest"
     versionType = "release"
-    versionName = "${project.version}-forge"
+    versionName = "${project.version}-neoforge"
     versionNumber.set(project.version.toString())
     uploadFile = jar
     additionalFiles = listOf(
