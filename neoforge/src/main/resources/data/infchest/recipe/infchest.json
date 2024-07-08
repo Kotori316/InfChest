@@ -7,18 +7,18 @@
   ],
   "key": {
     "e": {
-      "tag": "forge:chests/ender"
+      "tag": "c:chests/ender"
     },
     "i": [
       {
-        "tag": "forge:ingots/iron"
+        "tag": "c:ingots/iron"
       },
       {
-        "tag": "forge:ingots/gold"
+        "tag": "c:ingots/gold"
       }
     ],
     "q": {
-      "tag": "forge:storage_blocks/quartz"
+      "item": "minecraft:quartz_block"
     },
     "b": {
       "item": "minecraft:beacon"
@@ -40,7 +40,12 @@
       {"item": "minecraft:brown_shulker_box"},
       {"item": "minecraft:green_shulker_box"},
       {"item": "minecraft:red_shulker_box"},
-      {"item": "minecraft:black_shulker_box"}
+      {
+        "item": "minecraft:black_shulker_box"
+      },
+      {
+        "tag": "c:shulker_boxes"
+      }
     ]
   },
   "result": {

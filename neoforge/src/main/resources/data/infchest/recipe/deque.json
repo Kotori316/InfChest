@@ -7,7 +7,7 @@
   ],
   "key": {
     "c": {
-      "tag": "forge:chests"
+      "tag": "c:chests"
     },
     "d": [
       {"item": "minecraft:dispenser"},

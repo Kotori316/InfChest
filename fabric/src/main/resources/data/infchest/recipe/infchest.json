@@ -11,10 +11,10 @@
     },
     "i": [
       {
-        "tag": "c:iron_ingots"
+        "tag": "c:ingots/iron"
       },
       {
-        "tag": "c:gold_ingots"
+        "tag": "c:ingots/gold"
       }
     ],
     "q": {
