@@ -32,9 +32,12 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
+    val parchmentMc = project.property("parchment_mapping_mc")
+    val mapping = project.property("parchment_mapping_version")
     mappings(
         mapOf(
-            "channel" to "parchment", "version" to ("${project.property("parchmentMapping")}-${minecraft}")
+            "channel" to "parchment",
+            "version" to "$parchmentMc-$mapping-$minecraft"
         )
     )
     // mappings channel: "official", version: "1.18.2"
