@@ -53,11 +53,9 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraft")
     mappings(loom.layered {
         officialMojangMappings()
-        val parchmentMapping: String by project
-        val parchmentVersion = parchmentMapping.split('-', limit = 2)
-        val parchmentMC = parchmentVersion[0]
-        val parchmentDate = parchmentVersion[1]
-        parchment("org.parchmentmc.data:parchment-$parchmentMC:$parchmentDate@zip")
+        val parchmentMc = project.property("parchment_mapping_mc")
+        val mapping = project.property("parchment_mapping_version")
+        parchment("org.parchmentmc.data:parchment-$parchmentMc:$mapping@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     compileOnly(project(":common"))
