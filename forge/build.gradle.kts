@@ -91,7 +91,7 @@ dependencies {
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
     // Mixin
-    annotationProcessor("org.spongepowered:mixin:0.8.6:processor")
+    annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
 
     compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${project.property("ae2Version")}"))
     compileOnly(fg.deobf("curse.maven:jade-324717:${project.property("jade_forge_id")}"))

@@ -12,6 +12,6 @@ minecraft {
 }
 
 dependencies {
-    compileOnly(group = "org.spongepowered", name = "mixin", version = "0.8.6")
+    compileOnly(group = "org.spongepowered", name = "mixin", version = "0.8.7")
     implementation(group = "com.google.code.findbugs", name = "jsr305", version = "3.0.2")
 }
