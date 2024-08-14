@@ -52,4 +52,4 @@ jobs:
         run: ./gradlew :${{ matrix.platform }}:build
       - name: Game Test
         if: ${{ matrix.platform != 'forge' }}
-        run: ./gradlew :${{ matrix.platform }}:runGameTest
+        run: ./gradlew :${{ matrix.platform }}:runGameTestServer
