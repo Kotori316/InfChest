@@ -52,6 +52,14 @@ runs {
     }
 }
 
+configurations.configureEach {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.ow2.asm" && requested.name.startsWith("asm")) {
+            useVersion("9.7")
+        }
+    }
+}
+
 dependencies {
     // See com.kotori316.common.gradle.kts for repositories
     implementation("net.neoforged:neoforge:${project.property("neo_version")}")
