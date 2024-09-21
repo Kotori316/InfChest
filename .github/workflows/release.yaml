@@ -28,7 +28,7 @@ jobs:
       - name: Compile
         run: ./gradlew testClasses
       - name: GameTest
-        run: ./gradlew runGameTest
+        run: ./gradlew runGameTestServer
       - name: Check version
         run: ./gradlew checkReleaseVersion
         env:

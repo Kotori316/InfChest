@@ -4,6 +4,7 @@ import java.time.ZonedDateTime
 plugins {
     id("java")
     id("maven-publish")
+    id("idea")
 }
 
 println(
@@ -117,5 +118,12 @@ if (project.name != "common") {
                 }
             }
         }
+    }
+}
+
+idea {
+    module {
+        isDownloadSources = true
+        isDownloadJavadoc = true
     }
 }
