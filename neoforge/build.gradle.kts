@@ -65,7 +65,7 @@ dependencies {
     implementation("net.neoforged:neoforge:${project.property("neo_version")}")
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
-    compileOnly(
+    implementation(
         group = "curse.maven",
         name = "jade-324717",
         version = project.property("jade_neoforge_id") as String
@@ -73,9 +73,14 @@ dependencies {
     compileOnly(
         group = "mcp.mobius.waila",
         name = "wthit-api",
-        version = "neo-${project.property("wthit_forge_version")}"
+        version = "neo-${project.property("wthit_neoforge_version")}"
     )
-    compileOnly(
+    runtimeOnly(
+        group = "mcp.mobius.waila",
+        name = "wthit",
+        version = "neo-${project.property("wthit_neoforge_version")}"
+    )
+    implementation(
         group = "curse.maven",
         name = "the-one-probe-245211",
         version = project.property("top_neoforge_id") as String

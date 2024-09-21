@@ -1,6 +1,9 @@
 {
   "infchest:wthit_plugin": {
-    "initializer": "com.kotori316.infchest.neoforge.integration.InfChestWthitPlugin",
+    "entrypoints": {
+      "common": "com.kotori316.infchest.fabric.integration.InfChestWthitPlugin",
+      "client": "com.kotori316.infchest.fabric.integration.InfChestWthitClientPlugin"
+    },
     "side": "*",
     "required": []
   }
