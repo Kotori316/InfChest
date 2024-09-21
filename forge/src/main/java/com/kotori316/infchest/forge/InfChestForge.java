@@ -41,9 +41,9 @@ import static com.kotori316.infchest.common.InfChest.modID;
 
 @Mod(modID)
 public final class InfChestForge {
-    public InfChestForge() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
+    public InfChestForge(FMLJavaModLoadingContext context) {
+        context.getModEventBus().addListener(this::preInit);
+        context.getModEventBus().addListener(this::clientInit);
     }
 
     public void preInit(FMLCommonSetupEvent event) {
