@@ -42,7 +42,6 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: ${{ github.event_name != 'push' }}
-          gradle-home-cache-cleanup: true
           add-job-summary: 'on-failure'
       - name: javaToolchains
         run: ./gradlew :${{ matrix.platform }}:javaToolchains
