@@ -1,3 +1,9 @@
+# Version 21.1.1
+
+2024-09-22
+
+* Fixed a bug where wthit plugin was not loaded in NeoForge
+
 # Version 21.1.0
 
 2024-09-20
