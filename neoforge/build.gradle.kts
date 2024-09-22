@@ -42,7 +42,9 @@ runs {
         workingDirectory = file("run")
         systemProperties.put("neoforge.enabledGameTestNamespaces", modId)
         systemProperties.put("mixin.debug.export", "true")
-        jvmArguments.add("-XstartOnFirstThread")
+        if (!System.getProperty("os.name").contains("windows", ignoreCase = true)) {
+            jvmArguments.add("-XstartOnFirstThread")
+        }
         // modSources.add(project.sourceSets.main)
     }
     create("gameTestServer") {

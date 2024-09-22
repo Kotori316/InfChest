@@ -16,6 +16,8 @@ println(
         System.getProperty("java.vendor")
     }) Arch: ${
         System.getProperty("os.arch")
+    } Os: ${
+        System.getProperty("os.name")
     }"
 )
 
