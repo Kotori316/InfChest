@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 plugins {
     id("com.kotori316.common")
     signing
-    id("net.neoforged.gradle.userdev") version ("7.0.166")
+    id("net.neoforged.gradle.userdev") version ("7.0.167")
     id("net.neoforged.gradle.mixin") version ("7.0.167")
     id("com.matthewprenger.cursegradle") version ("1.4.0")
     id("com.modrinth.minotaur") version ("2.+")
