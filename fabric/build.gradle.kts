@@ -102,7 +102,7 @@ dependencies {
     //noinspection SpellCheckingInspection
     // modRuntimeOnly("teamreborn:energy:2.2.0") // For AE2
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.property("wthit_fabric_version")}")
-    modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.property("wthit_fabric_version")}")
+    // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.property("wthit_fabric_version")}")
     // modRuntimeOnly("lol.bai:badpackets:fabric-${project.badpackets_fabric_version}")
     modImplementation("curse.maven:jade-324717:${project.property("jade_fabric_id")}")
     modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
@@ -176,6 +176,10 @@ publishing {
             from(components.getAt("java"))
         }
     }
+}
+
+tasks.named("sourcesJar", Jar::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.register("checkOutput") {
