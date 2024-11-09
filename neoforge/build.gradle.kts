@@ -89,7 +89,7 @@ dependencies {
     )
     implementation(
         group = "appeng",
-        name = "appliedenergistics2-neoforge",
+        name = "appliedenergistics2",
         version = project.property("ae2_neoforge_version") as String,
     ) {
         isTransitive = false

@@ -72,6 +72,7 @@ repositories {
         name = "ModMaven"
         url = uri("https://modmaven.dev/")
         content {
+            includeModule("appeng", "appliedenergistics2")
             includeModule("appeng", "appliedenergistics2-neoforge")
             includeModule("appeng", "appliedenergistics2-fabric")
             includeModule("appeng", "appliedenergistics2-forge")
