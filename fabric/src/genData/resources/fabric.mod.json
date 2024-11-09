@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "infchest-data",
+  "name": "InfChest Data Generator",
+  "version": "1.0.0",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "com.kotori316.infchest.data.fabric.DataProviderEntryPoint"
+    ]
+  }
+}

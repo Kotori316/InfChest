@@ -1,3 +1,4 @@
+import org.gradle.jvm.tasks.Jar
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
@@ -45,6 +46,10 @@ tasks.processResources {
             )
         }
     }
+}
+
+tasks.withType(Jar::class) {
+    exclude(".cache/")
 }
 
 repositories {

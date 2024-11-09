@@ -21,7 +21,7 @@ public final class CommonRecipe extends RecipeProvider {
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput recipeOutput) {
+    public void buildRecipes(RecipeOutput recipeOutput) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, InfChest.accessor.CHEST())
             .pattern("eqe")
             .pattern("ibi")
@@ -31,6 +31,7 @@ public final class CommonRecipe extends RecipeProvider {
             .define('q', provider.quartzBlock())
             .define('b', Items.BEACON)
             .define('s', provider.shulkerBox())
+            .unlockedBy("has_beacon", has(Items.BEACON))
             .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, InfChest.accessor.DEQUE())
@@ -40,6 +41,8 @@ public final class CommonRecipe extends RecipeProvider {
             .define('c', provider.chests())
             .define('d', provider.dispenserLikes())
             .define('r', provider.rsPlates())
+            .unlockedBy("has_dispenser", has(Items.DISPENSER))
+            .unlockedBy("has_dropper", has(Items.DROPPER))
             .save(recipeOutput);
     }
 }

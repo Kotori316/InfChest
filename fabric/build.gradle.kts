@@ -26,6 +26,27 @@ base {
     group = "com.kotori316"
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDir("src/main/resources")
+            srcDir("src/generated/resources")
+        }
+    }
+
+    create("genData") {
+        val sourceSet = this
+        project.configurations {
+            named(sourceSet.compileClasspathConfigurationName) {
+                extendsFrom(project.configurations.compileClasspath.get())
+            }
+            named(sourceSet.runtimeClasspathConfigurationName) {
+                extendsFrom(project.configurations.runtimeClasspath.get())
+            }
+        }
+    }
+}
+
 loom {
     runs {
         named("client") {
@@ -43,6 +64,18 @@ loom {
             )
             runDir = "game_test"
             source(sourceSets.getAt("test"))
+        }
+        create("data") {
+            configName = "Data"
+            client()
+            runDir = "build/dataGen"
+            property("fabric-api.DataGen".lowercase())
+            property("fabric-api.DataGen.output-dir".lowercase(), "${file("src/generated/resources")}")
+            property("fabric-api.DataGen.strict-validation".lowercase())
+            property("fabric-api.DataGen.ModId".lowercase(), "infchest-data")
+
+            isIdeConfigGenerated = true
+            source(sourceSets["genData"])
         }
     }
 }
@@ -75,6 +108,9 @@ dependencies {
     modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
         isTransitive = false
     }
+
+    "genDataImplementation"(project.sourceSets.main.get().output)
+    "genDataImplementation"(project(":genData:commonData"))
 }
 
 tasks.processResources {
