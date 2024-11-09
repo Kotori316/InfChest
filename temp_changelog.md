@@ -1,3 +1,9 @@
+# Version 21.1.2
+
+2024-11-09
+
+* Build with latest version of platforms
+
 # Version 21.1.1
 
 2024-09-22
