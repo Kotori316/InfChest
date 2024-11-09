@@ -1,5 +1,6 @@
 package com.kotori316.infchest.common;
 
+import com.kotori316.infchest.common.blocks.BlockDeque;
 import com.kotori316.infchest.common.blocks.BlockInfChest;
 import com.kotori316.infchest.common.blocks.ContentInfChest;
 import com.kotori316.infchest.common.guis.ContainerInfChest;
@@ -30,6 +31,8 @@ public final class InfChest {
         BlockEntityType<? extends TileDeque> DEQUE_TYPE();
 
         BlockInfChest CHEST();
+
+        BlockDeque DEQUE();
 
         LootItemFunctionType<ContentInfChest> CHEST_FUNCTION();
         MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE();

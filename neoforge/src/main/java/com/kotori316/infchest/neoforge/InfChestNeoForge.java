@@ -81,6 +81,11 @@ public final class InfChestNeoForge {
         }
 
         @Override
+        public BlockDeque DEQUE() {
+            return DEQUE;
+        }
+
+        @Override
         public LootItemFunctionType<ContentInfChest> CHEST_FUNCTION() {
             return CHEST_FUNCTION;
         }
