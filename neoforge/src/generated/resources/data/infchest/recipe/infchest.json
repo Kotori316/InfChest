@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "minecraft:beacon"
+    },
+    "e": {
+      "tag": "c:chests/ender"
+    },
+    "i": [
+      {
+        "tag": "c:ingots/iron"
+      },
+      {
+        "tag": "c:ingots/gold"
+      }
+    ],
+    "q": {
+      "item": "minecraft:quartz_block"
+    },
+    "s": {
+      "tag": "c:shulker_boxes"
+    }
+  },
+  "pattern": [
+    "eqe",
+    "ibi",
+    "sis"
+  ],
+  "result": {
+    "count": 1,
+    "id": "infchest:infchest"
+  }
+}

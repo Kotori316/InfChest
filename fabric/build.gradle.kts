@@ -6,6 +6,7 @@ import org.gradle.jvm.tasks.Jar
 
 plugins {
     id("com.kotori316.common")
+    id("com.kotori316.dg")
     id("signing")
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
     id("fabric-loom") version ("1.8.12")
@@ -24,27 +25,6 @@ base {
     archivesName = "${baseName}-Fabric-${minecraft}"
     version = modVersion
     group = "com.kotori316"
-}
-
-sourceSets {
-    main {
-        resources {
-            srcDir("src/main/resources")
-            srcDir("src/generated/resources")
-        }
-    }
-
-    create("genData") {
-        val sourceSet = this
-        project.configurations {
-            named(sourceSet.compileClasspathConfigurationName) {
-                extendsFrom(project.configurations.compileClasspath.get())
-            }
-            named(sourceSet.runtimeClasspathConfigurationName) {
-                extendsFrom(project.configurations.runtimeClasspath.get())
-            }
-        }
-    }
 }
 
 loom {
@@ -108,9 +88,6 @@ dependencies {
     modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
         isTransitive = false
     }
-
-    "genDataImplementation"(project.sourceSets.main.get().output)
-    "genDataImplementation"(project(":genData:commonData"))
 }
 
 tasks.processResources {

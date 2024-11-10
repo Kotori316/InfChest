@@ -2,6 +2,7 @@ package com.kotori316.infchest.data.common;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public interface IngredientProvider {
@@ -17,7 +18,11 @@ public interface IngredientProvider {
 
     Ingredient chests();
 
-    Ingredient dispenserLikes();
+    default Ingredient dispenserLikes() {
+        return Ingredient.of(Items.DISPENSER, Items.DROPPER);
+    }
 
-    Ingredient rsPlates();
+    default Ingredient rsPlates() {
+        return Ingredient.of(Items.REPEATER, Items.COMPARATOR);
+    }
 }

@@ -1,16 +1,16 @@
-package com.kotori316.infchest.data.fabric;
+package com.kotori316.infchest.data.neoforge;
 
 import com.kotori316.infchest.data.common.IngredientProvider;
-import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 
-public record IngredientProviderFabric(HolderLookup.Provider provider) implements IngredientProvider {
+public record IngredientProviderNeoForge(HolderLookup.Provider provider) implements IngredientProvider {
     @Override
     public HolderGetter<Item> items() {
         return provider.lookupOrThrow(Registries.ITEM);
@@ -18,12 +18,15 @@ public record IngredientProviderFabric(HolderLookup.Provider provider) implement
 
     @Override
     public Ingredient enderChest() {
-        return Ingredient.of(Items.ENDER_CHEST);
+        return Ingredient.of(Tags.Items.CHESTS_ENDER);
     }
 
     @Override
     public Ingredient ingots() {
-        return DefaultCustomIngredients.any(Ingredient.of(ConventionalItemTags.IRON_INGOTS), Ingredient.of(ConventionalItemTags.GOLD_INGOTS));
+        return CompoundIngredient.of(
+            Ingredient.of(Tags.Items.INGOTS_IRON),
+            Ingredient.of(Tags.Items.INGOTS_GOLD)
+        );
     }
 
     @Override
@@ -33,11 +36,11 @@ public record IngredientProviderFabric(HolderLookup.Provider provider) implement
 
     @Override
     public Ingredient shulkerBox() {
-        return Ingredient.of(ConventionalItemTags.SHULKER_BOXES);
+        return Ingredient.of(Tags.Items.SHULKER_BOXES);
     }
 
     @Override
     public Ingredient chests() {
-        return Ingredient.of(ConventionalItemTags.CHESTS);
+        return Ingredient.of(Tags.Items.CHESTS);
     }
 }
