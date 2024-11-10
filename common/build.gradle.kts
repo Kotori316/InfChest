@@ -7,6 +7,15 @@ base {
     archivesName = "${project.property("baseName")}-Common-${project.property("minecraftVersion")}"
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDir("src/main/resources")
+            srcDir("src/generated/resources")
+        }
+    }
+}
+
 minecraft {
     version(project.property("minecraftVersion") as String)
 }
