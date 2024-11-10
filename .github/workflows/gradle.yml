@@ -58,6 +58,13 @@ jobs:
         run: ./gradlew :${{ matrix.platform }}:runData
         env:
           RUN_DATA_GEN: true
+      - name: Common Data Generation
+        if: ${{ matrix.platform == 'neoforge' }}
+        run: |
+          ./gradlew :${{ matrix.platform }}:runCommonData
+          git diff --exit-code -- ./common/src/generated
+        env:
+          RUN_DATA_GEN: true
       - name: Check updated files
         run: git status
       - name: Check diff
