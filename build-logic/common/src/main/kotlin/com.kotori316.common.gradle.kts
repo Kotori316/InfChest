@@ -29,7 +29,7 @@ java {
 val minecraftVersion = project.property("minecraftVersion") as String
 val currentDate: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
-tasks.processResources {
+tasks.withType(ProcessResources::class) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     inputs.property("version", project.version)
     inputs.property("minecraftVersion", minecraftVersion)
@@ -50,6 +50,7 @@ tasks.processResources {
 
 tasks.withType(Jar::class) {
     exclude(".cache/")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 repositories {

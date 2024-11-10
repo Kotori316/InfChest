@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter
 
 plugins {
     id("com.kotori316.common")
+    id("com.kotori316.dg")
     id("signing")
     id("net.minecraftforge.gradle") version ("[6.0,6.2)")
     id("org.spongepowered.mixin") version ("0.7.+")
@@ -20,10 +21,34 @@ val modId = project.property("mod_id") as String
 val minecraft = project.property("minecraftVersion") as String
 val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean().not()
 
+project.evaluationDependsOn(project.project(":genData:commonData").path)
+
 base {
     version = project.property("modVersion") as String
     group = "com.kotori316"
     archivesName = "${project.property("baseName")}-Forge-$minecraft"
+}
+
+sourceSets {
+    val mainSourceSet by main
+
+    val dataGenSourceSet by genData
+    create("runDataGen") {
+        val sourceSet = this
+        project.configurations {
+            named(sourceSet.compileClasspathConfigurationName) {
+                extendsFrom(
+                    project.configurations.named(mainSourceSet.compileClasspathConfigurationName).get(),
+                    project.configurations.named(dataGenSourceSet.compileClasspathConfigurationName).get(),
+                )
+            }
+            named(sourceSet.runtimeClasspathConfigurationName) {
+                extendsFrom(
+                    project.configurations.named(mainSourceSet.runtimeClasspathConfigurationName).get(),
+                )
+            }
+        }
+    }
 }
 
 minecraft {
@@ -58,24 +83,34 @@ minecraft {
             property("forge.logging.console.level", "debug")
             property("mixin.debug.export", "true")
             property("terminal.ansi", "true")
-
+        }
+        create("client") {
+            workingDirectory = "run"
             mods {
                 create(modId) {
                     source(sourceSets.getAt("main"))
                 }
             }
         }
-        create("client") {
-            workingDirectory = "run"
-        }
 
         create("server") {
             workingDirectory = "run"
+            mods {
+                create(modId) {
+                    source(sourceSets.getAt("main"))
+                }
+            }
         }
 
         create("data") {
-            workingDirectory = "run"
+            workingDirectory = project.layout.buildDirectory.dir("dataGen").get().asFile.absolutePath
             args("--mod", modId, "--all", "--output", file("src/generated/resources/"))
+
+            mods {
+                create(modId) {
+                    source(sourceSets["runDataGen"])
+                }
+            }
         }
     }
 }
@@ -288,4 +323,28 @@ sourceSets.forEach {
     val dir = layout.buildDirectory.dir("sourcesSets/${it.name}")
     it.output.setResourcesDir(dir)
     it.java.destinationDirectory = dir
+}
+
+tasks.named("compileRunDataGenJava", JavaCompile::class) {
+    dependsOn("processGenDataResources")
+    project.findProject(":common")?.let {
+        source(it.sourceSets.main.get().java)
+    }
+    project.findProject(":genData:commonData")?.let {
+        source(it.sourceSets.main.get().java)
+    }
+    source(project.sourceSets.main.get().java)
+    source(project.sourceSets.genData.get().java)
+}
+
+tasks.named("processRunDataGenResources", ProcessResources::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    project.findProject(":common")?.let {
+        from(it.sourceSets.main.get().resources)
+    }
+    project.findProject(":genData:commonData")?.let {
+        from(it.sourceSets.main.get().resources)
+    }
+    from(project.sourceSets.main.get().resources)
+    from(project.sourceSets.genData.get().resources)
 }

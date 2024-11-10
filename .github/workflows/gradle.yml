@@ -52,6 +52,9 @@ jobs:
       - name: Game Test
         if: ${{ matrix.platform != 'forge' }}
         run: ./gradlew :${{ matrix.platform }}:runGameTestServer
+        env:
+          RUN_GAME_TEST: true
       - name: Data Generation
-        if: ${{ matrix.platform == 'fabric' }}
         run: ./gradlew :${{ matrix.platform }}:runData
+        env:
+          RUN_DATA_GEN: true
