@@ -58,3 +58,7 @@ jobs:
         run: ./gradlew :${{ matrix.platform }}:runData
         env:
           RUN_DATA_GEN: true
+      - name: Check updated files
+        run: git status
+      - name: Check diff
+        run: git diff --exit-code -- ./${{ matrix.platform }}/src/generated
