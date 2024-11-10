@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter
 
 plugins {
     id("com.kotori316.common")
+    id("com.kotori316.dg")
     signing
     id("net.neoforged.gradle.userdev") version ("7.0.168")
     id("net.neoforged.gradle.mixin") version ("7.0.168")
@@ -17,6 +18,8 @@ plugins {
 val modId = project.property("mod_id") as String
 val minecraft = project.property("minecraftVersion") as String
 val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean().not()
+
+project.evaluationDependsOn(project.project(":genData:commonData").path)
 
 base {
     version = project.property("modVersion") as String
@@ -51,6 +54,37 @@ runs {
         workingDirectory = file("runs/gameTestServer")
         systemProperties.put("neoforge.enabledGameTestNamespaces", "$modId,minecraft")
         modSources.add(project.sourceSets.getByName("gameTest"))
+    }
+    if (System.getenv("RUN_DATA_GEN").toBoolean()) {
+        create("data") {
+            client()
+            workingDirectory = project.file("runs/data")
+            arguments(
+                "--mod",
+                modId,
+                "--server",
+                "--output",
+                file("src/generated/resources/").toString(),
+                "--existing",
+                file("src/main/resources/").toString()
+            )
+            modSources.add(sourceSets["genData"])
+        }
+        create("commonData") {
+            runType("data")
+            isDataGenerator = true
+            workingDirectory.set(project.file("runs/data"))
+            arguments.addAll(
+                "--mod",
+                modId,
+                "--client",
+                "--output",
+                project(":common").file("src/generated/resources/").toString(),
+                "--existing",
+                project(":common").file("src/main/resources/").toString()
+            )
+            modSources.add(sourceSets["genData"])
+        }
     }
 }
 
@@ -95,7 +129,7 @@ dependencies {
         isTransitive = false
     }
 
-    "gameTestImplementation"(project(":neoforge"))
+    "gameTestImplementation"(project.project(":neoforge"))
 }
 
 tasks {

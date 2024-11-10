@@ -52,3 +52,20 @@ jobs:
       - name: Game Test
         if: ${{ matrix.platform != 'forge' }}
         run: ./gradlew :${{ matrix.platform }}:runGameTestServer
+        env:
+          RUN_GAME_TEST: true
+      - name: Data Generation
+        run: ./gradlew :${{ matrix.platform }}:runData
+        env:
+          RUN_DATA_GEN: true
+      - name: Common Data Generation
+        if: ${{ matrix.platform == 'neoforge' }}
+        run: |
+          ./gradlew :${{ matrix.platform }}:runCommonData
+          git diff --exit-code -- ./common/src/generated
+        env:
+          RUN_DATA_GEN: true
+      - name: Check updated files
+        run: git status
+      - name: Check diff
+        run: git diff --exit-code -- ./${{ matrix.platform }}/src/generated

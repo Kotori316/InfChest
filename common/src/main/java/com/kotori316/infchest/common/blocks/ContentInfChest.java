@@ -36,4 +36,7 @@ public class ContentInfChest extends LootItemConditionalFunction {
         return InfChest.accessor.CHEST_FUNCTION();
     }
 
+    public static LootItemConditionalFunction.Builder<?> builder() {
+        return LootItemConditionalFunction.simpleBuilder(ContentInfChest::new);
+    }
 }
