@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:block",
+  "functions": [
+    {
+      "function": "infchest:content_infchest"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "infchest:infchest"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "infchest:blocks/infchest"
+}
