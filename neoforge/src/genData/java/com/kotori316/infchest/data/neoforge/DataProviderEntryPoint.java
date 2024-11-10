@@ -35,5 +35,6 @@ public final class DataProviderEntryPoint {
         );
         event.getGenerator().addProvider(event.includeClient(), lootTableProvider);
         event.getGenerator().addProvider(event.includeClient(), new StateAndModelProvider(event.getGenerator().getPackOutput(), event.getExistingFileHelper()));
+        event.getGenerator().addProvider(event.includeClient(), new LangProvider(event.getGenerator().getPackOutput()));
     }
 }
