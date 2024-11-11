@@ -14,7 +14,6 @@ import com.kotori316.infchest.neoforge.integration.AE2InfChestIntegration;
 import com.kotori316.infchest.neoforge.packets.PacketHandler;
 import com.kotori316.infchest.neoforge.tiles.TileDequeNeoForge;
 import com.kotori316.infchest.neoforge.tiles.TileInfChestNeoForge;
-import com.mojang.datafixers.DSL;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -58,9 +57,9 @@ public final class InfChestNeoForge {
 
     public static class Register implements InfChest.TypeAccessor {
         public static final BlockInfChestNeoForge CHEST = new BlockInfChestNeoForge();
-        public static final BlockEntityType<TileInfChestNeoForge> INF_CHEST_TYPE = BlockEntityType.Builder.of(TileInfChestNeoForge::new, CHEST).build(DSL.emptyPartType());
+        public static final BlockEntityType<TileInfChestNeoForge> INF_CHEST_TYPE = new BlockEntityType<>(TileInfChestNeoForge::new, CHEST);
         public static final BlockDequeNeoForge DEQUE = new BlockDequeNeoForge();
-        public static final BlockEntityType<TileDequeNeoForge> DEQUE_TYPE = BlockEntityType.Builder.of(TileDequeNeoForge::new, DEQUE).build(DSL.emptyPartType());
+        public static final BlockEntityType<TileDequeNeoForge> DEQUE_TYPE = new BlockEntityType<>(TileDequeNeoForge::new, DEQUE);
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IMenuTypeExtension.create(ContainerInfChest::create);
         public static final LootItemFunctionType<ContentInfChest> CHEST_FUNCTION = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
             new LootItemFunctionType<>(ContentInfChest.CODEC));

@@ -25,7 +25,7 @@ public class ContentInfChest extends LootItemConditionalFunction {
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
-        var entity = context.getParam(LootContextParams.BLOCK_ENTITY);
+        var entity = context.getParameter(LootContextParams.BLOCK_ENTITY);
         BlockInfChest.saveChestNbtToStack(entity, stack);
         BlockInfChest.saveCustomName(entity, stack);
         return stack;

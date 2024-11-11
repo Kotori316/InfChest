@@ -15,7 +15,6 @@ import com.kotori316.infchest.forge.integration.RsInfChestIntegration;
 import com.kotori316.infchest.forge.packets.PacketHandler;
 import com.kotori316.infchest.forge.tiles.TileDequeForge;
 import com.kotori316.infchest.forge.tiles.TileInfChestForge;
-import com.mojang.datafixers.DSL;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,6 +35,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
+
+import java.util.Set;
 
 import static com.kotori316.infchest.common.InfChest.modID;
 
@@ -58,9 +59,9 @@ public final class InfChestForge {
 
     public static class Register implements InfChest.TypeAccessor {
         public static final BlockInfChestForge CHEST = new BlockInfChestForge();
-        public static final BlockEntityType<TileInfChestForge> INF_CHEST_TYPE = BlockEntityType.Builder.of(TileInfChestForge::new, CHEST).build(DSL.emptyPartType());
+        public static final BlockEntityType<TileInfChestForge> INF_CHEST_TYPE = new BlockEntityType<>(TileInfChestForge::new, Set.of(CHEST));
         public static final BlockDequeForge DEQUE = new BlockDequeForge();
-        public static final BlockEntityType<TileDequeForge> DEQUE_TYPE = BlockEntityType.Builder.of(TileDequeForge::new, DEQUE).build(DSL.emptyPartType());
+        public static final BlockEntityType<TileDequeForge> DEQUE_TYPE = new BlockEntityType<>(TileDequeForge::new, Set.of(DEQUE));
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IForgeMenuType.create(ContainerInfChest::create);
         public static final LootItemFunctionType<ContentInfChest> CHEST_FUNCTION = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
             new LootItemFunctionType<>(ContentInfChest.CODEC));
