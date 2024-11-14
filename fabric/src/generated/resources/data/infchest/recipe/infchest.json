@@ -2,29 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "b": {
-      "item": "minecraft:beacon"
-    },
-    "e": {
-      "item": "minecraft:ender_chest"
-    },
+    "b": "minecraft:beacon",
+    "e": "minecraft:ender_chest",
     "i": {
       "fabric:type": "fabric:any",
       "ingredients": [
-        {
-          "tag": "c:ingots/iron"
-        },
-        {
-          "tag": "c:ingots/gold"
-        }
+        "#c:ingots/iron",
+        "#c:ingots/gold"
       ]
     },
-    "q": {
-      "item": "minecraft:quartz_block"
-    },
-    "s": {
-      "tag": "c:shulker_boxes"
-    }
+    "q": "minecraft:quartz_block",
+    "s": "#c:shulker_boxes"
   },
   "pattern": [
     "eqe",

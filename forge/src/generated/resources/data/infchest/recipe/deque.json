@@ -2,24 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "c": {
-      "tag": "c:chests"
-    },
+    "c": "#c:chests",
     "d": [
-      {
-        "item": "minecraft:dispenser"
-      },
-      {
-        "item": "minecraft:dropper"
-      }
+      "minecraft:dispenser",
+      "minecraft:dropper"
     ],
     "r": [
-      {
-        "item": "minecraft:repeater"
-      },
-      {
-        "item": "minecraft:comparator"
-      }
+      "minecraft:repeater",
+      "minecraft:comparator"
     ]
   },
   "pattern": [

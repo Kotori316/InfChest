@@ -2,26 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "b": {
-      "item": "minecraft:beacon"
+    "b": "minecraft:beacon",
+    "e": "#c:chests/ender",
+    "i": {
+      "neoforge:ingredient_type": "neoforge:compound",
+      "children": [
+        "#c:ingots/iron",
+        "#c:ingots/gold"
+      ]
     },
-    "e": {
-      "tag": "c:chests/ender"
-    },
-    "i": [
-      {
-        "tag": "c:ingots/iron"
-      },
-      {
-        "tag": "c:ingots/gold"
-      }
-    ],
-    "q": {
-      "item": "minecraft:quartz_block"
-    },
-    "s": {
-      "tag": "c:shulker_boxes"
-    }
+    "q": "minecraft:quartz_block",
+    "s": "#c:shulker_boxes"
   },
   "pattern": [
     "eqe",

@@ -55,36 +55,34 @@ runs {
         systemProperties.put("neoforge.enabledGameTestNamespaces", "$modId,minecraft")
         modSources.add(project.sourceSets.getByName("gameTest"))
     }
-    if (System.getenv("RUN_DATA_GEN").toBoolean()) {
-        create("data") {
-            client()
-            workingDirectory = project.file("runs/data")
-            arguments(
-                "--mod",
-                modId,
-                "--server",
-                "--output",
-                file("src/generated/resources/").toString(),
-                "--existing",
-                file("src/main/resources/").toString()
-            )
-            modSources.add(sourceSets["genData"])
-        }
-        create("commonData") {
-            runType("data")
-            isDataGenerator = true
-            workingDirectory.set(project.file("runs/data"))
-            arguments.addAll(
-                "--mod",
-                modId,
-                "--client",
-                "--output",
-                project(":common").file("src/generated/resources/").toString(),
-                "--existing",
-                project(":common").file("src/main/resources/").toString()
-            )
-            modSources.add(sourceSets["genData"])
-        }
+    create("data") {
+        client()
+        workingDirectory = project.file("runs/data")
+        arguments(
+            "--mod",
+            modId,
+            "--server",
+            "--output",
+            file("src/generated/resources/").toString(),
+            "--existing",
+            file("src/main/resources/").toString()
+        )
+        modSources.add(sourceSets["genData"])
+    }
+    create("commonData") {
+        runType("data")
+        isDataGenerator = true
+        workingDirectory.set(project.file("runs/data"))
+        arguments.addAll(
+            "--mod",
+            modId,
+            "--client",
+            "--output",
+            project(":common").file("src/generated/resources/").toString(),
+            "--existing",
+            project(":common").file("src/main/resources/").toString()
+        )
+        modSources.add(sourceSets["genData"])
     }
 }
 
@@ -116,12 +114,12 @@ dependencies {
         name = "wthit",
         version = "neo-${project.property("wthit_neoforge_version")}"
     )
-    implementation(
+    compileOnly(
         group = "curse.maven",
         name = "the-one-probe-245211",
         version = project.property("top_neoforge_id") as String
     )
-    implementation(
+    compileOnly(
         group = "appeng",
         name = "appliedenergistics2",
         version = project.property("ae2_neoforge_version") as String,

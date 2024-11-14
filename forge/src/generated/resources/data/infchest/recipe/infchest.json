@@ -2,29 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "b": {
-      "item": "minecraft:beacon"
-    },
-    "e": {
-      "tag": "forge:chests/ender"
-    },
+    "b": "minecraft:beacon",
+    "e": "#forge:chests/ender",
     "i": {
       "type": "forge:compound",
       "children": [
-        {
-          "tag": "c:ingots/iron"
-        },
-        {
-          "tag": "c:ingots/gold"
-        }
+        "#c:ingots/iron",
+        "#c:ingots/gold"
       ]
     },
-    "q": {
-      "tag": "forge:storage_blocks/quartz"
-    },
-    "s": {
-      "tag": "c:shulker_boxes"
-    }
+    "q": "#forge:storage_blocks/quartz",
+    "s": "#c:shulker_boxes"
   },
   "pattern": [
     "eqe",
