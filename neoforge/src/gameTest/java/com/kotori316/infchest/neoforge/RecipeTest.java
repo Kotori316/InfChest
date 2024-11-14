@@ -5,6 +5,8 @@ import com.kotori316.infchest.common.RecipeTestCase;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestFunction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -25,13 +27,12 @@ public final class RecipeTest {
 
     static void checkRecipe(GameTestHelper helper, RecipeTestCase.RecipeSet recipeSet) {
         var manager = helper.getLevel().getServer().getRecipeManager();
-        var recipe = manager.getRecipesFor(RecipeType.CRAFTING, recipeSet.input(), helper.getLevel());
+        var recipe = manager.getRecipeFor(RecipeType.CRAFTING, recipeSet.input(), helper.getLevel());
         helper.assertFalse(recipe.isEmpty(), "Recipe must be found");
 
-        for (var holder : recipe) {
-            if (holder.id().equals(recipeSet.result())) {
-                helper.succeed();
-            }
+        var location = recipe.map(RecipeHolder::id).map(ResourceKey::location).orElse(null);
+        if (recipeSet.result().equals(location)) {
+            helper.succeed();
         }
     }
 

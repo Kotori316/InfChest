@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestFunction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.List;
@@ -12,13 +14,12 @@ import java.util.List;
 public final class RecipeTest implements FabricGameTest {
     void checkRecipe(GameTestHelper helper, RecipeTestCase.RecipeSet recipeSet) {
         var manager = helper.getLevel().getServer().getRecipeManager();
-        var recipe = manager.getRecipesFor(RecipeType.CRAFTING, recipeSet.input(), helper.getLevel());
-        helper.assertFalse(recipe.isEmpty(), "Recipe must be found");
+        var recipe = manager.getRecipeFor(RecipeType.CRAFTING, recipeSet.input(), helper.getLevel());
+        helper.assertTrue(recipe.isPresent(), "Recipe must be found");
 
-        for (var holder : recipe) {
-            if (holder.id().equals(recipeSet.result())) {
-                helper.succeed();
-            }
+        var location = recipe.map(RecipeHolder::id).map(ResourceKey::location).orElse(null);
+        if (recipeSet.result().equals(location)) {
+            helper.succeed();
         }
     }
 

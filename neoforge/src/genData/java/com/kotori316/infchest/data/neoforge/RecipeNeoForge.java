@@ -8,19 +8,20 @@ import net.minecraft.data.recipes.RecipeProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public final class RecipeNeoForge extends RecipeProvider {
-    private final PackOutput output;
-    private final CompletableFuture<HolderLookup.Provider> registriesFuture;
+public final class RecipeNeoForge extends RecipeProvider.Runner {
 
     public RecipeNeoForge(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> providerCompletableFuture) {
         super(packOutput, providerCompletableFuture);
-        this.output = packOutput;
-        this.registriesFuture = providerCompletableFuture;
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput recipeOutput, HolderLookup.Provider holderLookup) {
-        var internal = new CommonRecipe(this.output, this.registriesFuture, new IngredientProviderNeoForge(holderLookup));
-        internal.buildRecipes(recipeOutput);
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider holderLookup, RecipeOutput recipeOutput) {
+        var provider = new IngredientProviderNeoForge(holderLookup);
+        return new CommonRecipe(holderLookup, recipeOutput, provider);
+    }
+
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
     }
 }

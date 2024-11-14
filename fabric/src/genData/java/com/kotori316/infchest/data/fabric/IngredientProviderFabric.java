@@ -23,7 +23,7 @@ public record IngredientProviderFabric(HolderLookup.Provider provider) implement
 
     @Override
     public Ingredient ingots() {
-        return DefaultCustomIngredients.any(Ingredient.of(ConventionalItemTags.IRON_INGOTS), Ingredient.of(ConventionalItemTags.GOLD_INGOTS));
+        return DefaultCustomIngredients.any(Ingredient.of(items().getOrThrow(ConventionalItemTags.IRON_INGOTS)), Ingredient.of(items().getOrThrow(ConventionalItemTags.GOLD_INGOTS)));
     }
 
     @Override
@@ -33,11 +33,11 @@ public record IngredientProviderFabric(HolderLookup.Provider provider) implement
 
     @Override
     public Ingredient shulkerBox() {
-        return Ingredient.of(ConventionalItemTags.SHULKER_BOXES);
+        return Ingredient.of(items().getOrThrow(ConventionalItemTags.SHULKER_BOXES));
     }
 
     @Override
     public Ingredient chests() {
-        return Ingredient.of(ConventionalItemTags.CHESTS);
+        return Ingredient.of(items().getOrThrow(ConventionalItemTags.CHESTS));
     }
 }

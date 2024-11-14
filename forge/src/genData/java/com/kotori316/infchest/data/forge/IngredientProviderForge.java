@@ -17,29 +17,29 @@ public record IngredientProviderForge(HolderLookup.Provider provider) implements
 
     @Override
     public Ingredient enderChest() {
-        return Ingredient.of(Tags.Items.CHESTS_ENDER);
+        return Ingredient.of(items().getOrThrow(Tags.Items.CHESTS_ENDER));
     }
 
     @Override
     public Ingredient ingots() {
         return CompoundIngredient.of(
-            Ingredient.of(Tags.Items.INGOTS_IRON),
-            Ingredient.of(Tags.Items.INGOTS_GOLD)
+            Ingredient.of(items().getOrThrow(Tags.Items.INGOTS_IRON)),
+            Ingredient.of(items().getOrThrow(Tags.Items.INGOTS_GOLD))
         );
     }
 
     @Override
     public Ingredient quartzBlock() {
-        return Ingredient.of(Tags.Items.STORAGE_BLOCKS_QUARTZ);
+        return Ingredient.of(items().getOrThrow(Tags.Items.STORAGE_BLOCKS_QUARTZ));
     }
 
     @Override
     public Ingredient shulkerBox() {
-        return Ingredient.of(Tags.Items.SHULKER_BOXES);
+        return Ingredient.of(items().getOrThrow(Tags.Items.SHULKER_BOXES));
     }
 
     @Override
     public Ingredient chests() {
-        return Ingredient.of(Tags.Items.CHESTS);
+        return Ingredient.of(items().getOrThrow(Tags.Items.CHESTS));
     }
 }
