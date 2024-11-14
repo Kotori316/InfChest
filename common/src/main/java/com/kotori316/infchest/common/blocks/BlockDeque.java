@@ -4,7 +4,10 @@ import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.TileDeque;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -28,8 +31,13 @@ public class BlockDeque extends BaseEntityBlock {
     protected final MapCodec<? extends BlockDeque> blockCodec;
 
     protected BlockDeque(Supplier<? extends BlockDeque> instanceSupplier) {
-        super(Block.Properties.of().mapColor(MapColor.METAL).pushReaction(PushReaction.BLOCK).strength(1.0f));
-        itemBlock = new BlockItem(this, new Item.Properties());
+        super(Block.Properties.of()
+            .mapColor(MapColor.METAL)
+            .pushReaction(PushReaction.BLOCK)
+            .strength(1.0f)
+            .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(InfChest.modID, name)))
+        );
+        itemBlock = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(InfChest.modID, name))).useBlockDescriptionPrefix());
         this.blockCodec = simpleCodec(p -> instanceSupplier.get());
     }
 

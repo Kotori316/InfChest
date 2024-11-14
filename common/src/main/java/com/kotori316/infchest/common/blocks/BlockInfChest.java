@@ -7,6 +7,9 @@ import com.kotori316.infchest.common.tiles.TileUtil;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -36,7 +39,13 @@ public abstract class BlockInfChest extends BaseEntityBlock {
     protected final MapCodec<? extends BlockInfChest> blockCodec;
 
     public BlockInfChest(Supplier<? extends BlockInfChest> instanceSupplier) {
-        super(Block.Properties.of().mapColor(MapColor.METAL).pushReaction(PushReaction.BLOCK).strength(1.0f).isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false));
+        super(Block.Properties.of()
+            .mapColor(MapColor.METAL)
+            .pushReaction(PushReaction.BLOCK)
+            .strength(1.0f)
+            .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false)
+            .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(InfChest.modID, name)))
+        );
         itemBlock = new ItemInfChest(this);
         this.blockCodec = simpleCodec(p -> instanceSupplier.get());
     }
