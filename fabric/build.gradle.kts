@@ -88,6 +88,8 @@ dependencies {
     modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
         isTransitive = false
     }
+
+    testImplementation(project(":commonTest"))
 }
 
 tasks.processResources {

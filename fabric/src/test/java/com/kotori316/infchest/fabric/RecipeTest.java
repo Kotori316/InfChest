@@ -1,6 +1,6 @@
 package com.kotori316.infchest.fabric;
 
-import com.kotori316.infchest.common.RecipeTestCase;
+import com.kotori316.infchest.common.test.RecipeTestCase;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;

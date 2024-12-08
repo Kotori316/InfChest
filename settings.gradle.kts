@@ -35,6 +35,7 @@ plugins {
 rootProject.name = "InfChest-1.21"
 includeBuild("build-logic")
 include("common")
+include("commonTest")
 include("genData:commonData")
 if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
     include("forge")

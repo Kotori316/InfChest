@@ -125,6 +125,7 @@ dependencies {
     }
 
     "gameTestImplementation"(project.project(":neoforge"))
+    "gameTestImplementation"(project(":commonTest"))
 }
 
 tasks {
@@ -135,6 +136,10 @@ tasks {
 
     named("compileJava", JavaCompile::class) {
         source(project(":common").sourceSets.main.get().allSource)
+    }
+
+    named("compileGameTestJava", JavaCompile::class) {
+        source(project(":commonTest").sourceSets.main.get().allSource)
     }
 
     jar {

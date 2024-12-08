@@ -1,5 +1,6 @@
-package com.kotori316.infchest.common;
+package com.kotori316.infchest.common.test;
 
+import com.kotori316.infchest.common.InfChest;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;

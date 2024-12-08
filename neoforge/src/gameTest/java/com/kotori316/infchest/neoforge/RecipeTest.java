@@ -1,7 +1,7 @@
 package com.kotori316.infchest.neoforge;
 
 import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.RecipeTestCase;
+import com.kotori316.infchest.common.test.RecipeTestCase;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestFunction;
