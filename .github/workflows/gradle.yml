@@ -58,6 +58,8 @@ jobs:
         env:
           RUN_GAME_TEST: true
       - name: Data Generation
+        # Forge crashes in CI???
+        if: ${{ matrix.platform != 'forge' }}
         run: ./gradlew :${{ matrix.platform }}:${{ matrix.data }}
         env:
           RUN_DATA_GEN: true
