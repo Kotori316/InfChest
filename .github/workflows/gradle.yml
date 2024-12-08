@@ -21,10 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform:
-          - forge
-          - fabric
-          - neoforge
+        include:
+          - platform: forge
+            data: runData
+          - platform: fabric
+            data: runData
+          - platform: neoforge
+            data: runServerData
       fail-fast: false
     env:
       DISABLE_FORGE: ${{ matrix.platform != 'forge' }}
@@ -55,7 +58,7 @@ jobs:
         env:
           RUN_GAME_TEST: true
       - name: Data Generation
-        run: ./gradlew :${{ matrix.platform }}:runData
+        run: ./gradlew :${{ matrix.platform }}:${{ matrix.data }}
         env:
           RUN_DATA_GEN: true
       - name: Common Data Generation
