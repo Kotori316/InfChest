@@ -55,7 +55,7 @@ runs {
         systemProperties.put("neoforge.enabledGameTestNamespaces", "$modId,minecraft")
         modSources.add(project.sourceSets.getByName("gameTest"))
     }
-    create("clientData") {
+    create("serverData") {
         workingDirectory = project.file("runs/data")
         arguments(
             "--mod",
@@ -67,7 +67,7 @@ runs {
         )
         modSources.add(sourceSets["genData"])
     }
-    /*create("commonData") {
+    create("commonData") {
         runType("clientData")
         isDataGenerator = true
         workingDirectory.set(project.file("runs/data"))
@@ -80,7 +80,7 @@ runs {
             project(":common").file("src/main/resources/").toString()
         )
         modSources.add(sourceSets["genData"])
-    }*/
+    }
 }
 
 configurations.configureEach {
@@ -96,7 +96,7 @@ dependencies {
     implementation("net.neoforged:neoforge:${project.property("neo_version")}")
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
-    implementation(
+    compileOnly(
         group = "curse.maven",
         name = "jade-324717",
         version = project.property("jade_neoforge_id") as String
@@ -106,11 +106,11 @@ dependencies {
         name = "wthit-api",
         version = "neo-${project.property("wthit_neoforge_version")}"
     )
-    runtimeOnly(
+    /*runtimeOnly(
         group = "mcp.mobius.waila",
         name = "wthit",
         version = "neo-${project.property("wthit_neoforge_version")}"
-    )
+    )*/
     compileOnly(
         group = "curse.maven",
         name = "the-one-probe-245211",

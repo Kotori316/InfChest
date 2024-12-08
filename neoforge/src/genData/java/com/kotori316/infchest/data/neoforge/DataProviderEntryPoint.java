@@ -18,13 +18,17 @@ import java.util.Set;
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = InfChest.modID)
 public final class DataProviderEntryPoint {
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
-        InfChest.LOGGER.info("Start Data provider");
-        event.getGenerator().addProvider(event.includeServer(), new RecipeNeoForge(event.getGenerator().getPackOutput(), event.getLookupProvider()));
+    public static void gatherData(GatherDataEvent.Server event) {
+        InfChest.LOGGER.info("Start Server Data provider");
+        event.createProvider(RecipeNeoForge::new);
+    }
 
+    @SubscribeEvent
+    public static void gatherClientData(GatherDataEvent.Client event) {
+        InfChest.LOGGER.info("Start Client Data provider");
         // Common parts
-        event.getGenerator().addProvider(event.includeClient(), new PackMetadataGenerator(event.getGenerator().getPackOutput())
-            .add(PackMetadataSection.TYPE, new PackMetadataSection(Component.literal("Inf Chest"), DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES))));
+        event.createProvider(PackMetadataGenerator::new)
+            .add(PackMetadataSection.TYPE, new PackMetadataSection(Component.literal("Inf Chest"), DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES)));
         var lootTableProvider = new LootTableProvider(
             event.getGenerator().getPackOutput(),
             Set.of(),
@@ -33,8 +37,8 @@ public final class DataProviderEntryPoint {
             ),
             event.getLookupProvider()
         );
-        event.getGenerator().addProvider(event.includeClient(), lootTableProvider);
-        event.getGenerator().addProvider(event.includeClient(), new StateAndModelProvider(event.getGenerator().getPackOutput(), event.getExistingFileHelper()));
-        event.getGenerator().addProvider(event.includeClient(), new LangProvider(event.getGenerator().getPackOutput()));
+        event.addProvider(lootTableProvider);
+        event.createProvider(StateAndModelProvider::new);
+        event.createProvider(LangProvider::new);
     }
 }
