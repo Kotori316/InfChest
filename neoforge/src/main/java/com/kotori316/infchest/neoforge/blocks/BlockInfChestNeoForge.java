@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
 
 public final class BlockInfChestNeoForge extends BlockInfChest {
     public BlockInfChestNeoForge() {
@@ -16,10 +15,10 @@ public final class BlockInfChestNeoForge extends BlockInfChest {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world, BlockPos pos, Player player) {
-        ItemStack pickBlock = super.getCloneItemStack(state, target, world, pos, player);
-        saveChestNbtToStack(world.getBlockEntity(pos), pickBlock);
-        saveCustomName(world.getBlockEntity(pos), pickBlock);
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
+        ItemStack pickBlock = new ItemStack(this);
+        saveChestNbtToStack(level.getBlockEntity(pos), pickBlock);
+        saveCustomName(level.getBlockEntity(pos), pickBlock);
         return pickBlock;
     }
 

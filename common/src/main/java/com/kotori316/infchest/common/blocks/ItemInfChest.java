@@ -51,7 +51,7 @@ final class ItemInfChest extends BlockItem {
             CompoundTag tag = Optional.ofNullable(stack.get(DataComponents.BLOCK_ENTITY_DATA)).map(CustomData::copyTag).orElse(null);
             BlockEntity entity = world.getBlockEntity(pos);
             if (tag != null && entity != null) {
-                if (world.isClientSide || !entity.onlyOpCanSetNbt() || (player != null && player.canUseGameMasterBlocks())) {
+                if (world.isClientSide || !entity.getType().onlyOpCanSetNbt() || (player != null && player.canUseGameMasterBlocks())) {
                     CompoundTag tileNbt = entity.saveWithoutMetadata(world.registryAccess());
                     tileNbt.merge(tag);
                     tileNbt.putInt("x", pos.getX());

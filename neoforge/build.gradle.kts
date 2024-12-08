@@ -55,8 +55,7 @@ runs {
         systemProperties.put("neoforge.enabledGameTestNamespaces", "$modId,minecraft")
         modSources.add(project.sourceSets.getByName("gameTest"))
     }
-    create("serverData") {
-        client()
+    create("clientData") {
         workingDirectory = project.file("runs/data")
         arguments(
             "--mod",
@@ -68,7 +67,7 @@ runs {
         )
         modSources.add(sourceSets["genData"])
     }
-    create("commonData") {
+    /*create("commonData") {
         runType("clientData")
         isDataGenerator = true
         workingDirectory.set(project.file("runs/data"))
@@ -81,7 +80,7 @@ runs {
             project(":common").file("src/main/resources/").toString()
         )
         modSources.add(sourceSets["genData"])
-    }
+    }*/
 }
 
 configurations.configureEach {

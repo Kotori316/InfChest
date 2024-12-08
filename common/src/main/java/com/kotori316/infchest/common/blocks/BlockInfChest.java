@@ -85,8 +85,8 @@ public abstract class BlockInfChest extends BaseEntityBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
-        var pickBlock = super.getCloneItemStack(world, pos, state);
+    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
+        var pickBlock = super.getCloneItemStack(world, pos, state, includeData);
         saveChestNbtToStack(world.getBlockEntity(pos), pickBlock);
         saveCustomName(world.getBlockEntity(pos), pickBlock);
         return pickBlock;
