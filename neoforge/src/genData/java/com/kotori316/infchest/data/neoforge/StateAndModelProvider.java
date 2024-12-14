@@ -3,7 +3,8 @@ package com.kotori316.infchest.data.neoforge;
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.blocks.BlockDeque;
 import com.kotori316.infchest.common.blocks.BlockInfChest;
-import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
@@ -17,7 +18,6 @@ import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -40,7 +40,7 @@ public final class StateAndModelProvider extends BlockStateProvider {
     public void simpleBlockItem(Block block, ModelFile model) {
         super.simpleBlockItem(block, model);
         var key = BuiltInRegistries.BLOCK.getKey(block);
-        var unbaked = new BlockModelWrapper.Unbaked(ResourceLocation.fromNamespaceAndPath(key.getNamespace(), "%s/%s".formatted(ModelProvider.ITEM_FOLDER, key.getPath())), List.of());
+        var unbaked = ItemModelUtils.plainModel(TextureMapping.getItemTexture(block.asItem()));
         clientItemMap.put(
             key,
             new ClientItem(unbaked, ClientItem.Properties.DEFAULT)
