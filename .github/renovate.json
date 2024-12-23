@@ -2,5 +2,16 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>Kotori316/common-script:renovate-default"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "gradle"
+      ],
+      "matchPackagePatterns": [
+        "^appeng:appliedenergistics2-*"
+      ],
+      "automerge": true
+    }
   ]
 }
