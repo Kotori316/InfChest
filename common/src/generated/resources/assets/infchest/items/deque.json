@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "infchest:item/deque"
+    "model": "infchest:block/deque"
   }
 }
