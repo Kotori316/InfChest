@@ -19,6 +19,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    ttimeout-minutes: 30
     strategy:
       matrix:
         include:
