@@ -77,8 +77,11 @@ public class TileDeque extends BlockEntity implements HasInv {
 
     @Override
     public void setItem(int index, ItemStack stack) {
-        if (0 < index && index <= inventory.size())
+        if (0 < index && index <= inventory.size()) {
             inventory.set(index - 1, stack);
+        } else if (index == 0) {
+            inventory.add(stack);
+        }
     }
 
     @Override
