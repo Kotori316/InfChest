@@ -8,7 +8,7 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     signing
-    id("net.neoforged.gradle.userdev") version ("7.0.183")
+    id("net.neoforged.gradle.userdev") version ("7.0.184")
     id("net.neoforged.gradle.mixin") version ("7.0.184")
     id("com.matthewprenger.cursegradle") version ("1.4.0")
     id("com.modrinth.minotaur") version ("2.+")
