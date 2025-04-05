@@ -27,7 +27,7 @@ public final class RecipeTest {
     public static List<TestFunction> recipeTests() {
         return RecipeTestCase.getRecipeSets()
             .stream()
-            .map(r -> TestFunction.createWithStructure(InfChest.modID, "minecraft:default", "recipe_test_" + r.name(), "minecraft:trail_ruins/tower/one_room_1", g -> checkRecipe(g, r)))
+            .map(r -> TestFunction.createWithStructure(InfChest.modID, InfChest.modID + ":test", "recipe_test_" + r.name(), "minecraft:trail_ruins/tower/one_room_1", g -> checkRecipe(g, r)))
             .toList();
     }
 }
