@@ -18,6 +18,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
@@ -31,7 +32,9 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
 
     protected ItemStack holding = ItemStack.EMPTY;
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+    @NotNull
     private BigInteger count = BigInteger.ZERO;
+    @Nullable
     private Component customName;
     public static final String NBT_ITEM = "item";
     public static final String NBT_COUNT = "count";
@@ -49,7 +52,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         compound.putString(NBT_COUNT, count.toString());
         ContainerHelper.saveAllItems(compound, inventory, provider);
-        compound.put(NBT_ITEM, holding.saveOptional(provider));
+        compound.store(NBT_ITEM, ItemStack.OPTIONAL_CODEC, holding);
         Optional.ofNullable(customName).map(c -> Component.Serializer.toJson(c, provider)).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
         super.saveAdditional(compound, provider);
     }
@@ -57,19 +60,20 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         super.loadAdditional(compound, provider);
-        holding = ItemStack.parseOptional(provider, compound.getCompound(NBT_ITEM));
-        if (compound.contains(NBT_COUNT)) {
-            try {
-                count = new BigDecimal(compound.getString(NBT_COUNT)).toBigIntegerExact();
-            } catch (NumberFormatException | ArithmeticException e) {
-                InfChest.LOGGER.error("TileInfChest loading problem.", e);
-                count = BigInteger.ZERO;
-            }
-        } else {
+        holding = compound.read(NBT_ITEM, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+
+        try {
+            count = compound.getString(NBT_COUNT)
+                .map(BigDecimal::new)
+                .map(BigDecimal::toBigIntegerExact)
+                .orElse(BigInteger.ZERO);
+        } catch (NumberFormatException | ArithmeticException e) {
+            InfChest.LOGGER.error("TileInfChest loading problem.", e);
             count = BigInteger.ZERO;
         }
-        if (compound.contains(NBT_CUSTOM_NAME))
-            customName = Component.Serializer.fromJson(compound.getString(NBT_CUSTOM_NAME), provider);
+        customName = compound.getString(NBT_CUSTOM_NAME)
+            .map(s -> Component.Serializer.fromJson(s, provider))
+            .orElse(null);
         ContainerHelper.loadAllItems(compound, inventory, provider);
         updateInv();
     }
@@ -85,28 +89,28 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     @Override
+    @NotNull
     public Component getName() {
-        return hasCustomName() ? customName : Component.translatable(InfChest.accessor.CHEST().getDescriptionId());
+        if (customName != null) {
+            return customName;
+        }
+        return Component.translatable(InfChest.accessor.CHEST().getDescriptionId());
     }
 
-    @Override
-    public boolean hasCustomName() {
-        return customName != null;
-    }
-
-    public void setCustomName(Component name) {
+    public void setCustomName(@Nullable Component name) {
         this.customName = name;
     }
 
     @Override
+    @NotNull
     public Component getDisplayName() {
-        return hasCustomName() ? getCustomName() : getName();
+        return getName();
     }
 
     @Override
     @Nullable
     public Component getCustomName() {
-        return hasCustomName() ? customName : null;
+        return customName;
     }
 
     @Override
@@ -263,7 +267,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     /**
      * CLIENT Only method
      */
-    public void setCount(BigInteger count) {
+    public void setCount(@NotNull BigInteger count) {
         this.count = count;
     }
 

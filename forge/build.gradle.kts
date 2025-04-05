@@ -147,6 +147,7 @@ dependencies {
             strictly("5.0.4")
         }
     }
+    implementation("com.kotori316:debug-utility-forge:${project.property("debug_util_version")}")
 }
 
 tasks.withType(JavaCompile::class) {

@@ -6,22 +6,27 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.TestFunction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HopperBlock;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public final class DequeTest {
 
-    public static Stream<TestFunction> functions(String batchName, String structure) {
+    public record TestFunctionRecord(String batchName, String name, String structure, int tick, int setUp,
+                                     boolean required, Consumer<GameTestHelper> function) {
+    }
+
+    public static Stream<TestFunctionRecord> functions(String batchName, String structure) {
         return Stream.of(
-            new TestFunction(batchName, "placeDeque", structure, 100, 0, true, DequeTest::placeDeque),
-            new TestFunction(batchName, "insertFromHopper", structure, 100, 0, true, DequeTest::insertFromHopper),
-            new TestFunction(batchName, "extractToHopper", structure, 100, 0, true, DequeTest::extractToHopper)
+            new TestFunctionRecord(batchName, "placeDeque", structure, 100, 0, true, DequeTest::placeDeque),
+            new TestFunctionRecord(batchName, "insertFromHopper", structure, 100, 0, true, DequeTest::insertFromHopper),
+            new TestFunctionRecord(batchName, "extractToHopper", structure, 100, 0, true, DequeTest::extractToHopper)
         );
     }
 
@@ -29,10 +34,7 @@ public final class DequeTest {
         var pos = new BlockPos(0, 1, 0);
         helper.setBlock(pos, InfChest.accessor.DEQUE());
 
-        var tile = helper.getBlockEntity(pos);
-        if (!(tile instanceof TileDeque)) {
-            throw new GameTestAssertException("Expected TileDeque, but got %s".formatted(tile));
-        }
+        helper.getBlockEntity(pos, TileDeque.class);
         helper.succeed();
     }
 
@@ -40,13 +42,13 @@ public final class DequeTest {
         // Setup Deque
         var dequePos = new BlockPos(0, 2, 0);
         helper.setBlock(dequePos, InfChest.accessor.DEQUE());
-        var deque = (TileDeque) helper.getBlockEntity(dequePos);
+        var deque = helper.getBlockEntity(dequePos, TileDeque.class);
 
         // Setup Hopper with stone
         var hopperPos = new BlockPos(0, 3, 0);
         helper.setBlock(hopperPos, Blocks.HOPPER.defaultBlockState()
             .setValue(HopperBlock.FACING, Direction.DOWN));
-        var hopper = (HopperBlockEntity) helper.getBlockEntity(hopperPos);
+        var hopper = helper.getBlockEntity(hopperPos, HopperBlockEntity.class);
         var stone = new ItemStack(Items.STONE, 5);
         hopper.setItem(0, stone);
 
@@ -55,9 +57,10 @@ public final class DequeTest {
             if (hopper.getItem(0).isEmpty() && !deque.isEmpty()) {
                 helper.succeed();
             } else {
-                throw new GameTestAssertException(
+                throw new GameTestAssertException(Component.literal(
                     "Transfer failed. Hopper: %s, Deque: %s"
-                        .formatted(hopper.getItem(0), deque.itemsList()));
+                        .formatted(hopper.getItem(0), deque.itemsList())
+                ), (int) helper.getTick());
             }
         });
     }
@@ -66,23 +69,24 @@ public final class DequeTest {
         // Setup Deque with items
         var dequePos = new BlockPos(0, 2, 0);
         helper.setBlock(dequePos, InfChest.accessor.DEQUE());
-        var deque = (TileDeque) helper.getBlockEntity(dequePos);
+        var deque = helper.getBlockEntity(dequePos, TileDeque.class);
         var stone = new ItemStack(Items.STONE, 5);
         deque.setItem(0, stone);
 
         // Setup empty Hopper below
         var hopperPos = new BlockPos(0, 1, 0);
         helper.setBlock(hopperPos, Blocks.HOPPER.defaultBlockState());
-        var hopper = (HopperBlockEntity) helper.getBlockEntity(hopperPos);
+        var hopper = helper.getBlockEntity(hopperPos, HopperBlockEntity.class);
 
         // Wait for transfer
         helper.runAfterDelay(40, () -> {
             if (!hopper.getItem(0).isEmpty() && deque.isEmpty()) {
                 helper.succeed();
             } else {
-                throw new GameTestAssertException(
+                throw new GameTestAssertException(Component.literal(
                     "Transfer failed. Hopper: %s, Deque: %s"
-                        .formatted(hopper.getItem(0), deque.itemsList()));
+                        .formatted(hopper.getItem(0), deque.itemsList())
+                ), (int) helper.getTick());
             }
         });
     }

@@ -123,6 +123,7 @@ dependencies {
     ) {
         isTransitive = false
     }
+    implementation("com.kotori316:debug-utility-neoforge:${project.property("debug_util_version")}")
 
     "gameTestImplementation"(project.project(":neoforge"))
     "gameTestImplementation"(project(":commonTest"))

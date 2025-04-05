@@ -88,6 +88,7 @@ dependencies {
     modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
         isTransitive = false
     }
+    modImplementation("com.kotori316:debug-utility-fabric:${project.property("debug_util_version")}")
 
     testImplementation(project(":commonTest"))
 }

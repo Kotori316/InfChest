@@ -17,14 +17,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 final class ItemInfChest extends BlockItem {
@@ -67,25 +68,26 @@ final class ItemInfChest extends BlockItem {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void appendHoverText(ItemStack chestStack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(chestStack, context, tooltip, flagIn);
+    public void appendHoverText(ItemStack chestStack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag flagIn) {
+        super.appendHoverText(chestStack, context, tooltipDisplay, consumer, flagIn);
         CompoundTag n = Optional.ofNullable(chestStack.get(DataComponents.BLOCK_ENTITY_DATA)).map(CustomData::copyTag).orElse(null);
         var registry = context.registries();
         if (n != null && registry != null) {
-            Optional<ItemStack> stack = ItemStack.parse(registry, n.getCompound(TileInfChest.NBT_ITEM))
+            Optional<ItemStack> stack = ItemStack.parse(registry, n.getCompoundOrEmpty(TileInfChest.NBT_ITEM))
                 .filter(Predicate.not(ItemStack::isEmpty));
             stack.map(ItemStack::getItem)
                 .map(BuiltInRegistries.ITEM::getKey)
                 .map(ResourceLocation::toString)
                 .map(Component::literal)
-                .ifPresent(tooltip::add);
+                .ifPresent(consumer);
             stack.map(ItemStack::getDisplayName)
-                .ifPresent(tooltip::add);
-            Optional.of(n.getString(TileInfChest.NBT_COUNT))
+                .ifPresent(consumer);
+            n.getString(TileInfChest.NBT_COUNT)
                 .filter(Predicate.not(String::isEmpty))
                 .map(ItemInfChest::addPostfix)
-                .ifPresent(tooltip::add);
+                .ifPresent(consumer);
         }
     }
 

@@ -60,16 +60,15 @@ public record InsertingHook(List<Hook> hooks) {
                 return BigInteger.ZERO;
             }
 
-            String itemCount = tag.copyTag().getString(TileInfChest.NBT_COUNT);
-            if (itemCount.isEmpty())
+            try {
+                return tag.copyTag().getString(TileInfChest.NBT_COUNT)
+                    .map(BigDecimal::new)
+                    .map(BigDecimal::toBigIntegerExact)
+                    .map(i -> i.multiply(BigInteger.valueOf(Math.max(hookItem.getCount(), 1))))
+                    .orElse(BigInteger.ZERO);
+            } catch (NumberFormatException | ArithmeticException e) {
+                InfChest.LOGGER.error("Invalid item count.", e);
                 return BigInteger.ZERO;
-            else {
-                try {
-                    return (new BigDecimal(itemCount).toBigIntegerExact()).multiply(BigInteger.valueOf(Math.max(hookItem.getCount(), 1)));
-                } catch (NumberFormatException | ArithmeticException e) {
-                    InfChest.LOGGER.error("Invalid item count.", e);
-                    return BigInteger.ZERO;
-                }
             }
         }
 
@@ -86,7 +85,7 @@ public record InsertingHook(List<Hook> hooks) {
             if (tag == null) {
                 return false;
             }
-            ItemStack holding = ItemStack.parseOptional(provider, tag.copyTag().getCompound(TileInfChest.NBT_ITEM));
+            ItemStack holding = tag.copyTag().read(TileInfChest.NBT_ITEM, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
             return ItemStack.isSameItemSameComponents(chestContent, holding);
         }
 

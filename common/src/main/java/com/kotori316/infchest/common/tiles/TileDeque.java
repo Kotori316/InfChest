@@ -4,16 +4,16 @@ import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.ItemDamage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -30,9 +30,9 @@ public class TileDeque extends BlockEntity implements HasInv {
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         super.loadAdditional(compound, provider);
-        inventory = compound.getList(NBT_ITEMS, Tag.TAG_COMPOUND).stream()
-            .map(CompoundTag.class::cast)
-            .map(t -> ItemStack.parseOptional(provider, t))
+        inventory = compound.getList(NBT_ITEMS).stream()
+            .flatMap(ListTag::compoundStream)
+            .flatMap(t -> ItemStack.parse(provider, t).stream())
             .filter(Predicate.not(ItemStack::isEmpty))
             .collect(Collectors.toCollection(LinkedList::new));
     }
@@ -41,7 +41,7 @@ public class TileDeque extends BlockEntity implements HasInv {
     protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         var list1 = inventory.stream()
             .filter(Predicate.not(ItemStack::isEmpty))
-            .map(i -> i.saveOptional(provider))
+            .map(i -> i.save(provider))
             .collect(Collectors.toCollection(ListTag::new));
         compound.put(NBT_ITEMS, list1);
         super.saveAdditional(compound, provider);
@@ -95,13 +95,19 @@ public class TileDeque extends BlockEntity implements HasInv {
         inventory.clear();
     }
 
-    public List<ItemStack> itemsList() {
+    public NonNullList<ItemStack> itemsList() {
         return inventory.stream()
             .collect(Collectors.groupingBy(ItemDamage::new, Collectors.summingLong(ItemStack::getCount)))
             .entrySet()
             .stream()
             .flatMap(e -> e.getKey().toStacks(e.getValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toCollection(NonNullList::create));
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (this.level != null) {
+            Containers.dropContents(level, pos, this.itemsList());
+        }
+    }
 }
