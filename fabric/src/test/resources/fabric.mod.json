@@ -7,10 +7,11 @@
   "entrypoints": {
     "fabric-gametest": [
       "com.kotori316.infchest.fabric.ItemDamageTest",
-      "com.kotori316.infchest.fabric.RecipeTest",
       "com.kotori316.infchest.fabric.tiles.TileInfChestTest",
-      "com.kotori316.infchest.fabric.tiles.TileDequeTest",
       "com.kotori316.infchest.fabric.tiles.ChestFabricOperation"
+    ],
+    "main": [
+      "com.kotori316.infchest.fabric.InfChestFabricGameTest"
     ]
   }
 }
