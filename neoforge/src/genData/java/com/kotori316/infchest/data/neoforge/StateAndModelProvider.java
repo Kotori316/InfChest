@@ -17,8 +17,9 @@ public final class StateAndModelProvider extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        var variant = BlockModelGenerators.plainVariant(TexturedModel.CUBE.updateTexture(t -> t.put(TextureSlot.ALL, ResourceLocation.fromNamespaceAndPath(InfChest.modID, "block/if"))).create(InfChest.accessor.CHEST(), blockModels.modelOutput));
         blockModels.blockStateOutput.accept(
-            BlockModelGenerators.createSimpleBlock(InfChest.accessor.CHEST(), TexturedModel.CUBE.updateTexture(t -> t.put(TextureSlot.ALL, ResourceLocation.fromNamespaceAndPath(InfChest.modID, "block/if"))).create(InfChest.accessor.CHEST(), blockModels.modelOutput))
+            BlockModelGenerators.createSimpleBlock(InfChest.accessor.CHEST(), variant)
         );
         blockModels.createTrivialCube(InfChest.accessor.DEQUE());
     }
