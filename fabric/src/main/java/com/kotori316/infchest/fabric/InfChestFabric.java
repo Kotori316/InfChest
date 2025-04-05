@@ -11,7 +11,6 @@ import com.kotori316.infchest.fabric.blocks.BlockInfChestFabric;
 import com.kotori316.infchest.fabric.packets.PacketHandler;
 import com.kotori316.infchest.fabric.tiles.InfChestStorage;
 import com.kotori316.infchest.fabric.tiles.TileInfChestFabric;
-import com.mojang.datafixers.DSL;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -49,8 +48,8 @@ public class InfChestFabric implements ModInitializer {
     public static class Register implements InfChest.TypeAccessor {
         public static final BlockInfChestFabric CHEST = new BlockInfChestFabric();
         public static final BlockDeque DEQUE = new BlockDeque();
-        public static final BlockEntityType<TileInfChestFabric> INF_CHEST_TYPE = FabricBlockEntityTypeBuilder.create(TileInfChestFabric::new, CHEST).build(DSL.emptyPartType());
-        public static final BlockEntityType<TileDeque> DEQUE_TYPE = FabricBlockEntityTypeBuilder.create(TileDeque::new, DEQUE).build(DSL.emptyPartType());
+        public static final BlockEntityType<TileInfChestFabric> INF_CHEST_TYPE = FabricBlockEntityTypeBuilder.create(TileInfChestFabric::new, CHEST).build();
+        public static final BlockEntityType<TileDeque> DEQUE_TYPE = FabricBlockEntityTypeBuilder.create(TileDeque::new, DEQUE).build();
         public static final ExtendedScreenHandlerType<ContainerInfChest, BlockPos> INF_CHEST_CONTAINER_TYPE = new ExtendedScreenHandlerType<>(ContainerInfChest::createFabric, BlockPos.STREAM_CODEC.mapStream(RegistryFriendlyByteBuf::asByteBuf));
         public static final LootItemFunctionType<ContentInfChest> CHEST_FUNCTION = new LootItemFunctionType<>(ContentInfChest.CODEC);
 
