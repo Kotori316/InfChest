@@ -26,7 +26,7 @@ public final class RecipeTest {
     public static List<TestFunction> recipeTests() {
         return RecipeTestCase.getRecipeSets()
             .stream()
-            .map(r -> TestFunction.create(InfChest.modID, "minecraft:default", "recipe_test_" + r.name(), g -> checkRecipe(g, r)))
+            .map(r -> TestFunction.create(InfChest.modID, InfChest.modID + ":test", "recipe_test_" + r.name(), g -> checkRecipe(g, r)))
             .toList();
     }
 }
