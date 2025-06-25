@@ -4,10 +4,12 @@ import com.kotori316.infchest.common.InfChest;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -75,7 +77,7 @@ public record InsertingHook(List<Hook> hooks) {
         @Override
         public ItemStack removeAllItems(ItemStack hookItem) {
             // Set empty tag to remove tag.
-            BlockItem.setBlockEntityData(hookItem, InfChest.accessor.INF_CHEST_TYPE(), new CompoundTag());
+            BlockItem.setBlockEntityData(hookItem, InfChest.accessor.INF_CHEST_TYPE(), TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING));
             return hookItem;
         }
 
@@ -89,9 +91,9 @@ public record InsertingHook(List<Hook> hooks) {
             return ItemStack.isSameItemSameComponents(chestContent, holding);
         }
 
-        private static ItemStack getSecondItem(CompoundTag nbt, HolderLookup.Provider provider) {
+        private static ItemStack getSecondItem(ValueInput input) {
             NonNullList<ItemStack> list = NonNullList.withSize(2, ItemStack.EMPTY);
-            ContainerHelper.loadAllItems(nbt, list, provider);
+            ContainerHelper.loadAllItems(input, list);
             return list.get(1);
         }
     }

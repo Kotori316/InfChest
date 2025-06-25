@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -18,6 +19,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,21 +52,20 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        compound.putString(NBT_COUNT, count.toString());
-        ContainerHelper.saveAllItems(compound, inventory, provider);
-        compound.store(NBT_ITEM, ItemStack.OPTIONAL_CODEC, holding);
-        Optional.ofNullable(customName).map(c -> Component.Serializer.toJson(c, provider)).ifPresent(s -> compound.putString(NBT_CUSTOM_NAME, s));
-        super.saveAdditional(compound, provider);
+    protected void saveAdditional(ValueOutput valueOutput) {
+        valueOutput.putString(NBT_COUNT, count.toString());
+        ContainerHelper.saveAllItems(valueOutput, inventory);
+        valueOutput.store(NBT_ITEM, ItemStack.OPTIONAL_CODEC, holding);
+        valueOutput.storeNullable(NBT_CUSTOM_NAME, ComponentSerialization.CODEC, customName);
+        super.saveAdditional(valueOutput);
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.loadAdditional(compound, provider);
-        holding = compound.read(NBT_ITEM, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
-
+    protected void loadAdditional(ValueInput valueInput) {
+        super.loadAdditional(valueInput);
+        holding = valueInput.read(NBT_ITEM, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         try {
-            count = compound.getString(NBT_COUNT)
+            count = valueInput.getString(NBT_COUNT)
                 .map(BigDecimal::new)
                 .map(BigDecimal::toBigIntegerExact)
                 .orElse(BigInteger.ZERO);
@@ -71,10 +73,8 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
             InfChest.LOGGER.error("TileInfChest loading problem.", e);
             count = BigInteger.ZERO;
         }
-        customName = compound.getString(NBT_CUSTOM_NAME)
-            .map(s -> Component.Serializer.fromJson(s, provider))
-            .orElse(null);
-        ContainerHelper.loadAllItems(compound, inventory, provider);
+        customName = valueInput.read(NBT_CUSTOM_NAME, ComponentSerialization.CODEC).orElse(null);
+        ContainerHelper.loadAllItems(valueInput, inventory);
         updateInv();
     }
 

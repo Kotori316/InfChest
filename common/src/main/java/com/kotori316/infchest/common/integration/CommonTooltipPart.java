@@ -15,7 +15,7 @@ public final class CommonTooltipPart {
     private static final String NBT_KEY_COUNT = "tooltip_count";
 
     public static List<Component> getTooltipBodyParts(CompoundTag data, BlockEntity entity) {
-        ItemStack stack = ItemStack.parse(TileUtil.providerFromEntity(entity), data.getCompoundOrEmpty(NBT_KEY_ITEM)).orElse(ItemStack.EMPTY);
+        ItemStack stack = TileUtil.parseItemStack(entity, data.getCompoundOrEmpty(NBT_KEY_ITEM));
         if (!stack.isEmpty()) {
             BigInteger integer = data.getByteArray(NBT_KEY_COUNT).map(BigInteger::new).orElse(BigInteger.ZERO);
             return List.of(stack.getDisplayName(), Component.literal(integer.toString()));
@@ -26,7 +26,7 @@ public final class CommonTooltipPart {
 
     public static void addTileData(CompoundTag destination, BlockEntity maybeChest) {
         if (maybeChest instanceof TileInfChest chest) {
-            destination.put(NBT_KEY_ITEM, chest.getItem(1).save(TileUtil.providerFromEntity(chest)));
+            destination.put(NBT_KEY_ITEM, TileUtil.serializeItemStack(chest, chest.getItem(1)));
             destination.putByteArray(NBT_KEY_COUNT, chest.totalCount().toByteArray());
         }
     }

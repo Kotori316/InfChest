@@ -41,8 +41,8 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
             p.readBlockPos(),
             ResourceKey.create(Registries.DIMENSION, p.readResourceLocation()),
             p.readByteArray(),
-            p.readJsonWithCodec(ItemStack.OPTIONAL_CODEC),
-            p.readJsonWithCodec(ItemStack.OPTIONAL_CODEC)
+            p.readLenientJsonWithCodec(ItemStack.OPTIONAL_CODEC),
+            p.readLenientJsonWithCodec(ItemStack.OPTIONAL_CODEC)
         );
     }
 

@@ -7,9 +7,11 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -22,6 +24,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -58,8 +61,9 @@ final class ItemInfChest extends BlockItem {
                     tileNbt.putInt("x", pos.getX());
                     tileNbt.putInt("y", pos.getY());
                     tileNbt.putInt("z", pos.getZ());
-
-                    entity.loadCustomOnly(tileNbt, world.registryAccess());
+                    try (var reporter = new ProblemReporter.ScopedCollector(entity.problemPath(), InfChest.LOGGER)) {
+                        entity.loadCustomOnly(TagValueInput.create(reporter, world.registryAccess(), tileNbt));
+                    }
                     entity.setChanged();
                     return true;
                 }
@@ -75,7 +79,8 @@ final class ItemInfChest extends BlockItem {
         CompoundTag n = Optional.ofNullable(chestStack.get(DataComponents.BLOCK_ENTITY_DATA)).map(CustomData::copyTag).orElse(null);
         var registry = context.registries();
         if (n != null && registry != null) {
-            Optional<ItemStack> stack = ItemStack.parse(registry, n.getCompoundOrEmpty(TileInfChest.NBT_ITEM))
+            Optional<ItemStack> stack = ItemStack.OPTIONAL_CODEC.parse(registry.createSerializationContext(NbtOps.INSTANCE), n.getCompoundOrEmpty(TileInfChest.NBT_ITEM))
+                .result()
                 .filter(Predicate.not(ItemStack::isEmpty));
             stack.map(ItemStack::getItem)
                 .map(BuiltInRegistries.ITEM::getKey)

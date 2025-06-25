@@ -3,15 +3,14 @@ package com.kotori316.infchest.common.tiles;
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.ItemDamage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -28,23 +27,23 @@ public class TileDeque extends BlockEntity implements HasInv {
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.loadAdditional(compound, provider);
-        inventory = compound.getList(NBT_ITEMS).stream()
-            .flatMap(ListTag::compoundStream)
-            .flatMap(t -> ItemStack.parse(provider, t).stream())
+    protected void loadAdditional(ValueInput valueInput) {
+        super.loadAdditional(valueInput);
+        inventory = valueInput.listOrEmpty(NBT_ITEMS, ItemStack.OPTIONAL_CODEC)
+            .stream()
             .filter(Predicate.not(ItemStack::isEmpty))
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        var list1 = inventory.stream()
-            .filter(Predicate.not(ItemStack::isEmpty))
-            .map(i -> i.save(provider))
-            .collect(Collectors.toCollection(ListTag::new));
-        compound.put(NBT_ITEMS, list1);
-        super.saveAdditional(compound, provider);
+    protected void saveAdditional(ValueOutput valueOutput) {
+        {
+            var list = valueOutput.list(NBT_ITEMS, ItemStack.OPTIONAL_CODEC);
+            inventory.stream()
+                .filter(Predicate.not(ItemStack::isEmpty))
+                .forEach(list::add);
+        }
+        super.saveAdditional(valueOutput);
     }
 
     @Override
