@@ -11,7 +11,7 @@ import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = InfChest.modID)
+@EventBusSubscriber(modid = InfChest.modID)
 public final class InfChestNeoForgeGameTest {
     @SubscribeEvent
     public static void registerGameTest(FMLConstructModEvent event) {

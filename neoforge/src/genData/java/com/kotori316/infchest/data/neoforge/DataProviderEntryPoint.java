@@ -15,7 +15,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import java.util.List;
 import java.util.Set;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = InfChest.modID)
+@EventBusSubscriber(modid = InfChest.modID)
 public final class DataProviderEntryPoint {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Server event) {
@@ -28,7 +28,7 @@ public final class DataProviderEntryPoint {
         InfChest.LOGGER.info("Start Client Data provider");
         // Common parts
         event.createProvider(PackMetadataGenerator::new)
-            .add(PackMetadataSection.TYPE, new PackMetadataSection(Component.literal("Inf Chest"), DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES)));
+            .add(PackMetadataSection.TYPE, new PackMetadataSection(Component.literal("Inf Chest"), DetectedVersion.BUILT_IN.packVersion(PackType.CLIENT_RESOURCES)));
         var lootTableProvider = new LootTableProvider(
             event.getGenerator().getPackOutput(),
             Set.of(),
