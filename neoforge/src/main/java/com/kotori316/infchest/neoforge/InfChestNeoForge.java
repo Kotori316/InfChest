@@ -104,7 +104,7 @@ public final class InfChestNeoForge {
         }
     }
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = modID)
+    @EventBusSubscriber(modid = modID)
     public static class EventHandlers {
 
         @SubscribeEvent

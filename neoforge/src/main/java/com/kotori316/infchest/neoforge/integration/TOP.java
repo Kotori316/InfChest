@@ -7,7 +7,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = InfChest.modID)
+@EventBusSubscriber(modid = InfChest.modID)
 public class TOP {
     private static final String TOP_MOD_ID = "theoneprobe";
 

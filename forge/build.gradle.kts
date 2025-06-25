@@ -81,6 +81,7 @@ minecraft {
             property("mixin.env.refMapRemappingFile", mixinRefMap)
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
+            property("eventbus.api.strictRuntimeChecks", "true")
             property("mixin.debug.export", "true")
             property("terminal.ansi", "true")
         }
@@ -127,6 +128,7 @@ dependencies {
     testCompileOnly(project(":common"))
     // Mixin
     annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
+    // annotationProcessor("net.minecraftforge:eventbus-validator:7.0-beta.9")
 
     compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${project.property("ae2Version")}"))
     compileOnly(fg.deobf("curse.maven:jade-324717:${project.property("jade_forge_id")}"))

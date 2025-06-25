@@ -14,12 +14,11 @@ public class PacketHandler {
         .networkProtocolVersion(PROTOCOL)
         .acceptedVersions(Channel.VersionTest.exact(PROTOCOL))
         .simpleChannel()
+        .play()
+        .bidirectional()
         // ItemCountMessage
-        .messageBuilder(ItemCountMessage.class)
-        .decoder(ItemCountMessage.STREAM_CODEC::decode)
-        .encoder((message, friendlyByteBuf) -> ItemCountMessage.STREAM_CODEC.encode(friendlyByteBuf, message))
-        .consumerMainThread(ItemCountMessageForge::onReceive)
-        .add();
+        .addMain(ItemCountMessage.class, ItemCountMessage.STREAM_CODEC, ItemCountMessageForge::onReceive)
+        .build();
 
     public static void init() {
     }

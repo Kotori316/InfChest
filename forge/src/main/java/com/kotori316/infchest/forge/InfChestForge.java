@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,8 +43,8 @@ import static com.kotori316.infchest.common.InfChest.modID;
 @Mod(modID)
 public final class InfChestForge {
     public InfChestForge(FMLJavaModLoadingContext context) {
-        context.getModEventBus().addListener(this::preInit);
-        context.getModEventBus().addListener(this::clientInit);
+        FMLCommonSetupEvent.getBus(context.getModBusGroup()).addListener(this::preInit);
+        FMLClientSetupEvent.getBus(context.getModBusGroup()).addListener(this::clientInit);
     }
 
     public void preInit(FMLCommonSetupEvent event) {

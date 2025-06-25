@@ -12,15 +12,13 @@ import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,14 +26,16 @@ import org.jetbrains.annotations.Nullable;
 public class AE2InfChestIntegration {
 
     public static void onAPIAvailable() {
-        if (ModList.get().isLoaded("ae2"))
-            MinecraftForge.EVENT_BUS.register(new AE2InfChestIntegration());
+        if (ModList.get().isLoaded("ae2")) {
+            var instance = new AE2InfChestIntegration();
+            AttachCapabilitiesEvent.BlockEntities.BUS.addListener(instance::attachCapability);
+        }
     }
 
     private static final ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "attach_ae2");
 
     @SubscribeEvent
-    public void attachCapability(AttachCapabilitiesEvent<BlockEntity> event) {
+    public void attachCapability(AttachCapabilitiesEvent.BlockEntities event) {
         if (event.getObject() instanceof TileInfChest infChest) {
             event.addCapability(LOCATION, new AE2Capability(infChest));
         }
