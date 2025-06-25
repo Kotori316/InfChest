@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,8 +27,8 @@ public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
         Optional.ofNullable(infChest).map(TileInfChest::getHolding).filter(Predicate.not(ItemStack::isEmpty)).map(ItemStack::getDisplayName).ifPresent(itemName -> {
-                graphics.drawString(this.font, itemName, (imageWidth - this.font.width(itemName)) / 2, 20, 0x404040, false);
-                graphics.drawString(this.font, "Item: " + infChest.totalCount(), 8, 60, 0x404040, false);
+            graphics.drawString(this.font, itemName, (imageWidth - this.font.width(itemName)) / 2, 20, ARGB.opaque(0x404040), false);
+            graphics.drawString(this.font, "Item: " + infChest.totalCount(), 8, 60, ARGB.opaque(0x404040), false);
             }
         );
     }
