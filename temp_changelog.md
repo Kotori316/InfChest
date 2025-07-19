@@ -1,3 +1,9 @@
+# Version 21.8.0
+
+2025-07-19
+
+* Update for 1.21.8
+
 # Version 21.7.0
 
 * Update for 1.21.7
