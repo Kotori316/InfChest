@@ -1,5 +1,11 @@
 # Version 21.8.0
 
+2025-10-05
+
+* Fixed a bug of item duplication
+
+# Version 21.8.0
+
 2025-07-19
 
 * Update for 1.21.8
