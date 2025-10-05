@@ -348,4 +348,11 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
         return new ContainerInfChest(containerID, inventory, getBlockPos());
     }
 
+    /**
+     * Nothing to drop as the dropped chest contains everything.
+     * Not to call the super class as it drops the content in the inventory.
+     */
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+    }
 }
