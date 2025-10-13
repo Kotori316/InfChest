@@ -63,7 +63,7 @@ public record InsertingHook(List<Hook> hooks) {
             }
 
             try {
-                return tag.copyTag().getString(TileInfChest.NBT_COUNT)
+                return tag.copyTagWithoutId().getString(TileInfChest.NBT_COUNT)
                     .map(BigDecimal::new)
                     .map(BigDecimal::toBigIntegerExact)
                     .map(i -> i.multiply(BigInteger.valueOf(Math.max(hookItem.getCount(), 1))))
@@ -87,7 +87,7 @@ public record InsertingHook(List<Hook> hooks) {
             if (tag == null) {
                 return false;
             }
-            ItemStack holding = tag.copyTag().read(TileInfChest.NBT_ITEM, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+            ItemStack holding = tag.copyTagWithoutId().read(TileInfChest.NBT_ITEM, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
             return ItemStack.isSameItemSameComponents(chestContent, holding);
         }
 

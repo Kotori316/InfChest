@@ -1,72 +1,70 @@
 package com.kotori316.infchest.neoforge.tiles;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
-record InfItemHandler(TileInfChestNeoForge infChest) implements IItemHandlerModifiable {
+record InfItemHandler(TileInfChestNeoForge infChest) implements ResourceHandler<ItemResource> {
 
-    @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         infChest.setItem(slot, stack);
     }
 
     @Override
-    public int getSlots() {
+    public int size() {
         return infChest.getContainerSize();
     }
 
     @NotNull
     @Override
-    public ItemStack getStackInSlot(int slot) {
-        return infChest.getItem(slot);
+    public ItemResource getResource(int slot) {
+        return ItemResource.of(infChest.getItem(slot));
     }
 
-    @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        if (isItemValid(0, stack)) {
-            if (!simulate) {
-                infChest.addStack(stack);
-                infChest.setChanged();
-            }
-            return ItemStack.EMPTY;
+    public long getAmountAsLong(int index) {
+        return infChest.getItem(index).getCount();
+    }
+
+    @Override
+    public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        if (isValid(0, resource)) {
+            infChest.addStack(resource.toStack(amount));
+            infChest.setChanged();
+            return amount;
         }
-        return stack;
+        return 0;
     }
 
-    @NotNull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public int extract(int slot, ItemResource resource, int amount, TransactionContext transaction) {
         if (slot != 1) {
             // Only slot 1 allows extracting
-            return ItemStack.EMPTY;
+            return 0;
         }
         var item = infChest.getHolding();
         if (item.isEmpty()) {
             // Nothing to extract
-            return ItemStack.EMPTY;
+            return 0;
         }
 
         var extractCount = infChest.totalCount().min(BigInteger.valueOf(amount));
-        if (!simulate) {
-            infChest.decrStack(extractCount);
-            infChest.setChanged();
-        }
-        // Safe to modify as item is already copied
-        item.setCount(extractCount.intValueExact());
-        return item;
+        infChest.decrStack(extractCount);
+        infChest.setChanged();
+        return extractCount.intValueExact();
     }
 
     @Override
-    public int getSlotLimit(int slot) {
+    public long getCapacityAsLong(int index, ItemResource resource) {
         return infChest.getMaxStackSize();
     }
 
     @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        return infChest.canPlaceItem(slot, stack);
+    public boolean isValid(int index, ItemResource resource) {
+        return infChest.canPlaceItem(index, resource.toStack());
     }
 }

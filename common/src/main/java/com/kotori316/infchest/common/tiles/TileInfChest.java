@@ -13,6 +13,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -132,7 +133,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     public ItemStack removeItem(int index, int count) {
         var s = ContainerHelper.removeItem(inventory, index, count);
         if (index == 1) {
-            if (level != null && !level.isClientSide) {
+            if (level != null && !level.isClientSide()) {
                 decrStack(BigInteger.valueOf(s.getCount()));
             }
             setChanged();
@@ -144,7 +145,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     public ItemStack removeItemNoUpdate(int index) {
         var s = ContainerHelper.takeItem(inventory, index);
         if (index == 1) {
-            if (level != null && !level.isClientSide) {
+            if (level != null && !level.isClientSide()) {
                 decrStack(BigInteger.valueOf(s.getCount()));
             }
             setChanged();
@@ -156,7 +157,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     public void setItem(int index, ItemStack stack) {
         var before = inventory.set(index, stack);
         if (index == 1) {
-            if (level != null && !level.isClientSide) {
+            if (level != null && !level.isClientSide()) {
                 if (!stack.isEmpty() && stacksEqual(holding, stack)) {
                     count = count.add(BigInteger.valueOf(stack.getCount()));
                 }
@@ -173,8 +174,8 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     }
 
     @Override
-    public void startOpen(Player player) {
-        if (level != null && !level.isClientSide) {
+    public void startOpen(ContainerUser user) {
+        if (level != null && !level.isClientSide()) {
             runUpdates();
         }
     }
@@ -198,7 +199,7 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
             }
         }
 
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             runUpdates();
         }
     }

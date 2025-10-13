@@ -63,7 +63,7 @@ public abstract class BlockInfChest extends BaseEntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTrace) {
         if (!player.isCrouching()) {
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 if (StorageBoxStack.moveToStorage(worldIn, pos, player, hand)) return InteractionResult.SUCCESS;
                 worldIn.getBlockEntity(pos, InfChest.accessor.INF_CHEST_TYPE()).ifPresent(t ->
                     this.openGui(((ServerPlayer) player), t, pos));

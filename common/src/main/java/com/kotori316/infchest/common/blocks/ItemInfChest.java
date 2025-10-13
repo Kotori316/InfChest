@@ -18,8 +18,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -52,10 +52,10 @@ final class ItemInfChest extends BlockItem {
     @Override
     protected boolean updateCustomBlockEntityTag(BlockPos pos, Level world, @Nullable Player player, ItemStack stack, BlockState state) {
         if (world.getServer() != null) {
-            CompoundTag tag = Optional.ofNullable(stack.get(DataComponents.BLOCK_ENTITY_DATA)).map(CustomData::copyTag).orElse(null);
+            CompoundTag tag = Optional.ofNullable(stack.get(DataComponents.BLOCK_ENTITY_DATA)).map(TypedEntityData::copyTagWithoutId).orElse(null);
             BlockEntity entity = world.getBlockEntity(pos);
             if (tag != null && entity != null) {
-                if (world.isClientSide || !entity.getType().onlyOpCanSetNbt() || (player != null && player.canUseGameMasterBlocks())) {
+                if (world.isClientSide() || !entity.getType().onlyOpCanSetNbt() || (player != null && player.canUseGameMasterBlocks())) {
                     CompoundTag tileNbt = entity.saveWithoutMetadata(world.registryAccess());
                     tileNbt.merge(tag);
                     tileNbt.putInt("x", pos.getX());
@@ -76,7 +76,7 @@ final class ItemInfChest extends BlockItem {
     @Override
     public void appendHoverText(ItemStack chestStack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag flagIn) {
         super.appendHoverText(chestStack, context, tooltipDisplay, consumer, flagIn);
-        CompoundTag n = Optional.ofNullable(chestStack.get(DataComponents.BLOCK_ENTITY_DATA)).map(CustomData::copyTag).orElse(null);
+        CompoundTag n = Optional.ofNullable(chestStack.get(DataComponents.BLOCK_ENTITY_DATA)).map(TypedEntityData::copyTagWithoutId).orElse(null);
         var registry = context.registries();
         if (n != null && registry != null) {
             Optional<ItemStack> stack = ItemStack.OPTIONAL_CODEC.parse(registry.createSerializationContext(NbtOps.INSTANCE), n.getCompoundOrEmpty(TileInfChest.NBT_ITEM))

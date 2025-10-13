@@ -6,6 +6,7 @@ import com.kotori316.infchest.fabric.packets.PacketHandler;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -21,25 +22,25 @@ public final class TileInfChestFabric extends TileInfChest implements ExtendedSc
         }
 
         boolean playerEqual(Player player) {
-            return this.player.getGameProfile().getId().equals(player.getGameProfile().getId());
+            return this.player.getGameProfile().id().equals(player.getGameProfile().id());
         }
     }
 
     @Override
-    public void startOpen(Player player) {
-        if (level != null && !level.isClientSide && player instanceof ServerPlayer) {
-            var messageSender = new MessageSender((ServerPlayer) player, this);
+    public void startOpen(ContainerUser user) {
+        if (level != null && !level.isClientSide() && user instanceof ServerPlayer player) {
+            var messageSender = new MessageSender(player, this);
             addUpdate(messageSender);
         }
-        super.startOpen(player);
+        super.startOpen(user);
     }
 
     @Override
-    public void stopOpen(Player player) {
-        if (level != null && !level.isClientSide && player instanceof ServerPlayer) {
+    public void stopOpen(ContainerUser user) {
+        if (level != null && !level.isClientSide() && user instanceof ServerPlayer player) {
             runUpdateRemoveIf(r -> (r instanceof MessageSender m) && m.playerEqual(player));
         }
-        super.stopOpen(player);
+        super.stopOpen(user);
     }
 
     @Override
