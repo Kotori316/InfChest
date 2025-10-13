@@ -54,6 +54,15 @@ tasks.withType(Jar::class) {
 }
 
 repositories {
+    mavenLocal()
+    maven {
+        name = "Minecraft-Manually"
+        url = uri("https://libraries.minecraft.net/")
+        content {
+            includeGroup("org.lwjgl")
+            includeGroup("com.mojang")
+        }
+    }
     maven {
         name = "ParchmentMC"
         url = uri("https://maven.parchmentmc.org")
