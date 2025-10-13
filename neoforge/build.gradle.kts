@@ -81,6 +81,12 @@ runs {
         )
         modSources.add(sourceSets["genData"])
     }
+
+    create("junit") {
+        isSingleInstance = true
+        isJUnit = true
+        shouldExportToIDE = true
+    }
 }
 
 configurations.configureEach {
@@ -127,6 +133,10 @@ dependencies {
 
     "gameTestImplementation"(project.project(":neoforge"))
     "gameTestImplementation"(project(":commonTest"))
+
+    testImplementation(platform("org.junit:junit-bom:6.0.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks {
