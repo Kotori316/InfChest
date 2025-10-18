@@ -12,7 +12,6 @@ import com.kotori316.infchest.neoforge.blocks.BlockDequeNeoForge;
 import com.kotori316.infchest.neoforge.blocks.BlockInfChestNeoForge;
 import com.kotori316.infchest.neoforge.integration.AE2InfChestIntegration;
 import com.kotori316.infchest.neoforge.packets.PacketHandler;
-import com.kotori316.infchest.neoforge.tiles.TileDequeNeoForge;
 import com.kotori316.infchest.neoforge.tiles.TileInfChestNeoForge;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,7 +58,7 @@ public final class InfChestNeoForge {
         public static final BlockInfChestNeoForge CHEST = new BlockInfChestNeoForge();
         public static final BlockEntityType<TileInfChestNeoForge> INF_CHEST_TYPE = new BlockEntityType<>(TileInfChestNeoForge::new, CHEST);
         public static final BlockDequeNeoForge DEQUE = new BlockDequeNeoForge();
-        public static final BlockEntityType<TileDequeNeoForge> DEQUE_TYPE = new BlockEntityType<>(TileDequeNeoForge::new, DEQUE);
+        public static final BlockEntityType<TileDeque> DEQUE_TYPE = new BlockEntityType<>(TileDeque::new, DEQUE);
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IMenuTypeExtension.create(ContainerInfChest::create);
         public static final LootItemFunctionType<ContentInfChest> CHEST_FUNCTION = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
             new LootItemFunctionType<>(ContentInfChest.CODEC));
@@ -144,8 +143,7 @@ public final class InfChestNeoForge {
 
         @SubscribeEvent
         public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Register.INF_CHEST_TYPE, TileInfChestNeoForge::getCapability);
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, Register.DEQUE_TYPE, TileDequeNeoForge::getCapability);
+            event.registerBlockEntity(Capabilities.Item.BLOCK, Register.INF_CHEST_TYPE, TileInfChestNeoForge::getCapability);
         }
 
         @SubscribeEvent

@@ -7,7 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +26,7 @@ public final class TileInfChestNeoForge extends TileInfChest {
     }
 
     @NotNull
-    public IItemHandlerModifiable getCapability(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getCapability(@Nullable Direction side) {
         return this.handler;
     }
 

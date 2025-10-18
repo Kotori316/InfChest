@@ -28,7 +28,7 @@ public final class DataProviderEntryPoint {
         InfChest.LOGGER.info("Start Client Data provider");
         // Common parts
         event.createProvider(PackMetadataGenerator::new)
-            .add(PackMetadataSection.TYPE, new PackMetadataSection(Component.literal("Inf Chest"), DetectedVersion.BUILT_IN.packVersion(PackType.CLIENT_RESOURCES)));
+            .add(PackMetadataSection.CLIENT_TYPE, new PackMetadataSection(Component.literal("Inf Chest"), DetectedVersion.BUILT_IN.packVersion(PackType.CLIENT_RESOURCES).minorRange()));
         var lootTableProvider = new LootTableProvider(
             event.getGenerator().getPackOutput(),
             Set.of(),

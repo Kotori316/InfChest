@@ -1,17 +1,17 @@
 package com.kotori316.infchest.fabric.tiles;
 
 import com.kotori316.infchest.common.InfChest;
+import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.math.BigInteger;
 
-public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.ChestItems> implements SingleSlotStorage<ItemVariant> {
+public final class InfChestStorage extends SnapshotParticipant<TileInfChest.ChestItems> implements SingleSlotStorage<ItemVariant> {
     private final TileInfChestFabric chest;
 
     @VisibleForTesting
@@ -20,16 +20,13 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
     }
 
     @Override
-    protected ChestItems createSnapshot() {
-        return new ChestItems(chest.getItem(0), chest.getHoldingWithOneCount().copy(), chest.totalCount());
+    protected TileInfChest.ChestItems createSnapshot() {
+        return chest.getSnapshot();
     }
 
     @Override
-    protected void readSnapshot(ChestItems snapshot) {
-        chest.decrStack(chest.totalCount());
-        chest.addStack(snapshot.holding, snapshot.count);
-        chest.setItem(0, snapshot.inputSlot);
-        chest.setChanged();
+    protected void readSnapshot(TileInfChest.ChestItems snapshot) {
+        chest.readSnapshot(snapshot);
     }
 
     @Override
@@ -80,9 +77,6 @@ public final class InfChestStorage extends SnapshotParticipant<InfChestStorage.C
     @Override
     public long getCapacity() {
         return Long.MAX_VALUE;
-    }
-
-    protected record ChestItems(ItemStack inputSlot, ItemStack holding, BigInteger count) {
     }
 
     public static void register() {

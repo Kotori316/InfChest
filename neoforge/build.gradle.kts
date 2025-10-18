@@ -8,8 +8,7 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     signing
-    id("net.neoforged.gradle.userdev") version ("7.0.192")
-    id("net.neoforged.gradle.mixin") version ("7.0.192")
+    id("net.neoforged.moddev") version ("2.0.113")
     id("com.matthewprenger.cursegradle") version ("1.4.0")
     id("com.modrinth.minotaur") version ("2.+")
     id("com.kotori316.plugin.cf") version ("3.+")
@@ -34,52 +33,87 @@ sourceSets {
     }
 }
 
-minecraft {
-    mappings {
-        version("minecraft", project.property("minecraftVersion") as String)
-    }
-}
+neoForge {
+    version = project.property("neo_version").toString()
 
-runs {
-    create("client") {
-        workingDirectory = file("run")
-        systemProperties.put("neoforge.enabledGameTestNamespaces", modId)
-        systemProperties.put("mixin.debug.export", "true")
-        if (!System.getProperty("os.name").contains("windows", ignoreCase = true)) {
-            jvmArguments.add("-XstartOnFirstThread")
+    mods {
+        create(modId) {
+            sourceSet(sourceSets.getByName("main"))
         }
-        // modSources.add(project.sourceSets.main)
+        create("gameTest") {
+            sourceSet(sourceSets.getByName("main"))
+            sourceSet(sourceSets.getByName("gameTest"))
+        }
+        create("data") {
+            sourceSet(sourceSets.getByName("main"))
+            sourceSet(sourceSets.getByName("genData"))
+        }
     }
-    create("gameTestServer") {
-        workingDirectory = file("runs/gameTestServer")
-        systemProperties.put("neoforge.enabledGameTestNamespaces", "$modId,minecraft")
-        modSources.add(project.sourceSets.getByName("gameTest"))
+
+    parchment {
+        minecraftVersion = project.property("parchment_mapping_mc").toString()
+        mappingsVersion = project.property("parchment_mapping_version").toString()
     }
-    create("serverData") {
-        workingDirectory = project.file("runs/data")
-        arguments(
-            "--mod",
-            modId,
-            "--output",
-            file("src/generated/resources/").toString(),
-            "--existing",
-            file("src/main/resources/").toString()
+
+    runs {
+        create("client") {
+            client()
+            gameDirectory = file("run")
+            systemProperties.put("mixin.debug.export", "true")
+            if (!System.getProperty("os.name").contains("windows", ignoreCase = true)) {
+                jvmArguments.add("-XstartOnFirstThread")
+            }
+            loadedMods = listOf(
+                mods[modId]
+            )
+        }
+        create("gameTestServer") {
+            type = "gameTestServer"
+            gameDirectory = file("runs/gameTestServer")
+            loadedMods = listOf(
+                mods["gameTest"]
+            )
+        }
+        create("serverData") {
+            serverData()
+            gameDirectory = project.file("runs/serverData")
+            programArguments = listOf(
+                "--mod",
+                modId,
+                "--output",
+                file("src/generated/resources/").toString(),
+                "--existing",
+                file("src/main/resources/").toString()
+            )
+            sourceSet = project.sourceSets.getByName("genData")
+            loadedMods = listOf(
+                mods["data"]
+            )
+        }
+        create("commonData") {
+            clientData()
+            gameDirectory = project.file("runs/clientData")
+            programArguments = listOf(
+                "--mod",
+                modId,
+                "--output",
+                project.project(":common").file("src/generated/resources/").toString(),
+                "--existing",
+                project.project(":common").file("src/main/resources/").toString()
+            )
+            sourceSet = project.sourceSets.getByName("genData")
+            loadedMods = listOf(
+                mods["data"]
+            )
+        }
+    }
+
+    unitTest {
+        enable()
+        testedMod = mods[modId]
+        loadedMods = listOf(
+            mods[modId]
         )
-        modSources.add(sourceSets["genData"])
-    }
-    create("commonData") {
-        runType("clientData")
-        isDataGenerator = true
-        workingDirectory.set(project.file("runs/data"))
-        arguments.addAll(
-            "--mod",
-            modId,
-            "--output",
-            project(":common").file("src/generated/resources/").toString(),
-            "--existing",
-            project(":common").file("src/main/resources/").toString()
-        )
-        modSources.add(sourceSets["genData"])
     }
 }
 
@@ -92,8 +126,6 @@ configurations.configureEach {
 }
 
 dependencies {
-    // See com.kotori316.common.gradle.kts for repositories
-    implementation("net.neoforged:neoforge:${project.property("neo_version")}")
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
     compileOnly(
@@ -127,6 +159,15 @@ dependencies {
 
     "gameTestImplementation"(project.project(":neoforge"))
     "gameTestImplementation"(project(":commonTest"))
+
+    testImplementation(platform("org.junit:junit-bom:6.0.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(
+        group = "net.neoforged",
+        name = "testframework",
+        version = project.property("neo_version").toString()
+    )
 }
 
 tasks {
@@ -159,6 +200,10 @@ tasks {
                 )
             )
         }
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 
