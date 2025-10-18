@@ -356,4 +356,18 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
     }
+
+    public ChestItems getSnapshot() {
+        return new ChestItems(this.getItem(0), this.getHoldingWithOneCount().copy(), this.totalCount());
+    }
+
+    public void readSnapshot(ChestItems snapshot) {
+        this.holding = snapshot.holding.copy();
+        this.count = snapshot.count;
+        this.inventory.set(0, snapshot.inputSlot.copy());
+        setChanged();
+    }
+
+    public record ChestItems(ItemStack inputSlot, ItemStack holding, BigInteger count) {
+    }
 }
