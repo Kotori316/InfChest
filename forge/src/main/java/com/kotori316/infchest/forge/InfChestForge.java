@@ -45,6 +45,7 @@ public final class InfChestForge {
     public InfChestForge(FMLJavaModLoadingContext context) {
         FMLCommonSetupEvent.getBus(context.getModBusGroup()).addListener(this::preInit);
         FMLClientSetupEvent.getBus(context.getModBusGroup()).addListener(this::clientInit);
+        BuildCreativeModeTabContentsEvent.BUS.addListener(InfChestForge::creativeTab);
     }
 
     public void preInit(FMLCommonSetupEvent event) {
@@ -135,14 +136,12 @@ public final class InfChestForge {
         public static void registerContainer(RegisterEvent.RegisterHelper<MenuType<?>> event) {
             event.register(ResourceLocation.parse(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
         }
-
-        @SubscribeEvent
-        public static void creativeTab(BuildCreativeModeTabContentsEvent event) {
-            if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
-                event.accept(Register.CHEST);
-                event.accept(Register.DEQUE);
-            }
-        }
     }
 
+    public static void creativeTab(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
+            event.accept(Register.CHEST);
+            event.accept(Register.DEQUE);
+        }
+    }
 }
