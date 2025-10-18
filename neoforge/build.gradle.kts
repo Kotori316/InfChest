@@ -36,25 +36,47 @@ sourceSets {
 neoForge {
     version = project.property("neo_version").toString()
 
+    mods {
+        create(modId) {
+            sourceSet(sourceSets.getByName("main"))
+        }
+        create("gameTest") {
+            sourceSet(sourceSets.getByName("main"))
+            sourceSet(sourceSets.getByName("gameTest"))
+        }
+        create("data") {
+            sourceSet(sourceSets.getByName("main"))
+            sourceSet(sourceSets.getByName("genData"))
+        }
+    }
+
+    parchment {
+        minecraftVersion = project.property("parchment_mapping_mc").toString()
+        mappingsVersion = project.property("parchment_mapping_version").toString()
+    }
+
     runs {
         create("client") {
             client()
             gameDirectory = file("run")
-            systemProperties.put("neoforge.enabledGameTestNamespaces", modId)
             systemProperties.put("mixin.debug.export", "true")
             if (!System.getProperty("os.name").contains("windows", ignoreCase = true)) {
                 jvmArguments.add("-XstartOnFirstThread")
             }
+            loadedMods = listOf(
+                mods[modId]
+            )
         }
         create("gameTestServer") {
             type = "gameTestServer"
             gameDirectory = file("runs/gameTestServer")
-            systemProperties.put("neoforge.enabledGameTestNamespaces", "$modId,minecraft")
-            sourceSet = project.sourceSets.getByName("gameTest")
+            loadedMods = listOf(
+                mods["gameTest"]
+            )
         }
         create("serverData") {
             serverData()
-            gameDirectory = project.file("runs/data")
+            gameDirectory = project.file("runs/serverData")
             programArguments = listOf(
                 "--mod",
                 modId,
@@ -64,10 +86,13 @@ neoForge {
                 file("src/main/resources/").toString()
             )
             sourceSet = project.sourceSets.getByName("genData")
+            loadedMods = listOf(
+                mods["data"]
+            )
         }
         create("commonData") {
             clientData()
-            gameDirectory = project.file("runs/data")
+            gameDirectory = project.file("runs/clientData")
             programArguments = listOf(
                 "--mod",
                 modId,
@@ -77,18 +102,18 @@ neoForge {
                 project.project(":common").file("src/main/resources/").toString()
             )
             sourceSet = project.sourceSets.getByName("genData")
-        }
-    }
-
-    mods {
-        create(project.property("mod_id").toString()) {
-            sourceSet(sourceSets.getByName("main"))
+            loadedMods = listOf(
+                mods["data"]
+            )
         }
     }
 
     unitTest {
         enable()
-        testedMod = mods.getByName(project.property("mod_id").toString())
+        testedMod = mods[modId]
+        loadedMods = listOf(
+            mods[modId]
+        )
     }
 }
 
