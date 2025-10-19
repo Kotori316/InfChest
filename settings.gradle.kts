@@ -37,6 +37,7 @@ includeBuild("build-logic")
 include("common")
 include("commonTest")
 include("genData:commonData")
+include("dependency")
 if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
     include("forge")
 }
