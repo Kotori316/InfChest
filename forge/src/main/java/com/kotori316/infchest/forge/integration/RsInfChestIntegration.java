@@ -1,47 +1,26 @@
 package com.kotori316.infchest.forge.integration;
 
-import com.kotori316.infchest.common.integration.CommonAE2Part;
-import com.kotori316.infchest.common.tiles.TileInfChest;
-import com.refinedmods.refinedstorage.api.IRSAPI;
-import com.refinedmods.refinedstorage.api.RSAPIInject;
-import com.refinedmods.refinedstorage.api.network.INetwork;
-import com.refinedmods.refinedstorage.api.storage.AccessType;
-import com.refinedmods.refinedstorage.api.storage.StorageType;
-import com.refinedmods.refinedstorage.api.storage.externalstorage.IExternalStorage;
-import com.refinedmods.refinedstorage.api.storage.externalstorage.IExternalStorageContext;
-import com.refinedmods.refinedstorage.api.storage.externalstorage.IExternalStorageProvider;
-import com.refinedmods.refinedstorage.api.util.Action;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.items.ItemHandlerHelper;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
 
 public final class RsInfChestIntegration {
     public static void onAPIAvailable() {
         if (ModList.get().isLoaded("refinedstorage")) {
-            RsAccess.registerProvider();
+            // RsAccess.registerProvider();
         }
     }
 
-    public static final class RsAccess {
+    /*public static final class RsAccess {
         @RSAPIInject
         public static IRSAPI RS_API;
 
         static void registerProvider() {
             RS_API.addExternalStorageProvider(StorageType.ITEM, new RsInfChestProvider());
         }
-    }
+    }*/
 
 }
 
-final class RsInfChestProvider implements IExternalStorageProvider<ItemStack> {
+/*final class RsInfChestProvider implements IExternalStorageProvider<ItemStack> {
     @Override
     public boolean canProvide(BlockEntity blockEntity, Direction direction) {
         return blockEntity instanceof TileInfChest;
@@ -152,4 +131,4 @@ record RsInfChestInv(TileInfChest chest, IExternalStorageContext context,
             return remainder == null ? size : size - remainder.getCount();
         }
     }
-}
+}*/
