@@ -9,7 +9,7 @@ plugins {
     id("com.kotori316.dg")
     id("signing")
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
-    id("fabric-loom") version ("1.12.5")
+    id("fabric-loom") version ("1.13.3")
     id("com.matthewprenger.cursegradle") version ("1.4.0")
     id("com.modrinth.minotaur") version ("2.+")
     id("com.kotori316.plugin.cf") version ("3.+")
