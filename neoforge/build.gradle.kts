@@ -8,7 +8,7 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     signing
-    id("net.neoforged.moddev") version ("2.0.117")
+    id("net.neoforged.moddev") version ("2.0.118")
     id("com.matthewprenger.cursegradle") version ("1.4.0")
     id("com.modrinth.minotaur") version ("2.+")
     id("com.kotori316.plugin.cf") version ("3.+")
