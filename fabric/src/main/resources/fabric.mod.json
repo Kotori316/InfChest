@@ -21,12 +21,6 @@
     ],
     "client": [
       "com.kotori316.infchest.fabric.InfChestClient"
-    ],
-    "ae2": [
-      "com.kotori316.infchest.fabric.integration.AE2InfChestIntegration"
-    ],
-    "jade": [
-      "com.kotori316.infchest.fabric.integration.InfChestJadePlugin"
     ]
   },
   "depends": {

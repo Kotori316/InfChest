@@ -1,5 +1,5 @@
 package com.kotori316.infchest.fabric.integration;
-
+/*
 import appeng.api.IAEAddonEntrypoint;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -68,4 +68,4 @@ record AEInfChestInv(TileInfChest chest) implements MEStorage {
     public Component getDescription() {
         return this.chest.getName();
     }
-}
+}*/

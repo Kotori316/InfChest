@@ -1,5 +1,5 @@
 package com.kotori316.infchest.fabric.integration;
-
+/*
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -22,4 +22,4 @@ public class InfChestJadePlugin implements IWailaPlugin {
         IWailaPlugin.super.registerClient(registration);
         registration.registerBlockComponent(InfChestJadeProvider.INSTANCE, BlockInfChest.class);
     }
-}
+}*/

@@ -76,15 +76,15 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
-    modCompileOnly("appeng:appliedenergistics2-fabric:${project.property("ae2_fabric_version")}") {
+    /*modCompileOnly("appeng:appliedenergistics2-fabric:${project.property("ae2_fabric_version")}") {
         isTransitive = false
-    }
+    }*/
     //noinspection SpellCheckingInspection
     // modRuntimeOnly("teamreborn:energy:2.2.0") // For AE2
-    modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.property("wthit_fabric_version")}")
+    // modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.property("wthit_fabric_version")}")
     // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.property("wthit_fabric_version")}")
     // modRuntimeOnly("lol.bai:badpackets:fabric-${project.badpackets_fabric_version}")
-    modCompileOnly("curse.maven:jade-324717:${project.property("jade_fabric_id")}")
+    // modCompileOnly("curse.maven:jade-324717:${project.property("jade_fabric_id")}")
     modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
         isTransitive = false
     }

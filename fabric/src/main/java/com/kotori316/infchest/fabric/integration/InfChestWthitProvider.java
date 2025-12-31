@@ -1,5 +1,5 @@
 package com.kotori316.infchest.fabric.integration;
-
+/*
 import com.kotori316.infchest.common.integration.CommonTooltipPart;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import mcp.mobius.waila.api.*;
@@ -19,4 +19,4 @@ public class InfChestWthitProvider implements IDataProvider<TileInfChest>, IBloc
         CommonTooltipPart.addTileData(data.raw(), accessor.getTarget());
     }
 
-}
+}*/
