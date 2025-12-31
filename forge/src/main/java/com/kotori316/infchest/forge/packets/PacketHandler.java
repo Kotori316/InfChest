@@ -2,7 +2,7 @@ package com.kotori316.infchest.forge.packets;
 
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.packets.ItemCountMessage;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.network.Channel;
 import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.PacketDistributor;
@@ -10,7 +10,7 @@ import net.minecraftforge.network.SimpleChannel;
 
 public class PacketHandler {
     public static final int PROTOCOL = 1;
-    private static final SimpleChannel WRAPPER = ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(InfChest.modID, "main"))
+    private static final SimpleChannel WRAPPER = ChannelBuilder.named(Identifier.fromNamespaceAndPath(InfChest.modID, "main"))
         .networkProtocolVersion(PROTOCOL)
         .acceptedVersions(Channel.VersionTest.exact(PROTOCOL))
         .simpleChannel()

@@ -32,7 +32,6 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version ("1.0.0")
 }
 
-rootProject.name = "InfChest-1.21"
 includeBuild("build-logic")
 include("common")
 include("commonTest")

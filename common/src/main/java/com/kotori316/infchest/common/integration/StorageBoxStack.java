@@ -5,7 +5,7 @@ import com.kotori316.infchest.common.tiles.InsertingHook;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -30,7 +30,7 @@ public class StorageBoxStack {
     public static boolean isStorageBox(ItemStack maybeBox) {
         if (!Holder.modLoaded) return false;
         Item item = maybeBox.getItem();
-        return item == BuiltInRegistries.ITEM.getValue(ResourceLocation.fromNamespaceAndPath(modId, "storagebox"));
+        return item == BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(modId, "storagebox"));
     }
 
     public static boolean checkHoldingItem(ItemStack holding, ItemStack maybeBox) {

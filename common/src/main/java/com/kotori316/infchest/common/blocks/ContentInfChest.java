@@ -3,7 +3,7 @@ package com.kotori316.infchest.common.blocks;
 import com.kotori316.infchest.common.InfChest;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import java.util.List;
 
 public class ContentInfChest extends LootItemConditionalFunction {
-    public static final ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "content_infchest");
+    public static final Identifier LOCATION = Identifier.fromNamespaceAndPath(InfChest.modID, "content_infchest");
     public static final MapCodec<ContentInfChest> CODEC = RecordCodecBuilder.mapCodec(instance ->
         commonFields(instance).apply(instance, ContentInfChest::new)
     );

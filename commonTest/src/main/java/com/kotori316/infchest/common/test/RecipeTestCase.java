@@ -1,7 +1,7 @@
 package com.kotori316.infchest.common.test;
 
 import com.kotori316.infchest.common.InfChest;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -14,12 +14,12 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public final class RecipeTestCase {
-    public record RecipeSet(String name, ResourceLocation result, CraftingInput input) {
+    public record RecipeSet(String name, Identifier result, CraftingInput input) {
     }
 
     static Stream<RecipeSet> infChestRecipes() {
         var recipeSets = Stream.<RecipeSet>builder();
-        var infChest = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "infchest");
+        var infChest = Identifier.fromNamespaceAndPath(InfChest.modID, "infchest");
         var e = Items.ENDER_CHEST.getDefaultInstance();
         var q = Items.QUARTZ_BLOCK.getDefaultInstance();
         var iron = Items.IRON_INGOT.getDefaultInstance();
@@ -50,7 +50,7 @@ public final class RecipeTestCase {
     static Stream<RecipeSet> dequeRecipes() {
         var recipeSets = Stream.<RecipeSet>builder();
 
-        var result = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "deque");
+        var result = Identifier.fromNamespaceAndPath(InfChest.modID, "deque");
         var e = ItemStack.EMPTY;
         var rs = List.of(Items.REPEATER.getDefaultInstance(), Items.COMPARATOR.getDefaultInstance());
         var chests = List.of(Items.CHEST.getDefaultInstance(), Items.ENDER_CHEST.getDefaultInstance(), Items.TRAPPED_CHEST.getDefaultInstance());

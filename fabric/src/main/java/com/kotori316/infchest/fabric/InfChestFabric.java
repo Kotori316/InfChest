@@ -20,7 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -32,14 +32,14 @@ public class InfChestFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(modID, BlockInfChestFabric.name), Register.CHEST);
-        Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE);
-        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modID, BlockInfChestFabric.name), Register.CHEST.itemBlock);
-        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE.itemBlock);
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(modID, "tile." + BlockInfChestFabric.name), Register.INF_CHEST_TYPE);
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
+        Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(modID, BlockInfChestFabric.name), Register.CHEST);
+        Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE);
+        Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(modID, BlockInfChestFabric.name), Register.CHEST.itemBlock);
+        Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE.itemBlock);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(modID, "tile." + BlockInfChestFabric.name), Register.INF_CHEST_TYPE);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
         Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION, Register.CHEST_FUNCTION);
-        Registry.register(BuiltInRegistries.MENU, ResourceLocation.parse(TileInfChestFabric.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
+        Registry.register(BuiltInRegistries.MENU, Identifier.parse(TileInfChestFabric.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
 
         InfChestStorage.register();
         PacketHandler.register();

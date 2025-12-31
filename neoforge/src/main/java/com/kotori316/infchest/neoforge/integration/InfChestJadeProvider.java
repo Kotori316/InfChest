@@ -4,7 +4,7 @@ import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.integration.CommonTooltipPart;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
 
@@ -24,8 +24,8 @@ public class InfChestJadeProvider implements IServerDataProvider<BlockAccessor>,
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return ResourceLocation.fromNamespaceAndPath(InfChest.modID, "jade_plugin");
+    public Identifier getUid() {
+        return Identifier.fromNamespaceAndPath(InfChest.modID, "jade_plugin");
     }
 
     @Override

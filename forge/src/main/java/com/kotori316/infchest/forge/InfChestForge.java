@@ -10,8 +10,6 @@ import com.kotori316.infchest.common.tiles.TileDeque;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.kotori316.infchest.forge.blocks.BlockDequeForge;
 import com.kotori316.infchest.forge.blocks.BlockInfChestForge;
-import com.kotori316.infchest.forge.integration.AE2InfChestIntegration;
-import com.kotori316.infchest.forge.integration.RsInfChestIntegration;
 import com.kotori316.infchest.forge.packets.PacketHandler;
 import com.kotori316.infchest.forge.tiles.TileDequeForge;
 import com.kotori316.infchest.forge.tiles.TileInfChestForge;
@@ -19,7 +17,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -50,8 +48,6 @@ public final class InfChestForge {
 
     public void preInit(FMLCommonSetupEvent event) {
         PacketHandler.init();
-        AE2InfChestIntegration.onAPIAvailable();
-        RsInfChestIntegration.onAPIAvailable();
     }
 
     public void clientInit(FMLClientSetupEvent event) {
@@ -119,22 +115,22 @@ public final class InfChestForge {
         }
 
         public static void registerBlock(RegisterEvent.RegisterHelper<Block> event) {
-            event.register(ResourceLocation.fromNamespaceAndPath(modID, BlockInfChest.name), Register.CHEST);
-            event.register(ResourceLocation.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE);
+            event.register(Identifier.fromNamespaceAndPath(modID, BlockInfChest.name), Register.CHEST);
+            event.register(Identifier.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE);
         }
 
         public static void registerItem(RegisterEvent.RegisterHelper<Item> event) {
-            event.register(ResourceLocation.fromNamespaceAndPath(modID, BlockInfChest.name), Register.CHEST.itemBlock);
-            event.register(ResourceLocation.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE.itemBlock);
+            event.register(Identifier.fromNamespaceAndPath(modID, BlockInfChest.name), Register.CHEST.itemBlock);
+            event.register(Identifier.fromNamespaceAndPath(modID, BlockDeque.name), Register.DEQUE.itemBlock);
         }
 
         public static void registerTile(RegisterEvent.RegisterHelper<BlockEntityType<?>> event) {
-            event.register(ResourceLocation.fromNamespaceAndPath(modID, "tile." + BlockInfChest.name), Register.INF_CHEST_TYPE);
-            event.register(ResourceLocation.fromNamespaceAndPath(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
+            event.register(Identifier.fromNamespaceAndPath(modID, "tile." + BlockInfChest.name), Register.INF_CHEST_TYPE);
+            event.register(Identifier.fromNamespaceAndPath(modID, "tile." + BlockDeque.name), Register.DEQUE_TYPE);
         }
 
         public static void registerContainer(RegisterEvent.RegisterHelper<MenuType<?>> event) {
-            event.register(ResourceLocation.parse(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
+            event.register(Identifier.parse(TileInfChest.GUI_ID), Register.INF_CHEST_CONTAINER_TYPE);
         }
     }
 

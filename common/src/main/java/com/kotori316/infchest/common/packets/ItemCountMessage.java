@@ -9,7 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] bytes, ItemStack out,
                                ItemStack holding) implements CustomPacketPayload {
-    public static final ResourceLocation NAME = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "item_count_message");
+    public static final Identifier NAME = Identifier.fromNamespaceAndPath(InfChest.modID, "item_count_message");
     public static final Type<ItemCountMessage> TYPE = new Type<>(NAME);
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemCountMessage> STREAM_CODEC = CustomPacketPayload.codec(
         ItemCountMessage::write, ItemCountMessage::new
@@ -40,7 +40,7 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
     public <T extends FriendlyByteBuf> ItemCountMessage(T p) {
         this(
             p.readBlockPos(),
-            ResourceKey.create(Registries.DIMENSION, p.readResourceLocation()),
+            ResourceKey.create(Registries.DIMENSION, p.readIdentifier()),
             p.readByteArray(),
             p.readLenientJsonWithCodec(ItemStack.OPTIONAL_CODEC),
             p.readLenientJsonWithCodec(ItemStack.OPTIONAL_CODEC)
@@ -48,7 +48,7 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
     }
 
     <T extends FriendlyByteBuf> void write(T p) {
-        p.writeBlockPos(pos).writeResourceLocation(dim.location());
+        p.writeBlockPos(pos).writeIdentifier(dim.identifier());
         p.writeByteArray(bytes);
         p.writeJsonWithCodec(ItemStack.OPTIONAL_CODEC, out);
         p.writeJsonWithCodec(ItemStack.OPTIONAL_CODEC, holding);

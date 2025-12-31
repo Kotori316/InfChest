@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     private final TileInfChest infChest;
-    private final static ResourceLocation LOCATION = ResourceLocation.fromNamespaceAndPath(InfChest.modID, "textures/gui/infchest.png");
+    private final static Identifier LOCATION = Identifier.fromNamespaceAndPath(InfChest.modID, "textures/gui/infchest.png");
 
     public GuiInfChest(ContainerInfChest container, Inventory inventory, Component component) {
         super(container, inventory, component);

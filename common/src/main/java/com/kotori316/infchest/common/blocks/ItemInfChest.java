@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 final class ItemInfChest extends BlockItem {
 
     ItemInfChest(BlockInfChest block) {
-        super(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(InfChest.modID, BlockInfChest.name))).useBlockDescriptionPrefix());
+        super(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(InfChest.modID, BlockInfChest.name))).useBlockDescriptionPrefix());
     }
 
     @Override
@@ -84,7 +84,7 @@ final class ItemInfChest extends BlockItem {
                 .filter(Predicate.not(ItemStack::isEmpty));
             stack.map(ItemStack::getItem)
                 .map(BuiltInRegistries.ITEM::getKey)
-                .map(ResourceLocation::toString)
+                .map(Identifier::toString)
                 .map(Component::literal)
                 .ifPresent(consumer);
             stack.map(ItemStack::getDisplayName)

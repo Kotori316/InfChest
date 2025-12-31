@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.BlockItem;
@@ -30,9 +30,9 @@ public class BlockDeque extends BaseEntityBlock {
             .mapColor(MapColor.METAL)
             .pushReaction(PushReaction.BLOCK)
             .strength(1.0f)
-            .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(InfChest.modID, name)))
+            .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(InfChest.modID, name)))
         );
-        itemBlock = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(InfChest.modID, name))).useBlockDescriptionPrefix());
+        itemBlock = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(InfChest.modID, name))).useBlockDescriptionPrefix());
         this.blockCodec = simpleCodec(p -> instanceSupplier.get());
     }
 

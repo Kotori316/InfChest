@@ -4,7 +4,7 @@ import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import mcjty.theoneprobe.api.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,8 +24,8 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
     private static class TOPProvider implements IProbeInfoProvider {
 
         @Override
-        public ResourceLocation getID() {
-            return ResourceLocation.fromNamespaceAndPath(InfChest.modID, "top_chest");
+        public Identifier getID() {
+            return Identifier.fromNamespaceAndPath(InfChest.modID, "top_chest");
         }
 
         @Override
