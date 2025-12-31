@@ -17,11 +17,11 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
 
     @Override
     public Void apply(ITheOneProbe iTheOneProbe) {
-        iTheOneProbe.registerProvider(new TOPProvider());
+        // iTheOneProbe.registerProvider(new TOPProvider());
         return null;
     }
 
-    private static class TOPProvider implements IProbeInfoProvider {
+    /*private static class TOPProvider implements IProbeInfoProvider {
 
         @Override
         public Identifier getID() {
@@ -41,5 +41,5 @@ public class TOPFunction implements Function<ITheOneProbe, Void> {
                 }
             }
         }
-    }
+    }*/
 }
