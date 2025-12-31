@@ -17,7 +17,7 @@ public final class RecipeTest {
         var recipe = manager.getRecipeFor(RecipeType.CRAFTING, recipeSet.input(), helper.getLevel());
         helper.assertTrue(recipe.isPresent(), Component.literal("Recipe must be found"));
 
-        var location = recipe.map(RecipeHolder::id).map(ResourceKey::location).orElse(null);
+        var location = recipe.map(RecipeHolder::id).map(ResourceKey::identifier).orElse(null);
         if (recipeSet.result().equals(location)) {
             helper.succeed();
         }
