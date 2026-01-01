@@ -6,8 +6,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import java.util.List;
 import java.util.Set;
@@ -20,7 +20,7 @@ public final class LootSubProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         add(InfChest.accessor.CHEST(), b -> this.createSingleItemTable(b).apply(ContentInfChest.builder()));
-        add(InfChest.accessor.DEQUE(), b -> this.createSingleItemTable(b).apply(CopyNameFunction.copyName(new CopyNameFunction.Source(LootContextParams.BLOCK_ENTITY))));
+        add(InfChest.accessor.DEQUE(), b -> this.createSingleItemTable(b).apply(CopyNameFunction.copyName(LootContext.BlockEntityTarget.BLOCK_ENTITY)));
     }
 
     @Override
