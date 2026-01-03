@@ -231,13 +231,13 @@ publishMods {
         accessToken = project.findProperty("curseforge_additional-enchanted-miner_key")?.toString()
             ?: System.getenv("CURSE_TOKEN") ?: ""
         projectId = "312222"
-        minecraftVersions.add(minecraft)
+        minecraftVersions = listOf(minecraft)
     }
 
     modrinth {
         accessToken = project.findProperty("modrinthToken")?.toString() ?: System.getenv("MODRINTH_TOKEN") ?: ""
         projectId = "infchest"
-        minecraftVersions.add(minecraft)
+        minecraftVersions = listOf(minecraft)
         changelog = provider { file("../temp_changelog.md").readText().split("# ").getOrNull(1) }
     }
 }
