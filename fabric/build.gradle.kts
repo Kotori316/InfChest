@@ -1,7 +1,5 @@
 import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 import com.kotori316.plugin.cf.CallVersionFunctionTask
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseRelation
 import org.gradle.jvm.tasks.Jar
 
 plugins {
@@ -10,8 +8,7 @@ plugins {
     id("signing")
     // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
     id("fabric-loom") version ("1.13.6")
-    id("com.matthewprenger.cursegradle") version ("1.4.0")
-    id("com.modrinth.minotaur") version ("2.+")
+    id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
     id("com.kotori316.plugin.cf") version ("3.+")
 }
 
@@ -112,40 +109,29 @@ java {
     withSourcesJar()
 }
 
-curseforge {
-    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
-    project(closureOf<CurseProject> {
-        id = "312222"
-        changelogType = "markdown"
-        changelog = file("../temp_changelog.md")
-        addGameVersion("Fabric")
-        addGameVersion(minecraft)
-        releaseType = "beta"
-        mainArtifact(tasks.remapJar.flatMap { it.archiveFile }.get())
-        relations(closureOf<CurseRelation> {
-            requiredDependency("automatic-potato")
-        })
-    })
-    options(closureOf<com.matthewprenger.cursegradle.Options> {
-        curseGradleOptions.debug = !releaseMode
-        curseGradleOptions.javaVersionAutoDetect = false
-        curseGradleOptions.forgeGradleIntegration = false
-    })
-}
+publishMods {
+    file = tasks.remapJar.flatMap { it.archiveFile }
+    additionalFiles.from(tasks.remapSourcesJar.flatMap { it.archiveFile })
+    changelog = provider { file("../temp_changelog.md").readText() }
+    type = me.modmuss50.mpp.ReleaseType.STABLE
+    modLoaders.add("fabric")
+    dryRun = !releaseMode
 
-modrinth {
-    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
-    projectId = "infchest"
-    versionType = "release"
-    versionName = "${project.version}-fabric"
-    versionNumber.set(project.version.toString())
-    uploadFile = tasks.remapJar.get()
-    gameVersions = listOf(minecraft)
-    loaders = listOf("fabric")
-    changelog = file("../temp_changelog.md").useLines { it.joinToString(System.lineSeparator()).split("# ")[1] }
-    debugMode = !releaseMode
-    dependencies {
-        required.project("automatic-potato")
+    curseforge {
+        accessToken = project.findProperty("curseforge_additional-enchanted-miner_key")?.toString()
+            ?: System.getenv("CURSE_TOKEN") ?: ""
+        projectId = "312222"
+        minecraftVersions.add(minecraft)
+        requires("automatic-potato")
+    }
+
+    modrinth {
+        accessToken = project.findProperty("modrinthToken")?.toString() ?: System.getenv("MODRINTH_TOKEN") ?: ""
+        projectId = "infchest"
+        minecraftVersions.add(minecraft)
+        displayName = "${project.version}-fabric"
+        changelog = provider { file("../temp_changelog.md").readText().split("# ").getOrNull(1) }
+        requires("automatic-potato")
     }
 }
 

@@ -1,6 +1,5 @@
 import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 import com.kotori316.plugin.cf.CallVersionFunctionTask
-import com.matthewprenger.cursegradle.CurseProject
 
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -12,8 +11,7 @@ plugins {
     id("net.minecraftforge.gradle") version ("[6.0,6.2)")
     id("org.spongepowered.mixin") version ("0.7.+")
     id("org.parchmentmc.librarian.forgegradle") version ("1.+")
-    id("com.matthewprenger.cursegradle") version ("1.4.0")
-    id("com.modrinth.minotaur") version ("2.+")
+    id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
     id("com.kotori316.plugin.cf") version ("3.+")
 }
 
@@ -220,42 +218,27 @@ artifacts {
     archives(deobfJar.archiveFile)
 }
 
-curseforge {
-    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
-    project(closureOf<CurseProject> {
-        id = "312222"
-        changelogType = "markdown"
-        changelog = file("../temp_changelog.md")
-        addGameVersion(minecraft)
-        addGameVersion("Forge")
-        releaseType = "release"
-        mainArtifact(jar.archiveFile.get())
-        addArtifact(srcJar.archiveFile.get())
-        addArtifact(deobfJar.archiveFile.get())
-    })
-    options(closureOf<com.matthewprenger.cursegradle.Options> {
-        curseGradleOptions.debug = !releaseMode
-        curseGradleOptions.javaVersionAutoDetect = false
-        curseGradleOptions.forgeGradleIntegration = false
-    })
-}
+publishMods {
+    file = jar.archiveFile
+    additionalFiles.from(srcJar.archiveFile, deobfJar.archiveFile)
+    changelog = provider { file("../temp_changelog.md").readText() }
+    type = me.modmuss50.mpp.ReleaseType.STABLE
+    modLoaders.add("forge")
+    dryRun = !releaseMode
+    displayName = "${project.version}-forge"
 
-modrinth {
-    token.set((project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String)
-    projectId = "infchest"
-    versionType = "release"
-    versionName = "${project.version}-forge"
-    versionNumber.set(project.version.toString())
-    uploadFile = jar
-    additionalFiles = listOf(
-        deobfJar,
-        srcJar,
-    )
-    gameVersions = listOf(minecraft)
-    loaders = listOf("forge")
-    changelog = file("../temp_changelog.md").useLines { it.joinToString(System.lineSeparator()).split("# ")[1] }
-    debugMode = !releaseMode
-    dependencies {
+    curseforge {
+        accessToken = project.findProperty("curseforge_additional-enchanted-miner_key")?.toString()
+            ?: System.getenv("CURSE_TOKEN") ?: ""
+        projectId = "312222"
+        minecraftVersions.add(minecraft)
+    }
+
+    modrinth {
+        accessToken = project.findProperty("modrinthToken")?.toString() ?: System.getenv("MODRINTH_TOKEN") ?: ""
+        projectId = "infchest"
+        minecraftVersions.add(minecraft)
+        changelog = provider { file("../temp_changelog.md").readText().split("# ").getOrNull(1) }
     }
 }
 
