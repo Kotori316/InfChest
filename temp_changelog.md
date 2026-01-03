@@ -1,3 +1,9 @@
+# Version 21.11.1
+
+2026-01-03
+
+* Internal changes for publishing mods
+
 # Version 21.11.0
 
 2026-01-02
