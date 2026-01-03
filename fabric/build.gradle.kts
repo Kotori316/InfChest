@@ -115,6 +115,7 @@ publishMods {
     changelog = provider { file("../temp_changelog.md").readText() }
     type = me.modmuss50.mpp.ReleaseType.STABLE
     modLoaders.add("fabric")
+    displayName = "${project.version}-fabric"
     dryRun = !releaseMode
 
     curseforge {
@@ -129,7 +130,6 @@ publishMods {
         accessToken = project.findProperty("modrinthToken")?.toString() ?: System.getenv("MODRINTH_TOKEN") ?: ""
         projectId = "infchest"
         minecraftVersions.add(minecraft)
-        displayName = "${project.version}-fabric"
         changelog = provider { file("../temp_changelog.md").readText().split("# ").getOrNull(1) }
         requires("automatic-potato")
     }

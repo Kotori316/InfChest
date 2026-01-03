@@ -251,6 +251,7 @@ publishMods {
     changelog = provider { file("../temp_changelog.md").readText() }
     type = me.modmuss50.mpp.ReleaseType.STABLE
     modLoaders.add("neoforge")
+    displayName = "${project.version}-neoforge"
     dryRun = !releaseMode
 
     curseforge {
@@ -264,7 +265,6 @@ publishMods {
         accessToken = project.findProperty("modrinthToken")?.toString() ?: System.getenv("MODRINTH_TOKEN") ?: ""
         projectId = "infchest"
         minecraftVersions.add(minecraft)
-        displayName = "${project.version}-neoforge"
         changelog = provider { file("../temp_changelog.md").readText().split("# ").getOrNull(1) }
     }
 }
