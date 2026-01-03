@@ -116,22 +116,20 @@ repositories {
     }
 }
 
-if (project.name != "common") {
-    val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean().not()
+val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean().not()
+if (project.name != "common" && releaseMode) {
     publishing {
-        if (releaseMode) {
-            repositories {
-                val u = project.findProperty("maven_username") as? String ?: System.getenv("MAVEN_USERNAME") ?: ""
-                val p = project.findProperty("maven_password") as? String ?: System.getenv("MAVEN_PASSWORD") ?: ""
-                if (u != "" && p != "") {
-                    maven {
-                        name = "kotori316-maven"
-                        // For users: Use https://maven.kotori316.com to get artifacts
-                        url = uri("https://maven2.kotori316.com/production/maven")
-                        credentials {
-                            username = u
-                            password = p
-                        }
+        repositories {
+            val u = project.findProperty("maven_username") as? String ?: System.getenv("MAVEN_USERNAME") ?: ""
+            val p = project.findProperty("maven_password") as? String ?: System.getenv("MAVEN_PASSWORD") ?: ""
+            if (u != "" && p != "") {
+                maven {
+                    name = "kotori316-maven"
+                    // For users: Use https://maven.kotori316.com to get artifacts
+                    url = uri("https://maven2.kotori316.com/production/maven")
+                    credentials {
+                        username = u
+                        password = p
                     }
                 }
             }
