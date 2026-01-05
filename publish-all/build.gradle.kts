@@ -1,5 +1,3 @@
-import okhttp3.internal.toImmutableList
-
 plugins {
     id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
 }
@@ -44,5 +42,8 @@ fun getReleaseJarFiles(): List<Provider<RegularFile>> {
         list.add(project(":neoforge").tasks.named("jar", AbstractArchiveTask::class).flatMap { it.archiveFile })
         list.add(project(":neoforge").tasks.named("srcJar", AbstractArchiveTask::class).flatMap { it.archiveFile })
     }
-    return list.toImmutableList()
+    if (list.isEmpty()) {
+        list.add(layout.file(provider { rootProject.file("temp_changelog.md") }))
+    }
+    return list.toList()
 }
