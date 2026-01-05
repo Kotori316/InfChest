@@ -79,6 +79,12 @@ public final class InfChestStorage extends SnapshotParticipant<TileInfChest.Ches
         return Long.MAX_VALUE;
     }
 
+    @Override
+    protected void onFinalCommit() {
+        super.onFinalCommit();
+        chest.setChanged();
+    }
+
     public static void register() {
         ItemStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, context) -> {
             if (blockEntity instanceof TileInfChestFabric chest) return new InfChestStorage(chest);
