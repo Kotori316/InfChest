@@ -148,7 +148,6 @@ public class TileInfChest extends BlockEntity implements HasInv, IRunUpdates, Me
             if (level != null && !level.isClientSide()) {
                 decrStack(BigInteger.valueOf(s.getCount()));
             }
-            setChanged();
         }
         return s;
     }
