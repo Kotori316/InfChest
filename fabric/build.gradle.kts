@@ -128,7 +128,7 @@ publishMods {
 
     modrinth {
         accessToken = project.findProperty("modrinthToken")?.toString() ?: System.getenv("MODRINTH_TOKEN") ?: ""
-        projectId = "infchest"
+        projectId = "lmosnPHi"
         minecraftVersions = listOf(minecraft)
         changelog = provider { file("../temp_changelog.md").readText().split("# ").getOrNull(1) }
         requires("automatic-potato")
