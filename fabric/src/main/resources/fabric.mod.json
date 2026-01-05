@@ -23,6 +23,12 @@
       "com.kotori316.infchest.fabric.InfChestClient"
     ]
   },
+  "mixins": [
+    {
+      "config": "infchest.mixins.json",
+      "environment": "*"
+    }
+  ],
   "depends": {
     "fabricloader": ">=0.14",
     "fabric": "*",
