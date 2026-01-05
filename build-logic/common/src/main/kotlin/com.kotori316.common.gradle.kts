@@ -66,6 +66,10 @@ repositories {
     maven {
         name = "ParchmentMC"
         url = uri("https://maven.parchmentmc.org")
+        content {
+            includeGroup("org.parchmentmc")
+            includeGroup("org.parchmentmc.data")
+        }
     }
     maven {
         name = "Curse"
@@ -103,6 +107,9 @@ repositories {
     maven {
         name = "Mixin"
         url = uri("https://repo.spongepowered.org/maven")
+        content {
+            includeGroup("org.spongepowered")
+        }
     }
     maven {
         url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage")
