@@ -12,6 +12,8 @@ credits = "Kotori316"
 authors = "Kotori316"
 description = '''
 Add a infinite capacity chest.'''
+[[mixins]]
+config = "infchest.mixins.json"
 [[dependencies.infchest]]
 modId = "neoforge"
 type = "required"
