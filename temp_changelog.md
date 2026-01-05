@@ -1,3 +1,9 @@
+# Version 21.11.2
+
+2026-01-05
+
+* Improved the interaction with Hopper and Minecart With Hopper
+
 # Version 21.11.1
 
 2026-01-03
