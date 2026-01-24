@@ -3,10 +3,7 @@ package com.kotori316.infchest.forge.packets;
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.packets.ItemCountMessage;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.Channel;
-import net.minecraftforge.network.ChannelBuilder;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.SimpleChannel;
+import net.minecraftforge.network.*;
 
 public class PacketHandler {
     public static final int PROTOCOL = 1;
@@ -15,7 +12,7 @@ public class PacketHandler {
         .acceptedVersions(Channel.VersionTest.exact(PROTOCOL))
         .simpleChannel()
         // ItemCountMessage
-        .messageBuilder(ItemCountMessage.class)
+        .messageBuilder(ItemCountMessage.class, NetworkProtocol.PLAY)
         .decoder(ItemCountMessage.STREAM_CODEC::decode)
         .encoder((message, friendlyByteBuf) -> ItemCountMessage.STREAM_CODEC.encode(friendlyByteBuf, message))
         .consumerMainThread(ItemCountMessageForge::onReceive)
