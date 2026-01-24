@@ -4,14 +4,11 @@ import com.kotori316.infchest.common.InfChest;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.stream.IntStream;
@@ -133,15 +130,16 @@ public class TileInfChestTest {
         var pos = new BlockPos(0, 1, 0);
         helper.setBlock(pos, InfChest.accessor.CHEST());
 
-        var tile = (TileInfChestFabric) Objects.requireNonNull(helper.getBlockEntity(pos));
-        var enchantedBook = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(helper.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.FORTUNE), 2));
+        var tile = helper.getBlockEntity(pos, TileInfChestFabric.class);
+        var enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
+        enchantedBook.enchant(helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE), 2);
         tile.setItem(0, enchantedBook);
 
         var stack = tile.getItem(1);
         if (ItemStack.matches(stack, enchantedBook)) {
             helper.succeed();
         } else {
-            throw new GameTestAssertException("Tile has unexpected item, %s".formatted(stack));
+            throw new GameTestAssertException(Component.literal("Tile has unexpected item, %s".formatted(stack)), 1);
         }
     }
 
