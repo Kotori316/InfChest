@@ -11,7 +11,6 @@ import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.kotori316.infchest.forge.blocks.BlockDequeForge;
 import com.kotori316.infchest.forge.blocks.BlockInfChestForge;
 import com.kotori316.infchest.forge.integration.AE2InfChestIntegration;
-import com.kotori316.infchest.forge.integration.RsInfChestIntegration;
 import com.kotori316.infchest.forge.packets.PacketHandler;
 import com.kotori316.infchest.forge.tiles.TileDequeForge;
 import com.kotori316.infchest.forge.tiles.TileInfChestForge;
@@ -50,7 +49,6 @@ public final class InfChestForge {
     public void preInit(FMLCommonSetupEvent event) {
         PacketHandler.init();
         AE2InfChestIntegration.onAPIAvailable();
-        RsInfChestIntegration.onAPIAvailable();
     }
 
     public void clientInit(FMLClientSetupEvent event) {
