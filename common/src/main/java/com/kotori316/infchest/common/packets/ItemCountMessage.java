@@ -4,7 +4,6 @@ import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -37,21 +36,21 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
         );
     }
 
-    public <T extends FriendlyByteBuf> ItemCountMessage(T p) {
+    public ItemCountMessage(RegistryFriendlyByteBuf p) {
         this(
             p.readBlockPos(),
             ResourceKey.create(Registries.DIMENSION, p.readIdentifier()),
             p.readByteArray(),
-            p.readLenientJsonWithCodec(ItemStack.OPTIONAL_CODEC),
-            p.readLenientJsonWithCodec(ItemStack.OPTIONAL_CODEC)
+            ItemStack.OPTIONAL_STREAM_CODEC.decode(p), // out
+            ItemStack.OPTIONAL_STREAM_CODEC.decode(p) // holding
         );
     }
 
-    <T extends FriendlyByteBuf> void write(T p) {
+    void write(RegistryFriendlyByteBuf p) {
         p.writeBlockPos(pos).writeIdentifier(dim.identifier());
         p.writeByteArray(bytes);
-        p.writeJsonWithCodec(ItemStack.OPTIONAL_CODEC, out);
-        p.writeJsonWithCodec(ItemStack.OPTIONAL_CODEC, holding);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(p, out);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(p, holding);
     }
 
     @Override

@@ -111,16 +111,6 @@ repositories {
             includeGroup("org.spongepowered")
         }
     }
-    maven {
-        url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage")
-        credentials {
-            username = "anything"
-            password = "\u0067hp_oGjcDFCn8jeTzIj4Ke9pLoEVtpnZMP4VQgaX"
-        }
-        content {
-            includeGroup("com.refinedmods")
-        }
-    }
 }
 
 val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean().not()
