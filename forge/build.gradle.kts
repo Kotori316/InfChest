@@ -132,13 +132,6 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:jade-324717:${project.property("jade_forge_id")}"))
     compileOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.property("top_id")}"))
     // compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.property("wthit_forge_version")}"))
-    compileOnly(
-        fg.deobf(
-            "com.refinedmods:refinedstorage:${project.property("rsVersion")}",
-            closureOf<ExternalModuleDependency> {
-                isTransitive = false
-            })
-    )
     // runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-${project.wthit_version}"))
     // runtimeOnly(fg.deobf("lol.bai:badpackets:forge-${project.badpackets_forge_version}"))
     // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3430254".toLowerCase())

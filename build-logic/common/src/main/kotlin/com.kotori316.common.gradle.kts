@@ -95,16 +95,6 @@ repositories {
         name = "Mixin"
         url = uri("https://repo.spongepowered.org/maven")
     }
-    maven {
-        url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage")
-        credentials {
-            username = "anything"
-            password = "\u0067hp_oGjcDFCn8jeTzIj4Ke9pLoEVtpnZMP4VQgaX"
-        }
-        content {
-            includeGroup("com.refinedmods")
-        }
-    }
 }
 
 if (project.name != "common") {
