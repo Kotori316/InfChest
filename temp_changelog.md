@@ -1,3 +1,9 @@
+# Version 21.11.4
+
+2026-01-24
+
+* Fix a bug where Enchanted Items can't be inserted to InfChest
+
 # Version 21.11.3
 
 2026-01-05
