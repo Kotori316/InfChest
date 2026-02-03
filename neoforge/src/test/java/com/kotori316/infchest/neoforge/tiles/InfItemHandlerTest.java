@@ -6,13 +6,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(EphemeralTestServerProvider.class)
 final class InfItemHandlerTest {
     @Test
     void dummy() {
