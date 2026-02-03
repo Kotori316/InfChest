@@ -26,6 +26,11 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
+tasks.test {
+    // Files in test are GameTest, so the test task do nothing.
+    failOnNoDiscoveredTests = false
+}
+
 val minecraftVersion = project.property("minecraftVersion") as String
 val currentDate: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
