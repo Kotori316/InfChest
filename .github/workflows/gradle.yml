@@ -75,3 +75,12 @@ jobs:
         run: git status
       - name: Check diff
         run: git diff --exit-code -- ./${{ matrix.platform }}/src/generated
+      - name: Upload test reports
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: reports-${{ matrix.platform }}-${{ github.run_id }}-${{ github.run_number }}
+          if-no-files-found: 'ignore'
+          path: |
+            ${{ matrix.platform }}/build/reports/tests/test/
+            ${{ matrix.platform }}/build/test-results/
