@@ -85,20 +85,15 @@ minecraft {
             }
         }
         register("client") {
-            /*with(sourceSets.getAt("main")) {}*/
         }
 
         register("server") {
-            /*with(sourceSets.getAt("main")) {
-
-            }*/
         }
 
         register("data") {
+            // Run with `./gradlew :forge:runRunDataGenData`
             workingDir.convention(project.layout.buildDirectory.dir("dataGen"))
             args("--mod", modId, "--all", "--output", file("src/generated/resources/"))
-            /*with(sourceSets.getAt("runDataGen")) {
-            }*/
         }
     }
 }
@@ -109,7 +104,7 @@ tasks.processResources {
 }
 
 repositories {
-    maven(minecraft.mavenizer)
+    minecraft.mavenizer(this)
     maven(fg.forgeMaven)
     maven(fg.minecraftLibsMaven)
     exclusiveContent {
