@@ -8,8 +8,8 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -65,8 +65,9 @@ public abstract class BlockInfChest extends BaseEntityBlock {
         if (!player.isCrouching()) {
             if (!worldIn.isClientSide()) {
                 if (StorageBoxStack.moveToStorage(worldIn, pos, player, hand)) return InteractionResult.SUCCESS;
-                worldIn.getBlockEntity(pos, InfChest.accessor.INF_CHEST_TYPE()).ifPresent(t ->
-                    this.openGui(((ServerPlayer) player), t, pos));
+                if (worldIn.getBlockEntity(pos) instanceof TileInfChest t) {
+                    this.openGui(((ServerPlayer) player), t, pos);
+                }
             }
             return InteractionResult.SUCCESS;
         }
@@ -79,8 +80,9 @@ public abstract class BlockInfChest extends BaseEntityBlock {
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(worldIn, pos, state, placer, stack);
         if (stack.has(DataComponents.CUSTOM_NAME)) {
-            worldIn.getBlockEntity(pos, InfChest.accessor.INF_CHEST_TYPE())
-                .ifPresent(chest -> chest.setCustomName(stack.getDisplayName()));
+            if (worldIn.getBlockEntity(pos) instanceof TileInfChest chest) {
+                chest.setCustomName(stack.getDisplayName());
+            }
         }
     }
 

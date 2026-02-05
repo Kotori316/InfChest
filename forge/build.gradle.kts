@@ -8,15 +8,13 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     id("signing")
-    id("net.minecraftforge.gradle") version ("[6.0,6.2)")
-    id("org.spongepowered.mixin") version ("0.7.+")
-    id("org.parchmentmc.librarian.forgegradle") version ("1.+")
+    id("net.minecraftforge.gradle") version ("[7.0,8.0)")
     id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
     id("com.kotori316.plugin.cf") version ("3.+")
 }
 
 val modId = project.property("mod_id") as String
-val minecraft = project.property("minecraftVersion") as String
+val minecraftVersion = project.property("minecraftVersion") as String
 val releaseMode = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean().not()
 
 project.evaluationDependsOn(project.project(":genData:commonData").path)
@@ -24,7 +22,7 @@ project.evaluationDependsOn(project.project(":genData:commonData").path)
 base {
     version = project.property("modVersion") as String
     group = "com.kotori316"
-    archivesName = "${project.property("baseName")}-Forge-$minecraft"
+    archivesName = "${project.property("baseName")}-Forge-$minecraftVersion"
 }
 
 sourceSets {
@@ -60,12 +58,11 @@ minecraft {
     mappings(
         mapOf(
             "channel" to "parchment",
-            "version" to "$parchmentMc-$mapping-$minecraft"
+            "version" to "$parchmentMc-$mapping-$minecraftVersion"
         )
     )
     // mappings channel: "official", version: "1.18.2"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    reobf = false
 
     // accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
 
@@ -73,43 +70,30 @@ minecraft {
     // These can be tweaked, removed, or duplicated as needed.
     runs {
         configureEach {
+            workingDir.convention(layout.projectDirectory.dir("run"))
             val mixinRefMap =
                 layout.buildDirectory.map { it.file("createSrgToMcp/output.srg").asFile.absolutePath }.get()
-            property("mixin.env.remapRefMap", "true")
-            property("mixin.env.refMapRemappingFile", mixinRefMap)
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "debug")
-            property("eventbus.api.strictRuntimeChecks", "true")
-            property("mixin.debug.export", "true")
-            property("terminal.ansi", "true")
-        }
-        create("client") {
-            workingDirectory = "run"
-            mods {
-                create(modId) {
-                    source(sourceSets.getAt("main"))
-                }
+            systemProperty("mixin.env.remapRefMap", "true")
+            systemProperty("mixin.env.refMapRemappingFile", mixinRefMap)
+            systemProperty("forge.logging.markers", "REGISTRIES")
+            systemProperty("forge.logging.console.level", "debug")
+            systemProperty("eventbus.api.strictRuntimeChecks", "true")
+            systemProperty("mixin.debug.export", "true")
+            systemProperty("terminal.ansi", "true")
+            if (System.getProperty("os.name").startsWith("Mac")) {
+                jvmArgs("-XstartOnFirstThread")
             }
         }
-
-        create("server") {
-            workingDirectory = "run"
-            mods {
-                create(modId) {
-                    source(sourceSets.getAt("main"))
-                }
-            }
+        register("client") {
         }
 
-        create("data") {
-            workingDirectory = project.layout.buildDirectory.dir("dataGen").get().asFile.absolutePath
+        register("server") {
+        }
+
+        register("data") {
+            // Run with `./gradlew :forge:runRunDataGenData`
+            workingDir.convention(project.layout.buildDirectory.dir("dataGen"))
             args("--mod", modId, "--all", "--output", file("src/generated/resources/"))
-
-            mods {
-                create(modId) {
-                    source(sourceSets["runDataGen"])
-                }
-            }
         }
     }
 }
@@ -119,18 +103,35 @@ tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+repositories {
+    minecraft.mavenizer(this)
+    maven(fg.forgeMaven)
+    maven(fg.minecraftLibsMaven)
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Sponge"
+                url = uri("https://repo.spongepowered.org/repository/maven-public")
+            }
+        }
+        filter {
+            includeGroupAndSubgroups("org.spongepowered")
+        }
+    }
+    mavenCentral()
+}
+
 dependencies {
     // See com.kotori316.common.gradle.kts for repositories
-    minecraft("net.minecraftforge:forge:${project.property("forgeVersion")}")
+    implementation(minecraft.dependency("net.minecraftforge:forge:${project.property("forgeVersion")}"))
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
     // Mixin
-    annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
-    // annotationProcessor("net.minecraftforge:eventbus-validator:7.0-beta.9")
+    annotationProcessor("net.minecraftforge:eventbus-validator:7.0-beta.9")
 
-    compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${project.property("ae2Version")}"))
-    compileOnly(fg.deobf("curse.maven:jade-324717:${project.property("jade_forge_id")}"))
-    compileOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.property("top_id")}"))
+    compileOnly("appeng:appliedenergistics2-forge:${project.property("ae2Version")}")
+    compileOnly("curse.maven:jade-324717:${project.property("jade_forge_id")}")
+    compileOnly("curse.maven:the-one-probe-245211:${project.property("top_id")}")
     // compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.property("wthit_forge_version")}"))
     // runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-${project.wthit_version}"))
     // runtimeOnly(fg.deobf("lol.bai:badpackets:forge-${project.badpackets_forge_version}"))
@@ -140,15 +141,13 @@ dependencies {
             strictly("5.0.4")
         }
     }
-    implementation("com.kotori316:debug-utility-forge:${project.property("debug_util_version")}")
+    implementation("com.kotori316:debug-utility-forge:${project.property("debug_util_version")}") {
+        isTransitive = false
+    }
 }
 
 tasks.withType(JavaCompile::class) {
     source(project(":common").sourceSets.getAt("main").allSource)
-}
-
-mixin {
-    add(sourceSets.getAt("main"), "mixins.${modId}.refmap.json")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -163,7 +162,7 @@ tasks.jar {
                 "Implementation-Version" to project.version.toString(),
                 "Implementation-Vendor" to "Kotori316",
                 "Implementation-Timestamp" to ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                // "MixinConfigs"            : "${modId}.mixins.json",
+                "MixinConfigs" to "${modId}.mixins.json",
                 "Automatic-Module-Name" to modId,
             )
         )
@@ -200,20 +199,14 @@ val srcJar by tasks.register("srcJar", Jar::class) {
     archiveClassifier.set("sources")
 }
 
-val deobfJar by tasks.register("deobfJar", Jar::class) {
-    from(sourceSets.getAt("main").output)
-    archiveClassifier.set("deobf")
-}
-
 // Tell the artifact system about our extra jars
 artifacts {
     archives(srcJar.archiveFile)
-    archives(deobfJar.archiveFile)
 }
 
 publishMods {
     file = jar.archiveFile
-    additionalFiles.from(srcJar.archiveFile, deobfJar.archiveFile)
+    additionalFiles.from(srcJar.archiveFile)
     changelog = provider { file("../temp_changelog.md").readText() }
     type = me.modmuss50.mpp.ReleaseType.STABLE
     modLoaders.add("forge")
@@ -224,13 +217,13 @@ publishMods {
         accessToken = project.findProperty("curseforge_additional-enchanted-miner_key")?.toString()
             ?: System.getenv("CURSE_TOKEN") ?: ""
         projectId = "312222"
-        minecraftVersions = listOf(minecraft)
+        minecraftVersions = listOf(minecraftVersion)
     }
 
     modrinth {
         accessToken = project.findProperty("modrinthToken")?.toString() ?: System.getenv("MODRINTH_TOKEN") ?: ""
         projectId = "lmosnPHi"
-        minecraftVersions = listOf(minecraft)
+        minecraftVersions = listOf(minecraftVersion)
         changelog = provider { file("../temp_changelog.md").readText().split("# ").getOrNull(1) }
     }
 }
@@ -240,25 +233,14 @@ publishing {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()
             artifact(srcJar)
-            artifact(deobfJar)
             artifact(jar)
         }
     }
 }
 
-tasks.register("copyToDrive", Copy::class) {
-    dependsOn("build")
-    from(jar.archiveFile, deobfJar.archiveFile, srcJar.archiveFile)
-    into(file(System.getenv("drive_path") ?: "."))
-    onlyIf {
-        System.getenv("drive_path") != null &&
-                file(System.getenv("drive_path")).exists()
-    }
-}
-
 signing {
     sign(publishing.publications)
-    sign(jar, deobfJar, srcJar)
+    sign(jar, srcJar)
 }
 
 val hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -281,17 +263,17 @@ tasks.withType(AbstractPublishToMaven::class).configureEach {
 
 tasks.register("registerVersion", CallVersionFunctionTask::class) {
     functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
-    gameVersion = minecraft
+    gameVersion = minecraftVersion
     platform = "forge"
     platformVersion = project.property("forgeVersion").toString()
     modName = modId
-    changelog = "For $minecraft"
+    changelog = "For $minecraftVersion"
     isDryRun = !releaseMode
     homepage = "https://www.curseforge.com/minecraft/mc-mods/infchest"
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
-    gameVersion = minecraft
+    gameVersion = minecraftVersion
     platform = "forge"
     modName = modId
     version = project.version as String

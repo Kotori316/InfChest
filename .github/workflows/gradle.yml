@@ -24,7 +24,7 @@ jobs:
       matrix:
         include:
           - platform: forge
-            data: runData
+            data: runRunDataGenData
           - platform: fabric
             data: runData
           - platform: neoforge
@@ -60,7 +60,7 @@ jobs:
           RUN_GAME_TEST: true
       - name: Data Generation
         # Forge crashes in CI???
-        if: ${{ matrix.platform != 'forge' }}
+        # if: ${{ matrix.platform != 'forge' }}
         run: ./gradlew :${{ matrix.platform }}:${{ matrix.data }}
         env:
           RUN_DATA_GEN: true
