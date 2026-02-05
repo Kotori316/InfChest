@@ -70,6 +70,7 @@ minecraft {
     // These can be tweaked, removed, or duplicated as needed.
     runs {
         configureEach {
+            workingDir.convention(layout.projectDirectory.dir("run"))
             val mixinRefMap =
                 layout.buildDirectory.map { it.file("createSrgToMcp/output.srg").asFile.absolutePath }.get()
             systemProperty("mixin.env.remapRefMap", "true")
@@ -84,22 +85,20 @@ minecraft {
             }
         }
         register("client") {
-            workingDir = layout.projectDirectory.dir("run")
-            with(sourceSets.getAt("main")) {}
+            /*with(sourceSets.getAt("main")) {}*/
         }
 
         register("server") {
-            workingDir = layout.projectDirectory.dir("run")
-            with(sourceSets.getAt("main")) {
+            /*with(sourceSets.getAt("main")) {
 
-            }
+            }*/
         }
 
         register("data") {
-            workingDir = project.layout.buildDirectory.dir("dataGen")
+            workingDir.convention(project.layout.buildDirectory.dir("dataGen"))
             args("--mod", modId, "--all", "--output", file("src/generated/resources/"))
-            with(sourceSets.getAt("runDataGen")) {
-            }
+            /*with(sourceSets.getAt("runDataGen")) {
+            }*/
         }
     }
 }
@@ -205,20 +204,14 @@ val srcJar by tasks.register("srcJar", Jar::class) {
     archiveClassifier.set("sources")
 }
 
-val deobfJar by tasks.register("deobfJar", Jar::class) {
-    from(sourceSets.getAt("main").output)
-    archiveClassifier.set("deobf")
-}
-
 // Tell the artifact system about our extra jars
 artifacts {
     archives(srcJar.archiveFile)
-    archives(deobfJar.archiveFile)
 }
 
 publishMods {
     file = jar.archiveFile
-    additionalFiles.from(srcJar.archiveFile, deobfJar.archiveFile)
+    additionalFiles.from(srcJar.archiveFile)
     changelog = provider { file("../temp_changelog.md").readText() }
     type = me.modmuss50.mpp.ReleaseType.STABLE
     modLoaders.add("forge")
@@ -245,25 +238,14 @@ publishing {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()
             artifact(srcJar)
-            artifact(deobfJar)
             artifact(jar)
         }
     }
 }
 
-tasks.register("copyToDrive", Copy::class) {
-    dependsOn("build")
-    from(jar.archiveFile, deobfJar.archiveFile, srcJar.archiveFile)
-    into(file(System.getenv("drive_path") ?: "."))
-    onlyIf {
-        System.getenv("drive_path") != null &&
-                file(System.getenv("drive_path")).exists()
-    }
-}
-
 signing {
     sign(publishing.publications)
-    sign(jar, deobfJar, srcJar)
+    sign(jar, srcJar)
 }
 
 val hasGpgSignature = project.hasProperty("signing.keyId") &&
