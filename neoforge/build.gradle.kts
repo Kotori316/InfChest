@@ -7,7 +7,7 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     signing
-    id("net.neoforged.moddev") version ("2.0.140")
+    id("net.neoforged.moddev") version ("2.0.141")
     id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
     id("com.kotori316.plugin.cf") version ("3.+")
 }
