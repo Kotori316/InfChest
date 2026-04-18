@@ -60,18 +60,12 @@ dependencies {
     // See com.kotori316.common.gradle.kts for repositories
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:$minecraft")
-    mappings(loom.layered {
-        officialMojangMappings()
-        val parchmentMc = project.property("parchment_mapping_mc")
-        val mapping = project.property("parchment_mapping_version")
-        parchment("org.parchmentmc.data:parchment-$parchmentMc:$mapping@zip")
-    })
-    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
+    implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     /*modCompileOnly("appeng:appliedenergistics2-fabric:${project.property("ae2_fabric_version")}") {
         isTransitive = false
     }*/
@@ -81,10 +75,10 @@ dependencies {
     // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.property("wthit_fabric_version")}")
     // modRuntimeOnly("lol.bai:badpackets:fabric-${project.badpackets_fabric_version}")
     // modCompileOnly("curse.maven:jade-324717:${project.property("jade_fabric_id")}")
-    modImplementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
+    implementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
         isTransitive = false
     }
-    modImplementation("com.kotori316:debug-utility-fabric:${project.property("debug_util_version")}")
+    implementation("com.kotori316:debug-utility-fabric:${project.property("debug_util_version")}")
 
     testImplementation(project(":commonTest"))
 }
@@ -102,15 +96,12 @@ tasks.withType(JavaCompile::class).configureEach {
 }
 
 java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
     withSourcesJar()
 }
 
 publishMods {
-    file = tasks.remapJar.flatMap { it.archiveFile }
-    additionalFiles.from(tasks.remapSourcesJar.flatMap { it.archiveFile })
+    file = tasks.jar.flatMap { it.archiveFile }
+    additionalFiles = files(tasks.named("sourcesJar"))
     changelog = provider { file("../temp_changelog.md").readText() }
     type = me.modmuss50.mpp.ReleaseType.STABLE
     modLoaders.add("fabric")
@@ -149,27 +140,18 @@ tasks.named("sourcesJar", Jar::class) {
 
 tasks.register("checkOutput") {
     doLast {
-        listOf(tasks.remapJar, tasks.jar, tasks.named("sourcesJar", Jar::class))
+        val sourceJarTask = tasks.named("sourcesJar", Jar::class)
+        listOf(tasks.jar, sourceJarTask)
             .map { it.get() }
             .forEach { t ->
                 println("$t -> ${t.archiveFile.get().asFile}")
             }
-        println("${tasks.remapSourcesJar} -> ${tasks.remapSourcesJar.get().outputs}")
-    }
-}
-
-tasks.register("copyToDrive", Copy::class) {
-    dependsOn("build")
-    from(tasks.remapJar.map { it.archiveFile })
-    into(file(System.getenv("drive_path") ?: "."))
-    onlyIf {
-        System.getenv("drive_path") != null &&
-                file(System.getenv("drive_path")).exists()
+        println("$sourceJarTask -> ${sourceJarTask.get().outputs}")
     }
 }
 
 val jksSignJar by tasks.register("jksSignJar") {
-    dependsOn(tasks.remapJar)
+    dependsOn(tasks.jar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
@@ -178,7 +160,7 @@ val jksSignJar by tasks.register("jksSignJar") {
         //noinspection HttpUrlsUsage
         ant.withGroovyBuilder {
             "signjar"(
-                "jar" to tasks.remapJar.get().archiveFile.get(),
+                "jar" to tasks.jar.get().archiveFile.get(),
                 "alias" to project.findProperty("jarSign.keyAlias"),
                 "keystore" to project.findProperty("jarSign.keyLocation"),
                 "storepass" to project.findProperty("jarSign.storePass"),
@@ -190,13 +172,12 @@ val jksSignJar by tasks.register("jksSignJar") {
     }
 }
 
-tasks.remapJar {
+tasks.jar {
     finalizedBy(jksSignJar)
 }
 
 signing {
     sign(publishing.publications)
-    sign(tasks.jar.get(), tasks.remapJar.get(), tasks.named("sourcesJar", Jar::class).get())
 }
 
 val hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -206,12 +187,6 @@ val hasGpgSignature = project.hasProperty("signing.keyId") &&
 tasks.withType(Sign::class) {
     onlyIf {
         hasGpgSignature
-    }
-}
-
-tasks.withType(AbstractPublishToMaven::class) {
-    if (hasGpgSignature) {
-        dependsOn(":fabric:signRemapJar")
     }
 }
 

@@ -48,26 +48,6 @@ sourceSets {
 }
 
 minecraft {
-    // The mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   Snapshot are built nightly.
-    // stable_#            Stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
-    val parchmentMc = project.property("parchment_mapping_mc")
-    val mapping = project.property("parchment_mapping_version")
-    mappings(
-        mapOf(
-            "channel" to "parchment",
-            "version" to "$parchmentMc-$mapping-$minecraftVersion"
-        )
-    )
-    // mappings channel: "official", version: "1.18.2"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-
-    // accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
-
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         configureEach {
             workingDir.convention(layout.projectDirectory.dir("run"))

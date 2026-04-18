@@ -6,10 +6,6 @@ pluginManagement {
             url = uri("https://maven.minecraftforge.net/")
         }
         maven {
-            name = "Parchment"
-            url = uri("https://maven.parchmentmc.org")
-        }
-        maven {
             name = "Fabric"
             url = uri("https://maven.fabricmc.net/")
         }

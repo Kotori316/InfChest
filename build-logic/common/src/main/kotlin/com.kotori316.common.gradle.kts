@@ -23,7 +23,7 @@ println(
 )
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
 }
 
 tasks.test {
@@ -66,14 +66,6 @@ repositories {
         content {
             includeGroup("org.lwjgl")
             includeGroup("com.mojang")
-        }
-    }
-    maven {
-        name = "ParchmentMC"
-        url = uri("https://maven.parchmentmc.org")
-        content {
-            includeGroup("org.parchmentmc")
-            includeGroup("org.parchmentmc.data")
         }
     }
     maven {
