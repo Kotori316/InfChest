@@ -170,23 +170,13 @@ val jksSignJar by tasks.register("jksSignJar") {
     }
 }
 
-val jar by tasks.jar
-
-jar.finalizedBy(jksSignJar)
-
-val srcJar by tasks.register("srcJar", Jar::class) {
-    from(sourceSets.getAt("main").allSource)
-    archiveClassifier.set("sources")
-}
-
-// Tell the artifact system about our extra jars
-artifacts {
-    archives(srcJar.archiveFile)
+tasks.jar {
+    finalizedBy(jksSignJar)
 }
 
 publishMods {
-    file = jar.archiveFile
-    additionalFiles.from(srcJar.archiveFile)
+    file = tasks.jar.flatMap { it.archiveFile }
+    additionalFiles = files(tasks.named("sourcesJar"))
     changelog = provider { file("../temp_changelog.md").readText() }
     type = me.modmuss50.mpp.ReleaseType.STABLE
     modLoaders.add("forge")
@@ -212,15 +202,13 @@ publishing {
     publications {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()
-            artifact(srcJar)
-            artifact(jar)
+            from(components.getAt("java"))
         }
     }
 }
 
 signing {
     sign(publishing.publications)
-    sign(jar, srcJar)
 }
 
 val hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -230,14 +218,6 @@ val hasGpgSignature = project.hasProperty("signing.keyId") &&
 tasks.withType(Sign::class).configureEach {
     onlyIf {
         hasGpgSignature
-    }
-}
-
-tasks.withType(AbstractPublishToMaven::class).configureEach {
-    if (hasGpgSignature) {
-        dependsOn(":forge:signJar")
-        dependsOn(":forge:signSrcJar")
-        dependsOn(":forge:signDeobfJar")
     }
 }
 
@@ -258,12 +238,6 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
     modName = modId
     version = project.version as String
     failIfExists = releaseMode
-}
-
-sourceSets.forEach {
-    val dir = layout.buildDirectory.dir("sourcesSets/${it.name}")
-    it.output.setResourcesDir(dir)
-    it.java.destinationDirectory = dir
 }
 
 tasks.named("compileRunDataGenJava", JavaCompile::class) {

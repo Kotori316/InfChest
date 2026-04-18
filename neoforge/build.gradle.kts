@@ -113,31 +113,15 @@ neoForge {
 dependencies {
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
-    compileOnly(
-        group = "curse.maven",
-        name = "jade-324717",
-        version = project.property("jade_neoforge_id") as String
-    )
-    compileOnly(
-        group = "mcp.mobius.waila",
-        name = "wthit-api",
-        version = "neo-${project.property("wthit_neoforge_version")}"
-    )
+    compileOnly("curse.maven:jade-324717:${project.property("jade_neoforge_id")}")
+    compileOnly("mcp.mobius.waila:wthit-api:neo-${project.property("wthit_neoforge_version")}")
     /*runtimeOnly(
         group = "mcp.mobius.waila",
         name = "wthit",
         version = "neo-${project.property("wthit_neoforge_version")}"
     )*/
-    compileOnly(
-        group = "curse.maven",
-        name = "the-one-probe-245211",
-        version = project.property("top_neoforge_id") as String
-    )
-    compileOnly(
-        group = "appeng",
-        name = "appliedenergistics2",
-        version = project.property("ae2_neoforge_version") as String,
-    ) {
+    compileOnly("curse.maven:the-one-probe-245211:${project.property("top_neoforge_id")}")
+    compileOnly("appeng:appliedenergistics2:${project.property("ae2_neoforge_version")}") {
         isTransitive = false
     }
     implementation("com.kotori316:debug-utility-neoforge:${project.property("debug_util_version")}")
@@ -148,11 +132,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:6.0.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation(
-        group = "net.neoforged",
-        name = "testframework",
-        version = project.property("neo_version").toString()
-    )
+    testImplementation("net.neoforged:testframework:${project.property("neo_version")}")
 }
 
 tasks {
@@ -192,8 +172,6 @@ tasks {
     }
 }
 
-val jar by tasks.jar
-
 val jksSignJar by tasks.register("jksSignJar") {
     dependsOn(tasks.jar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
@@ -214,27 +192,14 @@ val jksSignJar by tasks.register("jksSignJar") {
         }
     }
 }
-jar.finalizedBy(jksSignJar)
 
-val srcJar by tasks.register("srcJar", Jar::class) {
-    from(sourceSets.getAt("main").allSource)
-    archiveClassifier.set("sources")
-}
-
-val deobfJar by tasks.register("deobfJar", Jar::class) {
-    from(sourceSets.getAt("main").output)
-    archiveClassifier.set("deobf")
-}
-
-// Tell the artifact system about our extra jars
-artifacts {
-    archives(srcJar.archiveFile)
-    archives(deobfJar.archiveFile)
+tasks.jar {
+    finalizedBy(jksSignJar)
 }
 
 publishMods {
-    file = jar.archiveFile
-    additionalFiles.from(srcJar.archiveFile, deobfJar.archiveFile)
+    file = tasks.jar.flatMap { it.archiveFile }
+    additionalFiles = files(tasks.named("sourcesJar"))
     changelog = provider { file("../temp_changelog.md").readText() }
     type = me.modmuss50.mpp.ReleaseType.STABLE
     modLoaders.add("neoforge")
@@ -267,7 +232,6 @@ publishing {
 
 signing {
     sign(publishing.publications)
-    sign(jar, deobfJar, srcJar)
 }
 
 val hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -277,14 +241,6 @@ val hasGpgSignature = project.hasProperty("signing.keyId") &&
 tasks.withType(Sign::class).configureEach {
     onlyIf {
         hasGpgSignature
-    }
-}
-
-tasks.withType(AbstractPublishToMaven::class).configureEach {
-    if (hasGpgSignature) {
-        dependsOn(tasks.named("signJar"))
-        dependsOn(tasks.named("signSrcJar"))
-        dependsOn(tasks.named("signDeobfJar"))
     }
 }
 

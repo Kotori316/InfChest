@@ -11,9 +11,5 @@ repositories {
 
 dependencies {
     // NeoForge
-    implementation(
-        group = "net.neoforged",
-        name = "neoforge",
-        version = project.property("neo_version").toString()
-    )
+    implementation("net.neoforged:neoforge:${project.property("neo_version")}")
 }

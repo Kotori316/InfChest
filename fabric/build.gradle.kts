@@ -95,10 +95,6 @@ tasks.withType(JavaCompile::class).configureEach {
     source(project(":common").sourceSets.main.map { it.allSource })
 }
 
-java {
-    withSourcesJar()
-}
-
 publishMods {
     file = tasks.jar.flatMap { it.archiveFile }
     additionalFiles = files(tasks.named("sourcesJar"))
