@@ -1,10 +1,9 @@
 package com.kotori316.infchest.fabric.blocks;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-
 import com.kotori316.infchest.common.blocks.BlockInfChest;
 import com.kotori316.infchest.common.tiles.TileInfChest;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class BlockInfChestFabric extends BlockInfChest {
     public BlockInfChestFabric() {

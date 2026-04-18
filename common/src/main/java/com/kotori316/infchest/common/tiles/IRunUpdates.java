@@ -9,6 +9,7 @@ public interface IRunUpdates {
 
     /**
      * Read only.
+     *
      * @return the list of actions done.
      */
     Collection<Runnable> getUpdates();

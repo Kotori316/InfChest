@@ -14,8 +14,6 @@ import com.kotori316.infchest.forge.packets.PacketHandler;
 import com.kotori316.infchest.forge.tiles.TileDequeForge;
 import com.kotori316.infchest.forge.tiles.TileInfChestForge;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;

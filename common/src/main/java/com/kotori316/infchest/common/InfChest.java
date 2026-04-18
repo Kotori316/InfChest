@@ -2,7 +2,6 @@ package com.kotori316.infchest.common;
 
 import com.kotori316.infchest.common.blocks.BlockDeque;
 import com.kotori316.infchest.common.blocks.BlockInfChest;
-import com.kotori316.infchest.common.blocks.ContentInfChest;
 import com.kotori316.infchest.common.guis.ContainerInfChest;
 import com.kotori316.infchest.common.tiles.TileDeque;
 import com.kotori316.infchest.common.tiles.TileInfChest;

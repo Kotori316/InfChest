@@ -13,8 +13,6 @@ import com.kotori316.infchest.neoforge.blocks.BlockInfChestNeoForge;
 import com.kotori316.infchest.neoforge.integration.AE2InfChestIntegration;
 import com.kotori316.infchest.neoforge.packets.PacketHandler;
 import com.kotori316.infchest.neoforge.tiles.TileInfChestNeoForge;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;

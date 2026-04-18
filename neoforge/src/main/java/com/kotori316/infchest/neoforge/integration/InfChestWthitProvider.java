@@ -10,7 +10,7 @@ public final class InfChestWthitProvider implements IDataProvider<TileInfChest>,
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         if (accessor.getBlockEntity() instanceof TileInfChest chest) {
             CommonTooltipPart.getTooltipBodyParts(accessor.getData().raw(), chest)
-                    .forEach(tooltip::addLine);
+                .forEach(tooltip::addLine);
         }
     }
 

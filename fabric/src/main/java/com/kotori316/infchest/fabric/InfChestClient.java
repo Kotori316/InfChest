@@ -1,10 +1,9 @@
 package com.kotori316.infchest.fabric;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.client.gui.screens.MenuScreens;
-
 import com.kotori316.infchest.common.guis.GuiInfChest;
 import com.kotori316.infchest.fabric.packets.PacketHandler;
+import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.client.gui.screens.MenuScreens;
 
 public class InfChestClient implements ClientModInitializer {
     @Override

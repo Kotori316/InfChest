@@ -1,10 +1,9 @@
 package com.kotori316.infchest.forge.tiles;
 
+import com.kotori316.infchest.common.tiles.TileDeque;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
-
-import com.kotori316.infchest.common.tiles.TileDeque;
 
 record DequeItemHandler(TileDequeForge deque) implements IItemHandlerModifiable {
 

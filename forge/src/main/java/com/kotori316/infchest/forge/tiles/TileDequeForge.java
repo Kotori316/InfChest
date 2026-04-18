@@ -1,7 +1,6 @@
 package com.kotori316.infchest.forge.tiles;
 
-import java.util.LinkedList;
-
+import com.kotori316.infchest.common.tiles.TileDeque;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +12,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.kotori316.infchest.common.tiles.TileDeque;
+import java.util.LinkedList;
 
 public final class TileDequeForge extends TileDeque {
     private final IItemHandler handler;
