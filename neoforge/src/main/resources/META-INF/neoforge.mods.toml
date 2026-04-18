@@ -17,6 +17,6 @@ config = "infchest.mixins.json"
 [[dependencies.infchest]]
 modId = "neoforge"
 type = "required"
-versionRange = "[20.6.0-beta, )"
+versionRange = "[26.1.2.10-beta, )"
 ordering = "NONE"
 side = "BOTH"

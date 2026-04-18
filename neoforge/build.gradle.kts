@@ -110,14 +110,6 @@ neoForge {
     }
 }
 
-configurations.configureEach {
-    resolutionStrategy.eachDependency {
-        if (requested.group == "org.ow2.asm" && requested.name.startsWith("asm")) {
-            useVersion("9.7")
-        }
-    }
-}
-
 dependencies {
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))

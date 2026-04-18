@@ -2,6 +2,7 @@ package com.kotori316.infchest.neoforge.tiles;
 
 import com.kotori316.infchest.common.InfChest;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -38,7 +39,7 @@ final class InfItemHandlerTest {
     @Nested
     class Insert {
         @Test
-        void actual() {
+        void actual(MinecraftServer ignore) {
             var handler = createHandler();
             assertEquals(BigInteger.ZERO, handler.infChest().totalCount());
             try (var tx = Transaction.openRoot()) {
@@ -51,7 +52,7 @@ final class InfItemHandlerTest {
         }
 
         @Test
-        void aborted() {
+        void aborted(MinecraftServer ignore) {
             var handler = createHandler();
             assertEquals(BigInteger.ZERO, handler.infChest().totalCount());
             try (var tx = Transaction.openRoot()) {
@@ -63,7 +64,7 @@ final class InfItemHandlerTest {
         }
 
         @Test
-        void viaHandler() {
+        void viaHandler(MinecraftServer ignore) {
             var tile = createTile();
             var item = Items.CRIMSON_PLANKS;
             tile.addStack(new ItemStack(item), BigInteger.valueOf(2000));
@@ -94,7 +95,7 @@ final class InfItemHandlerTest {
         }
 
         @Test
-        void invalidItem() {
+        void invalidItem(MinecraftServer ignore) {
             var tile = createTile();
             var item = Items.CRIMSON_PLANKS;
             tile.addStack(new ItemStack(item), BigInteger.valueOf(2000));
@@ -110,7 +111,7 @@ final class InfItemHandlerTest {
         }
 
         @Test
-        void toEmpty() {
+        void toEmpty(MinecraftServer ignore) {
             var tile = createTile();
             var handler = new InfItemHandler(tile);
 
@@ -145,7 +146,7 @@ final class InfItemHandlerTest {
     @Nested
     class Extract {
         @Test
-        void fromEmpty() {
+        void fromEmpty(MinecraftServer ignore) {
             var handler = createHandler();
 
             try (var transaction = Transaction.openRoot()) {
@@ -155,7 +156,7 @@ final class InfItemHandlerTest {
         }
 
         @Test
-        void viaHandler() {
+        void viaHandler(MinecraftServer ignore) {
             var tile = createTile();
             var item = Items.CRIMSON_PLANKS;
             var initial = 2000;
@@ -183,7 +184,7 @@ final class InfItemHandlerTest {
         }
 
         @Test
-        void viaHandler2() {
+        void viaHandler2(MinecraftServer ignore) {
             var tile = createTile();
             var item = Items.CRIMSON_PLANKS;
             var initial = 2064;
@@ -203,7 +204,7 @@ final class InfItemHandlerTest {
         }
 
         @Test
-        void viaHandler3() {
+        void viaHandler3(MinecraftServer ignore) {
             var tile = createTile();
             var item = Items.CRIMSON_PLANKS;
             var initial = 2064;
@@ -225,7 +226,7 @@ final class InfItemHandlerTest {
         }
 
         @Test
-        void viaHandler4() {
+        void viaHandler4(MinecraftServer ignore) {
             var tile = createTile();
             var item = Items.CRIMSON_PLANKS;
             var initial = 2064;
