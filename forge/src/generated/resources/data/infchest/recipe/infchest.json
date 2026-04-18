@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "b": "minecraft:beacon",
-    "e": "#forge:chests/ender",
+    "e": "#c:chests/ender",
     "i": {
       "type": "forge:compound",
       "children": [
@@ -20,7 +20,6 @@
     "sis"
   ],
   "result": {
-    "count": 1,
     "id": "infchest:infchest"
   }
 }
