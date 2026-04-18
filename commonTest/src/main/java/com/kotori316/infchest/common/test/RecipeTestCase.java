@@ -4,9 +4,9 @@ import com.kotori316.infchest.common.InfChest;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.level.block.ShulkerBoxBlock;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,7 +27,7 @@ public final class RecipeTestCase {
         var b = Items.BEACON.getDefaultInstance();
 
         for (DyeColor color : DyeColor.values()) {
-            var s = ShulkerBoxBlock.getColoredItemStack(color);
+            var s = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("minecraft", color.getName() + "_shulker_box")).getDefaultInstance();
             recipeSets.add(new RecipeSet("chest_iron_" + color.getName(), infChest, CraftingInput.of(3, 3, List.of(
                 e, q, e,
                 iron, b, iron,

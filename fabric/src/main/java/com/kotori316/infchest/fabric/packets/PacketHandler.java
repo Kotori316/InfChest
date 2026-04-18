@@ -18,7 +18,7 @@ public class PacketHandler {
     }
 
     public static void register() {
-        PayloadTypeRegistry.playS2C().register(ItemCountMessage.TYPE, ItemCountMessage.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ItemCountMessage.TYPE, ItemCountMessage.STREAM_CODEC);
     }
 
     public static void sendToClientPlayer(@NotNull ItemCountMessage message, @NotNull ServerPlayer player) {

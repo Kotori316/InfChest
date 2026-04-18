@@ -22,7 +22,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -60,8 +59,6 @@ public final class InfChestNeoForge {
         public static final BlockDequeNeoForge DEQUE = new BlockDequeNeoForge();
         public static final BlockEntityType<TileDeque> DEQUE_TYPE = new BlockEntityType<>(TileDeque::new, DEQUE);
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IMenuTypeExtension.create(ContainerInfChest::create);
-        public static final LootItemFunctionType<ContentInfChest> CHEST_FUNCTION = Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, ContentInfChest.LOCATION,
-            new LootItemFunctionType<>(ContentInfChest.CODEC));
 
         @Override
         public BlockEntityType<? extends TileInfChest> INF_CHEST_TYPE() {
@@ -81,11 +78,6 @@ public final class InfChestNeoForge {
         @Override
         public BlockDeque DEQUE() {
             return DEQUE;
-        }
-
-        @Override
-        public LootItemFunctionType<ContentInfChest> CHEST_FUNCTION() {
-            return CHEST_FUNCTION;
         }
 
         @Override
@@ -112,6 +104,7 @@ public final class InfChestNeoForge {
             event.register(Registries.ITEM, EventHandlers::registerItem);
             event.register(Registries.BLOCK_ENTITY_TYPE, EventHandlers::registerTile);
             event.register(Registries.MENU, EventHandlers::registerContainer);
+            event.register(Registries.LOOT_FUNCTION_TYPE, helper -> helper.register(ContentInfChest.LOCATION, ContentInfChest.CODEC));
         }
 
         public static void registerBlock(RegisterEvent.RegisterHelper<Block> event) {

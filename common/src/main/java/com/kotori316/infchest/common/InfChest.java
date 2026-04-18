@@ -8,7 +8,6 @@ import com.kotori316.infchest.common.tiles.TileDeque;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,6 @@ public final class InfChest {
 
         BlockDeque DEQUE();
 
-        LootItemFunctionType<ContentInfChest> CHEST_FUNCTION();
         MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE();
 
         boolean isModLoaded(String modId);

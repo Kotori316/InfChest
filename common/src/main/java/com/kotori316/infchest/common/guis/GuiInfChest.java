@@ -2,7 +2,7 @@ package com.kotori316.infchest.common.guis;
 
 import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.TileInfChest;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -24,23 +24,18 @@ public class GuiInfChest extends AbstractContainerScreen<ContainerInfChest> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        super.renderLabels(graphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        super.extractLabels(graphics, mouseX, mouseY);
         Optional.ofNullable(infChest).map(TileInfChest::getHolding).filter(Predicate.not(ItemStack::isEmpty)).map(ItemStack::getDisplayName).ifPresent(itemName -> {
-            graphics.drawString(this.font, itemName, (imageWidth - this.font.width(itemName)) / 2, 20, ARGB.opaque(0x404040), false);
-            graphics.drawString(this.font, "Item: " + infChest.totalCount(), 8, 60, ARGB.opaque(0x404040), false);
+                graphics.text(this.font, itemName, (imageWidth - this.font.width(itemName)) / 2, 20, ARGB.opaque(0x404040), false);
+                graphics.text(this.font, "Item: " + infChest.totalCount(), 8, 60, ARGB.opaque(0x404040), false);
             }
         );
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
         graphics.blit(RenderPipelines.GUI_TEXTURED, LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
-    }
-
-    @Override
-    public void render(GuiGraphics graphics, final int mouseX, final int mouseY, final float partialTicks) {
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(graphics, mouseX, mouseY); // render tooltip
     }
 }
