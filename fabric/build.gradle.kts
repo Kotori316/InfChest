@@ -6,10 +6,9 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     id("signing")
-    // https://maven.fabricmc.net/net/fabricmc/fabric-loom/
-    id("fabric-loom") version ("1.16.1")
+    id("net.fabricmc.fabric-loom") version ("1.16.1")
     id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
-    id("com.kotori316.plugin.cf") version ("3.+")
+    id("com.kotori316.plugin.cf") version ("3.5")
 }
 
 val baseName: String by project

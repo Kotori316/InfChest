@@ -10,7 +10,7 @@ plugins {
     id("signing")
     id("net.minecraftforge.gradle") version ("7.0.17")
     id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
-    id("com.kotori316.plugin.cf") version ("3.+")
+    id("com.kotori316.plugin.cf") version ("3.5")
 }
 
 val modId = project.property("mod_id") as String

@@ -9,7 +9,7 @@ plugins {
     signing
     id("net.neoforged.moddev") version ("2.0.141")
     id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
-    id("com.kotori316.plugin.cf") version ("3.+")
+    id("com.kotori316.plugin.cf") version ("3.5")
 }
 
 val modId = project.property("mod_id") as String
