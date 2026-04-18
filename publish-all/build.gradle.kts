@@ -1,5 +1,5 @@
 plugins {
-    id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
+    alias(libs.plugins.publish.all)
 }
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
@@ -30,7 +30,7 @@ fun getReleaseJarFiles(): List<Provider<RegularFile>> {
     val list = mutableListOf<Provider<RegularFile>>()
     if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
         list.add(project(":forge").tasks.named("jar", AbstractArchiveTask::class).flatMap { it.archiveFile })
-        list.add(project(":forge").tasks.named("srcJar", AbstractArchiveTask::class).flatMap { it.archiveFile })
+        list.add(project(":forge").tasks.named("sourcesJar", AbstractArchiveTask::class).flatMap { it.archiveFile })
     }
     if (!(System.getenv("DISABLE_FABRIC") ?: "false").toBoolean()) {
         list.add(project(":fabric").tasks.named("jar", AbstractArchiveTask::class).flatMap({ it.archiveFile }))
@@ -40,7 +40,7 @@ fun getReleaseJarFiles(): List<Provider<RegularFile>> {
     }
     if (!(System.getenv("DISABLE_NEOFORGE") ?: "false").toBoolean()) {
         list.add(project(":neoforge").tasks.named("jar", AbstractArchiveTask::class).flatMap { it.archiveFile })
-        list.add(project(":neoforge").tasks.named("srcJar", AbstractArchiveTask::class).flatMap { it.archiveFile })
+        list.add(project(":neoforge").tasks.named("sourcesJar", AbstractArchiveTask::class).flatMap { it.archiveFile })
     }
     if (list.isEmpty()) {
         list.add(layout.file(provider { rootProject.file("temp_changelog.md") }))

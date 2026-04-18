@@ -1,6 +1,6 @@
 plugins {
     id("com.kotori316.common")
-    id("org.spongepowered.gradle.vanilla") version ("0.3.2")
+    alias(libs.plugins.vanilla.gradle)
 }
 
 base {
@@ -21,6 +21,6 @@ minecraft {
 }
 
 dependencies {
-    compileOnly("org.spongepowered:mixin:0.8.7")
-    implementation("com.google.code.findbugs:jsr305:3.0.2")
+    compileOnly(libs.mixin)
+    implementation(libs.jsr305)
 }

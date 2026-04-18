@@ -1,0 +1,56 @@
+[versions]
+plugin_cf = "3.5"
+plugin_publish_all = "1.1.0"
+plugin_vanilla = "0.3.2"
+plugin_forge = "7.0.20"
+plugin_neoforge = "2.0.141"
+fabric_loom = "1.16.1"
+fabric_loader = "0.19.1"
+# Fabric
+fabric_api = "0.145.4+26.1.2"
+# NeoForge
+neo_version = "26.1.2.10-beta"
+# Forge
+forge_version = "26.1.2-64.0.1"
+# Mod dependencies
+ae2_forge = "15.4.10"
+ae2_fabric = "15.4.10"
+ae2_neoforge = "19.2.0-beta"
+jade_forge_id = "4978952"
+jade_fabric_id = "7886518"
+jade_neoforge_id = "7938398"
+top_forge_id = "4629624"
+top_neoforge_id = "5836106"
+wthit = "19.0.1"
+badpackets = "0.12.2"
+automatic_potato = "2.6.1"
+debug_util = "26.1.0-SNAPSHOT"
+mixin = "0.8.7"
+jsr305 = "3.0.2"
+
+[libraries]
+fabric_loader = { group = "net.fabricmc", name = "fabric-loader", version.ref = "fabric_loader" }
+fabric_api = { group = "net.fabricmc.fabric-api", name = "fabric-api", version.ref = "fabric_api" }
+ae2_forge = { group = "appeng", name = "appliedenergistics2-forge", version.ref = "ae2_forge" }
+ae2_fabric = { group = "appeng", name = "appliedenergistics2-fabric", version.ref = "ae2_fabric" }
+ae2_neoforge = { group = "appeng", name = "appliedenergistics2", version.ref = "ae2_neoforge" }
+jade_forge = { group = "curse.maven", name = "jade-324717", version.ref = "jade_forge_id" }
+jade_fabric = { group = "curse.maven", name = "jade-324717", version.ref = "jade_fabric_id" }
+jade_neoforge = { group = "curse.maven", name = "jade-324717", version.ref = "jade_neoforge_id" }
+top_forge = { group = "curse.maven", name = "the-one-probe-245211", version.ref = "top_forge_id" }
+top_neoforge = { group = "curse.maven", name = "the-one-probe-245211", version.ref = "top_neoforge_id" }
+automatic_potato = { group = "com.kotori316", name = "VersionCheckerMod", version.ref = "automatic_potato" }
+debug_util_fabric = { group = "com.kotori316", name = "debug-utility-fabric", version.ref = "debug_util" }
+debug_util_forge = { group = "com.kotori316", name = "debug-utility-forge", version.ref = "debug_util" }
+debug_util_neoforge = { group = "com.kotori316", name = "debug-utility-neoforge", version.ref = "debug_util" }
+mixin = { group = "org.spongepowered", name = "mixin", version.ref = "mixin" }
+jsr305 = { group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
+neoforge = { group = "net.neoforged", name = "neoforge", version.ref = "neo_version" }
+
+[plugins]
+cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
+publish_all = { id = "me.modmuss50.mod-publish-plugin", version.ref = "plugin_publish_all" }
+loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric_loom" }
+vanilla_gradle = { id = "org.spongepowered.gradle.vanilla", version.ref = "plugin_vanilla" }
+forge = { id = "net.minecraftforge.gradle", version.ref = "plugin_forge" }
+neoforge = { id = "net.neoforged.moddev", version.ref = "plugin_neoforge" }

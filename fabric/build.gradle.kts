@@ -6,9 +6,9 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     id("signing")
-    id("net.fabricmc.fabric-loom") version ("1.16.1")
-    id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
-    id("com.kotori316.plugin.cf") version ("3.5")
+    alias(libs.plugins.loom)
+    alias(libs.plugins.publish.all)
+    alias(libs.plugins.cf)
 }
 
 val baseName: String by project
@@ -59,26 +59,26 @@ loom {
 dependencies {
     // See com.kotori316.common.gradle.kts for repositories
     // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:$minecraft")
-    implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
+    minecraft("com.mojang:minecraft:${project.property("minecraftVersion")}")
+    implementation(libs.fabric.loader)
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
-    /*modCompileOnly("appeng:appliedenergistics2-fabric:${project.property("ae2_fabric_version")}") {
+    implementation(libs.fabric.api)
+    /*modCompileOnly(libs.ae2.fabric) {
         isTransitive = false
     }*/
     //noinspection SpellCheckingInspection
     // modRuntimeOnly("teamreborn:energy:2.2.0") // For AE2
-    // modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.property("wthit_fabric_version")}")
-    // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.property("wthit_fabric_version")}")
-    // modRuntimeOnly("lol.bai:badpackets:fabric-${project.badpackets_fabric_version}")
-    // modCompileOnly("curse.maven:jade-324717:${project.property("jade_fabric_id")}")
-    implementation("com.kotori316:VersionCheckerMod:${project.property("automatic_potato_version")}") {
+    // modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${libs.versions.wthit.get()}")
+    // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${libs.versions.wthit.get()}")
+    // modRuntimeOnly("lol.bai:badpackets:fabric-${libs.versions.badpackets.get()}")
+    // modCompileOnly(libs.jade.fabric)
+    implementation(libs.automatic.potato) {
         isTransitive = false
     }
-    implementation("com.kotori316:debug-utility-fabric:${project.property("debug_util_version")}")
+    implementation(libs.debug.util.fabric)
 
     testImplementation(project(":commonTest"))
 }
@@ -190,7 +190,7 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
     functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
     gameVersion = minecraft
     platform = "fabric"
-    platformVersion = project.property("fabric_version").toString()
+    platformVersion = libs.versions.fabric.api.get()
     modName = modId
     changelog = "For $minecraft"
     isDryRun = !releaseMode

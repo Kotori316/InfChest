@@ -11,5 +11,5 @@ repositories {
 
 dependencies {
     // NeoForge
-    implementation("net.neoforged:neoforge:${project.property("neo_version")}")
+    implementation(libs.neoforge)
 }

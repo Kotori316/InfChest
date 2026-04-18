@@ -8,9 +8,9 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     id("signing")
-    id("net.minecraftforge.gradle") version ("7.0.20")
-    id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
-    id("com.kotori316.plugin.cf") version ("3.5")
+    alias(libs.plugins.forge)
+    alias(libs.plugins.publish.all)
+    alias(libs.plugins.cf)
 }
 
 val modId = project.property("mod_id") as String
@@ -103,25 +103,25 @@ repositories {
 
 dependencies {
     // See com.kotori316.common.gradle.kts for repositories
-    implementation(minecraft.dependency("net.minecraftforge:forge:${project.property("forgeVersion")}"))
+    implementation(minecraft.dependency("net.minecraftforge:forge:${libs.versions.forge.version.get()}"))
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
     // Mixin
     annotationProcessor("net.minecraftforge:eventbus-validator:7.0.4")
 
-    compileOnly("appeng:appliedenergistics2-forge:${project.property("ae2Version")}")
-    compileOnly("curse.maven:jade-324717:${project.property("jade_forge_id")}")
-    compileOnly("curse.maven:the-one-probe-245211:${project.property("top_id")}")
-    // compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.property("wthit_forge_version")}"))
-    // runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-${project.wthit_version}"))
-    // runtimeOnly(fg.deobf("lol.bai:badpackets:forge-${project.badpackets_forge_version}"))
+    compileOnly(libs.ae2.forge)
+    compileOnly(libs.jade.forge)
+    compileOnly(libs.top.forge)
+    // compileOnly(fg.deobf("mcp.mobius.waila:wthit-api:forge-${libs.versions.wthit.get()}"))
+    // runtimeOnly(fg.deobf("mcp.mobius.waila:wthit:forge-${libs.versions.wthit.get()}"))
+    // runtimeOnly(fg.deobf("lol.bai:badpackets:forge-${libs.versions.badpackets.get()}"))
     // implementation fg.deobf("curse.maven:StorageBox-mod-419839:3430254".toLowerCase())
     implementation("net.sf.jopt-simple:jopt-simple:5.0.4") {
         version {
             strictly("5.0.4")
         }
     }
-    implementation("com.kotori316:debug-utility-forge:${project.property("debug_util_version")}") {
+    implementation(libs.debug.util.forge) {
         isTransitive = false
     }
 }
@@ -225,7 +225,7 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
     functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
     gameVersion = minecraftVersion
     platform = "forge"
-    platformVersion = project.property("forgeVersion").toString()
+    platformVersion = libs.versions.forge.version.get()
     modName = modId
     changelog = "For $minecraftVersion"
     isDryRun = !releaseMode

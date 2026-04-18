@@ -7,9 +7,9 @@ plugins {
     id("com.kotori316.common")
     id("com.kotori316.dg")
     signing
-    id("net.neoforged.moddev") version ("2.0.141")
-    id("me.modmuss50.mod-publish-plugin") version ("1.1.0")
-    id("com.kotori316.plugin.cf") version ("3.5")
+    alias(libs.plugins.neoforge)
+    alias(libs.plugins.publish.all)
+    alias(libs.plugins.cf)
 }
 
 val modId = project.property("mod_id") as String
@@ -32,7 +32,7 @@ sourceSets {
 }
 
 neoForge {
-    version = project.property("neo_version").toString()
+    version = libs.versions.neo.version.get()
 
     mods {
         create(modId) {
@@ -113,18 +113,18 @@ neoForge {
 dependencies {
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
-    compileOnly("curse.maven:jade-324717:${project.property("jade_neoforge_id")}")
-    compileOnly("mcp.mobius.waila:wthit-api:neo-${project.property("wthit_neoforge_version")}")
+    compileOnly(libs.jade.neoforge)
+    compileOnly("mcp.mobius.waila:wthit-api:neo-${libs.versions.wthit.get()}")
     /*runtimeOnly(
         group = "mcp.mobius.waila",
         name = "wthit",
-        version = "neo-${project.property("wthit_neoforge_version")}"
+        version = "neo-${libs.versions.wthit.get()}"
     )*/
-    compileOnly("curse.maven:the-one-probe-245211:${project.property("top_neoforge_id")}")
-    compileOnly("appeng:appliedenergistics2:${project.property("ae2_neoforge_version")}") {
+    compileOnly(libs.top.neoforge)
+    compileOnly(libs.ae2.neoforge) {
         isTransitive = false
     }
-    implementation("com.kotori316:debug-utility-neoforge:${project.property("debug_util_version")}")
+    implementation(libs.debug.util.neoforge)
 
     "gameTestImplementation"(project.project(":neoforge"))
     "gameTestImplementation"(project(":commonTest"))
@@ -132,7 +132,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:6.0.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("net.neoforged:testframework:${project.property("neo_version")}")
+    testImplementation("net.neoforged:testframework:${libs.versions.neo.version.get()}")
 }
 
 tasks {
@@ -248,7 +248,7 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
     functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
     gameVersion = minecraft
     platform = "neoforge"
-    platformVersion = project.property("neo_version").toString()
+    platformVersion = libs.versions.neo.version.get()
     modName = modId
     changelog = "For $minecraft"
     isDryRun = !releaseMode
