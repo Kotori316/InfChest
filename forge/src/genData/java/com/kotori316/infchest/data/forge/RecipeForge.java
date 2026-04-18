@@ -5,10 +5,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraftforge.common.data.ForgeRecipeProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public final class RecipeForge extends RecipeProvider.Runner {
+public final class RecipeForge extends ForgeRecipeProvider.Runner {
     public RecipeForge(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pRegistries) {
         super(pOutput, pRegistries);
     }

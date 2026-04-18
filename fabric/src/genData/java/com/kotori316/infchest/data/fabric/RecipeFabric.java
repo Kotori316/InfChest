@@ -1,7 +1,7 @@
 package com.kotori316.infchest.data.fabric;
 
 import com.kotori316.infchest.data.common.CommonRecipe;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -11,7 +11,7 @@ import net.minecraft.resources.Identifier;
 import java.util.concurrent.CompletableFuture;
 
 public final class RecipeFabric extends FabricRecipeProvider {
-    public RecipeFabric(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+    public RecipeFabric(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
