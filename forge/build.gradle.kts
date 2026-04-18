@@ -240,6 +240,12 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
     failIfExists = releaseMode
 }
 
+sourceSets.forEach {
+    val dir = layout.buildDirectory.dir("sourcesSets/${it.name}")
+    it.output.setResourcesDir(dir)
+    it.java.destinationDirectory = dir
+}
+
 tasks.named("compileRunDataGenJava", JavaCompile::class) {
     dependsOn("processGenDataResources")
     project.findProject(":common")?.let {
