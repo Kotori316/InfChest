@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "1.21.11" ]
+    branches: [ "26.1" ]
   pull_request:
-    branches: [ "1.21.11" ]
+    branches: [ "26.1" ]
 
 permissions:
   contents: read
@@ -40,7 +40,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '25'
       - name: Set executable
         run: chmod +x ./gradlew
       - uses: gradle/actions/setup-gradle@v6
