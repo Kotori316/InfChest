@@ -127,7 +127,7 @@ dependencies {
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
     // Mixin
-    annotationProcessor("net.minecraftforge:eventbus-validator:7.0.1")
+    annotationProcessor("net.minecraftforge:eventbus-validator:7.0.4")
 
     compileOnly("appeng:appliedenergistics2-forge:${project.property("ae2Version")}")
     compileOnly("curse.maven:jade-324717:${project.property("jade_forge_id")}")
