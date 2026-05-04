@@ -2,7 +2,7 @@
 plugin_cf = "3.5"
 plugin_publish_all = "1.1.0"
 plugin_vanilla = "0.3.2"
-plugin_forge = "7.0.20"
+plugin_forge = "7.0.25"
 plugin_neoforge = "2.0.141"
 fabric_loom = "1.16.1"
 fabric_loader = "0.19.2"
