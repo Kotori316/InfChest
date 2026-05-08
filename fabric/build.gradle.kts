@@ -74,7 +74,7 @@ dependencies {
     // modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${libs.versions.wthit.get()}")
     // modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${libs.versions.wthit.get()}")
     // modRuntimeOnly("lol.bai:badpackets:fabric-${libs.versions.badpackets.get()}")
-    // modCompileOnly(libs.jade.fabric)
+    modImplementation(libs.jade.fabric)
     implementation(libs.automatic.potato) {
         isTransitive = false
     }

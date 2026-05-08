@@ -67,9 +67,10 @@ neoForge {
                 mods["gameTest"]
             )
         }
+        val serverDataDir = project.file("runs/serverData")
         create("serverData") {
             serverData()
-            gameDirectory = project.file("runs/serverData")
+            gameDirectory = serverDataDir
             programArguments = listOf(
                 "--mod",
                 modId,
@@ -83,18 +84,21 @@ neoForge {
                 mods["data"]
             )
         }
+        val clientDataDir = project.file("runs/clientData")
+        val commonProject = project.project(":common")
+        val genDataSourceSet = project.sourceSets.getByName("genData")
         create("commonData") {
             clientData()
-            gameDirectory = project.file("runs/clientData")
+            gameDirectory = clientDataDir
             programArguments = listOf(
                 "--mod",
                 modId,
                 "--output",
-                project.project(":common").file("src/generated/resources/").toString(),
+                commonProject.file("src/generated/resources/").toString(),
                 "--existing",
-                project.project(":common").file("src/main/resources/").toString()
+                commonProject.file("src/main/resources/").toString()
             )
-            sourceSet = project.sourceSets.getByName("genData")
+            sourceSet = genDataSourceSet
             loadedMods = listOf(
                 mods["data"]
             )
@@ -113,7 +117,7 @@ neoForge {
 dependencies {
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
-    compileOnly(libs.jade.neoforge)
+    implementation(libs.jade.neoforge)
     compileOnly("mcp.mobius.waila:wthit-api:neo-${libs.versions.wthit.get()}")
     /*runtimeOnly(
         group = "mcp.mobius.waila",
