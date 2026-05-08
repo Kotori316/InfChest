@@ -21,6 +21,9 @@
     ],
     "client": [
       "com.kotori316.infchest.fabric.InfChestClient"
+    ],
+    "jade": [
+      "com.kotori316.infchest.fabric.integration.InfChestJadePlugin"
     ]
   },
   "mixins": [

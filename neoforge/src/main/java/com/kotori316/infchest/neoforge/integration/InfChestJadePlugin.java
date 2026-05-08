@@ -45,13 +45,14 @@ public final class InfChestJadePlugin implements IWailaPlugin {
 
     private static final class InfChestBlockComponentProvider implements IBlockComponentProvider {
         @Override
-        public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
+        public void appendTooltip(@NotNull ITooltip iTooltip, @NotNull BlockAccessor blockAccessor, @NotNull IPluginConfig iPluginConfig) {
             if (blockAccessor.getBlockEntity() instanceof TileInfChest chest) {
                 CommonTooltipPart.getTooltipBodyParts(blockAccessor.getServerData(), chest)
                     .forEach(iTooltip::add);
             }
         }
 
+        @NotNull
         @Override
         public Identifier getUid() {
             return Identifier.fromNamespaceAndPath(InfChest.modID, "jade_plugin");
