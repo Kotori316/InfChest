@@ -254,11 +254,8 @@ tasks.withType(Sign::class).configureEach {
 }
 
 tasks.withType(AbstractPublishToMaven::class).configureEach {
-    if (hasGpgSignature) {
-        dependsOn(":forge:signJar")
-        dependsOn(":forge:signSrcJar")
-        dependsOn(":forge:signDeobfJar")
-    }
+    dependsOn(":forge:signJar")
+    dependsOn(":forge:signSrcJar")
 }
 
 tasks.register("registerVersion", CallVersionFunctionTask::class) {

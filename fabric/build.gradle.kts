@@ -210,10 +210,8 @@ tasks.withType(Sign::class) {
     }
 }
 
-tasks.withType(AbstractPublishToMaven::class) {
-    if (hasGpgSignature) {
-        dependsOn(":fabric:signRemapJar")
-    }
+tasks.withType(AbstractPublishToMaven::class).configureEach {
+    dependsOn(":fabric:signRemapJar")
 }
 
 tasks.register("registerVersion", CallVersionFunctionTask::class) {
