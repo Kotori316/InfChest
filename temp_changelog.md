@@ -1,3 +1,9 @@
+# Version 21.11.5
+
+2026-05-09
+
+* Fix the integration of Jade in NeoForge and Fabric
+
 # Version 21.11.4
 
 2026-01-24
