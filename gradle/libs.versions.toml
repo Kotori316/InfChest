@@ -7,7 +7,7 @@ plugin_neoforge = "2.0.141"
 fabric_loom = "1.16.2"
 fabric_loader = "0.19.2"
 # Fabric
-fabric_api = "0.148.2+26.1.2"
+fabric_api = "0.149.0+26.1.2"
 # NeoForge
 neo_version = "26.1.2.50-beta"
 # Forge
