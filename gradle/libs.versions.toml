@@ -9,7 +9,7 @@ fabric_loader = "0.19.3"
 # Fabric
 fabric_api = "0.151.0+26.1.2"
 # NeoForge
-neo_version = "26.1.2.50-beta"
+neo_version = "26.1.2.75"
 # Forge
 forge_version = "26.1.2-64.0.9"
 # Mod dependencies
