@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -97,8 +97,8 @@ public final class InfChestTest {
 
         helper.setBlock(pos.below(2), Blocks.STONE);
         helper.setBlock(pos.below(1), Blocks.RAIL);
-        helper.spawn(EntityType.HOPPER_MINECART, pos.below(1));
-        var hopper = helper.findOneEntity(EntityType.HOPPER_MINECART);
+        helper.spawn(EntityTypes.HOPPER_MINECART, pos.below(1));
+        var hopper = helper.findOneEntity(EntityTypes.HOPPER_MINECART);
         for (int i = 0; i < 4; i++) {
             hopper.setItem(i, new ItemStack(Items.STONE, 64));
         }
