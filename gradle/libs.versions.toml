@@ -7,11 +7,11 @@ plugin_neoforge = "2.0.141"
 fabric_loom = "1.17.12"
 fabric_loader = "0.19.3"
 # Fabric
-fabric_api = "0.153.0+26.1.2"
+fabric_api = "0.153.0+26.2"
 # NeoForge
-neo_version = "26.1.2.76"
+neo_version = "26.2.0.7-beta"
 # Forge
-forge_version = "26.1.2-64.0.10"
+forge_version = "26.2-65.0.1"
 # Mod dependencies
 ae2_forge = "15.4.10"
 ae2_fabric = "15.4.10"
@@ -24,7 +24,7 @@ top_neoforge_id = "5836106"
 wthit = "19.0.1"
 badpackets = "0.12.2"
 automatic_potato = "3.0.1"
-debug_util = "26.1.0"
+debug_util = "26.2.1-SNAPSHOT"
 mixin = "0.8.7"
 jsr305 = "3.0.2"
 
