@@ -11,10 +11,10 @@ plugins {
     alias(libs.plugins.cf)
 }
 
-val baseName: String by project
-val minecraft: String by extra { project.property("minecraftVersion") as String }
-val modId: String by extra { project.property("mod_id") as String }
-val modVersion: String by project
+val baseName = project.property("baseName") as String
+val minecraft = project.property("minecraftVersion") as String
+val modId = project.property("mod_id") as String
+val modVersion = project.property("modVersion") as String
 val releaseMode: Boolean = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean().not()
 
 base {
@@ -26,32 +26,34 @@ base {
 loom {
     runs {
         named("client") {
-            configName = "Client"
-            runDir = "run"
+            displayName = "Client"
+            runDirectory = file("run")
         }
         create("gameTestServer") {
-            configName = "GameTestServer"
+            displayName = "GameTestServer"
             server()
             //noinspection SpellCheckingInspection
-            vmArgs(
-                "-ea",
-                "-Dfabric-api.gametest",
-                "-Dfabric-api.gametest.report-file=game_test/test-results/test/game_test.xml"
+            jvmArguments.addAll(
+                listOf(
+                    "-ea",
+                    "-Dfabric-api.gametest",
+                    "-Dfabric-api.gametest.report-file=game_test/test-results/test/game_test.xml"
+                )
             )
-            runDir = "game_test"
-            source(sourceSets.getAt("test"))
+            runDirectory = file("game_test")
+            sourceSet = sourceSets.getAt("test").name
         }
         create("data") {
-            configName = "Data"
+            displayName = "Data"
             client()
-            runDir = "build/dataGen"
-            property("fabric-api.DataGen".lowercase())
-            property("fabric-api.DataGen.output-dir".lowercase(), "${file("src/generated/resources")}")
-            property("fabric-api.DataGen.strict-validation".lowercase())
-            property("fabric-api.DataGen.ModId".lowercase(), "infchest-data")
+            runDirectory = file("build/dataGen")
+            systemProperties.put("fabric-api.DataGen".lowercase(), "")
+            systemProperties.put("fabric-api.DataGen.output-dir".lowercase(), "${file("src/generated/resources")}")
+            systemProperties.put("fabric-api.DataGen.strict-validation".lowercase(), "")
+            systemProperties.put("fabric-api.DataGen.ModId".lowercase(), "infchest-data")
 
-            isIdeConfigGenerated = true
-            source(sourceSets["genData"])
+            generateRunConfig = true
+            sourceSet = sourceSets["genData"].name
         }
     }
 }
@@ -110,6 +112,8 @@ publishMods {
         projectId = "312222"
         minecraftVersions = listOf(minecraft)
         requires("automatic-potato")
+        client = true
+        server = true
     }
 
     modrinth {
@@ -146,7 +150,7 @@ tasks.register("checkOutput") {
     }
 }
 
-val jksSignJar by tasks.register("jksSignJar") {
+val jksSignJar = tasks.register("jksSignJar") {
     dependsOn(tasks.jar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
