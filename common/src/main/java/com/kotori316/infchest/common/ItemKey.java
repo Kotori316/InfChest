@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public record ItemDamage(Item item, @NotNull DataComponentPatch component) {
+public record ItemKey(Item item, @NotNull DataComponentPatch component) {
 
-    public ItemDamage(ItemStack stack) {
+    public ItemKey(ItemStack stack) {
         this(stack.getItem(), stack.getComponentsPatch());
     }
 

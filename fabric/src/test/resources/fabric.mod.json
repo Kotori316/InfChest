@@ -6,7 +6,7 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "com.kotori316.infchest.fabric.ItemDamageTest",
+      "com.kotori316.infchest.fabric.ItemKeyTest",
       "com.kotori316.infchest.fabric.tiles.TileInfChestTest",
       "com.kotori316.infchest.fabric.tiles.ChestFabricOperation"
     ],

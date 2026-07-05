@@ -1,7 +1,7 @@
 package com.kotori316.infchest.common.tiles;
 
 import com.kotori316.infchest.common.InfChest;
-import com.kotori316.infchest.common.ItemDamage;
+import com.kotori316.infchest.common.ItemKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.ContainerHelper;
@@ -96,7 +96,7 @@ public class TileDeque extends BlockEntity implements HasInv {
 
     public NonNullList<ItemStack> itemsList() {
         return inventory.stream()
-            .collect(Collectors.groupingBy(ItemDamage::new, Collectors.summingLong(ItemStack::getCount)))
+            .collect(Collectors.groupingBy(ItemKey::new, Collectors.summingLong(ItemStack::getCount)))
             .entrySet()
             .stream()
             .flatMap(e -> e.getKey().toStacks(e.getValue()))

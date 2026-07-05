@@ -1,6 +1,6 @@
 package com.kotori316.infchest.fabric;
 
-import com.kotori316.infchest.common.ItemDamage;
+import com.kotori316.infchest.common.ItemKey;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestAssertException;
@@ -13,14 +13,14 @@ import net.minecraft.world.item.component.CustomData;
 
 import java.util.Objects;
 
-public class ItemDamageTest {
+public class ItemKeyTest {
 
     @GameTest()
     public void ignoreCount(GameTestHelper helper) {
         var a = new ItemStack(Items.APPLE, 1);
         var b = new ItemStack(Items.APPLE, 3);
-        var itemA = new ItemDamage(a);
-        var itemB = new ItemDamage(b);
+        var itemA = new ItemKey(a);
+        var itemB = new ItemKey(b);
         if (Objects.equals(itemA, itemB)) {
             helper.succeed();
         } else {
@@ -37,8 +37,8 @@ public class ItemDamageTest {
             CustomData.set(DataComponents.CUSTOM_DATA, a, tag);
         }
         var b = new ItemStack(Items.APPLE, 1);
-        var itemA = new ItemDamage(a);
-        var itemB = new ItemDamage(b);
+        var itemA = new ItemKey(a);
+        var itemB = new ItemKey(b);
         if (!Objects.equals(itemA, itemB)) {
             helper.succeed();
         } else {
