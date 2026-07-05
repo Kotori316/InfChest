@@ -26,9 +26,9 @@ base {
 }
 
 sourceSets {
-    val mainSourceSet by main
+    val mainSourceSet = main.get()
 
-    val dataGenSourceSet by genData
+    val dataGenSourceSet = genData.get()
     create("runDataGen") {
         val sourceSet = this
         project.configurations {
@@ -149,7 +149,7 @@ tasks.jar {
     }
 }
 
-val jksSignJar by tasks.register("jksSignJar") {
+val jksSignJar = tasks.register("jksSignJar") {
     dependsOn("jar")
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
@@ -188,6 +188,8 @@ publishMods {
             ?: System.getenv("CURSE_TOKEN") ?: ""
         projectId = "312222"
         minecraftVersions = listOf(minecraftVersion)
+        client = true
+        server = true
     }
 
     modrinth {

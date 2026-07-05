@@ -68,6 +68,7 @@ neoForge {
             )
         }
         val serverDataDir = project.file("runs/serverData")
+        val genDataSourceSet = project.sourceSets.getByName("genData")
         create("serverData") {
             serverData()
             gameDirectory = serverDataDir
@@ -79,14 +80,13 @@ neoForge {
                 "--existing",
                 file("src/main/resources/").toString()
             )
-            sourceSet = project.sourceSets.getByName("genData")
+            sourceSet = genDataSourceSet
             loadedMods = listOf(
                 mods["data"]
             )
         }
         val clientDataDir = project.file("runs/clientData")
         val commonProject = project.project(":common")
-        val genDataSourceSet = project.sourceSets.getByName("genData")
         create("commonData") {
             clientData()
             gameDirectory = clientDataDir
@@ -176,7 +176,7 @@ tasks {
     }
 }
 
-val jksSignJar by tasks.register("jksSignJar") {
+val jksSignJar = tasks.register("jksSignJar") {
     dependsOn(tasks.jar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
@@ -215,6 +215,8 @@ publishMods {
             ?: System.getenv("CURSE_TOKEN") ?: ""
         projectId = "312222"
         minecraftVersions = listOf(minecraft)
+        client = true
+        server = true
     }
 
     modrinth {
