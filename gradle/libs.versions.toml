@@ -11,7 +11,7 @@ fabric_api = "0.155.2+26.2"
 # NeoForge
 neo_version = "26.2.0.25-beta"
 # Forge
-forge_version = "26.2-65.0.5"
+forge_version = "26.2-65.0.6"
 # Mod dependencies
 ae2_forge = "15.4.10"
 ae2_fabric = "15.4.10"
