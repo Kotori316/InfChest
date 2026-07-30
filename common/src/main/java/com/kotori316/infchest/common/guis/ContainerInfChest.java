@@ -40,9 +40,11 @@ public class ContainerInfChest extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot from = getSlot(index);
         if (from.hasItem()) {
-            ItemStack current = from.getItem().copy();
+            ItemStack current = from.getItem();
+            itemstack = current.copy();
             int originalSize = current.getCount();
             int originalSlot = 2;
             if (index < originalSlot) {
@@ -55,7 +57,7 @@ public class ContainerInfChest extends AbstractContainerMenu {
                 }
             }
 
-            if (current.getCount() == 0)
+            if (current.isEmpty())
                 from.set(ItemStack.EMPTY);
             else
                 from.setChanged();
@@ -65,7 +67,7 @@ public class ContainerInfChest extends AbstractContainerMenu {
 
             from.onTake(playerIn, current);
         }
-        return ItemStack.EMPTY;
+        return itemstack;
     }
 
     private static class LimitSlot extends Slot {
