@@ -12,7 +12,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public final class TileDequeForge extends TileDeque {
     private final IItemHandler handler;
@@ -22,7 +22,7 @@ public final class TileDequeForge extends TileDeque {
         handler = new DequeItemHandler(this);
     }
 
-    LinkedList<ItemStack> getInventory() {
+    List<ItemStack> getInventory() {
         return this.inventory;
     }
 
