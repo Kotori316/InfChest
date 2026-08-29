@@ -5,7 +5,7 @@ plugin_vanilla = "0.3.2"
 plugin_forge = "7.0.34"
 plugin_neoforge = "2.0.144"
 fabric_loom = "1.17.20"
-fabric_loader = "0.19.3"
+fabric_loader = "0.19.4"
 # Fabric
 fabric_api = "0.158.0+26.2"
 # NeoForge
