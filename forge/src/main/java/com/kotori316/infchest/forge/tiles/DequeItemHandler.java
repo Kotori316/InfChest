@@ -29,6 +29,7 @@ record DequeItemHandler(TileDequeForge deque) implements IItemHandlerModifiable 
         if (slot == 0 && getSlots() < TileDeque.MAX_COUNT) {
             if (!simulate) {
                 deque.getInventory().add(stack.copy());
+                deque.setChanged();
             }
             return ItemStack.EMPTY;
         }
@@ -39,19 +40,22 @@ record DequeItemHandler(TileDequeForge deque) implements IItemHandlerModifiable 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (slot == 0) {
-            ItemStack peek = deque.getInventory().peek();
+            ItemStack peek = deque.getInventory().isEmpty() ? null : deque.getInventory().get(0);
             if (peek == null) {
                 return ItemStack.EMPTY;
             }
             if (peek.getCount() <= amount) {
                 if (!simulate) {
-                    deque.getInventory().removeFirst();
+                    deque.getInventory().remove(0);
+                    deque.setChanged();
                 }
                 return peek.copy();
             } else {
                 // split stack
                 if (!simulate) {
-                    return peek.split(amount);
+                    ItemStack result = peek.split(amount);
+                    deque.setChanged();
+                    return result;
                 } else {
                     ItemStack t = peek.copy();
                     t.setCount(amount);

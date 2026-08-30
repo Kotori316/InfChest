@@ -62,8 +62,8 @@ public record ItemCountMessage(BlockPos pos, ResourceKey<Level> dim, byte[] byte
         var entity = level.getBlockEntity(this.pos());
         if (level.dimension().equals(this.dim()) && entity instanceof TileInfChest chest) {
             chest.setCount(new BigInteger(this.bytes()));
-            chest.setItem(1, this.out());
             chest.setHolding(this.holding());
+            chest.setItem(1, this.out());
         }
     }
 }

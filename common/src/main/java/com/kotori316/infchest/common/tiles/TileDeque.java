@@ -20,7 +20,7 @@ public class TileDeque extends BlockEntity implements HasInv {
 
     public static final String NBT_ITEMS = "items";
     public static final int MAX_COUNT = 1000000; // 1 million
-    protected LinkedList<ItemStack> inventory = new LinkedList<>();
+    protected java.util.List<ItemStack> inventory = new java.util.ArrayList<>();
 
     public TileDeque(BlockPos pos, BlockState state) {
         super(InfChest.accessor.DEQUE_TYPE(), pos, state);
@@ -32,7 +32,7 @@ public class TileDeque extends BlockEntity implements HasInv {
         inventory = valueInput.listOrEmpty(NBT_ITEMS, ItemStack.OPTIONAL_CODEC)
             .stream()
             .filter(Predicate.not(ItemStack::isEmpty))
-            .collect(Collectors.toCollection(LinkedList::new));
+            .collect(Collectors.toCollection(java.util.ArrayList::new));
     }
 
     @Override
@@ -53,7 +53,12 @@ public class TileDeque extends BlockEntity implements HasInv {
 
     @Override
     public boolean isEmpty() {
-        return inventory.stream().allMatch(ItemStack::isEmpty);
+        for (ItemStack stack : inventory) {
+            if (!stack.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -66,27 +71,33 @@ public class TileDeque extends BlockEntity implements HasInv {
 
     @Override
     public ItemStack removeItem(int index, int count) {
-        return ContainerHelper.removeItem(inventory, index - 1, count); // range check is done inside the method.
+        ItemStack stack = ContainerHelper.removeItem(inventory, index - 1, count); // range check is done inside the method.
+        if (!stack.isEmpty()) setChanged();
+        return stack;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
-        return ContainerHelper.takeItem(inventory, index - 1); // range check is done inside the method.
+        ItemStack stack = ContainerHelper.takeItem(inventory, index - 1); // range check is done inside the method.
+        if (!stack.isEmpty()) setChanged();
+        return stack;
     }
 
     @Override
     public void setItem(int index, ItemStack stack) {
         if (0 < index && index <= inventory.size()) {
             inventory.set(index - 1, stack);
+            setChanged();
         } else if (index == 0) {
             inventory.add(stack);
+            setChanged();
         }
     }
 
     @Override
     public void setChanged() {
         super.setChanged();
-        inventory = inventory.stream().filter(Predicate.not(ItemStack::isEmpty)).collect(Collectors.toCollection(LinkedList::new));
+        inventory = inventory.stream().filter(Predicate.not(ItemStack::isEmpty)).collect(Collectors.toCollection(java.util.ArrayList::new));
     }
 
     @Override
