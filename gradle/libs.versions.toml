@@ -4,7 +4,7 @@ plugin_publish_all = "2.2.0"
 plugin_vanilla = "0.3.2"
 plugin_forge = "7.0.40"
 plugin_neoforge = "2.0.147"
-fabric_loom = "1.17.20"
+fabric_loom = "1.18.1"
 fabric_loader = "0.19.5"
 # Fabric
 fabric_api = "0.160.0+26.2"
