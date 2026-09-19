@@ -3,6 +3,7 @@ package com.kotori316.infchest.common.blocks;
 import com.kotori316.infchest.common.InfChest;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -10,7 +11,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-import java.util.List;
+import java.util.Optional;
 
 public class ContentInfChest extends LootItemConditionalFunction {
     public static final Identifier LOCATION = Identifier.fromNamespaceAndPath(InfChest.modID, "content_infchest");
@@ -18,13 +19,14 @@ public class ContentInfChest extends LootItemConditionalFunction {
         commonFields(instance).apply(instance, ContentInfChest::new)
     );
 
-    protected ContentInfChest(List<LootItemCondition> conditionsIn) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    protected ContentInfChest(Optional<Holder<LootItemCondition>> conditionsIn) {
         super(conditionsIn);
     }
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
-        var entity = context.getParameter(LootContextParams.BLOCK_ENTITY);
+        var entity = context.getOptional(LootContextParams.BLOCK_ENTITY);
         BlockInfChest.saveChestNbtToStack(entity, stack);
         BlockInfChest.saveCustomName(entity, stack);
         return stack;
