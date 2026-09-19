@@ -4,7 +4,6 @@ import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.integration.StorageBoxStack;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import com.kotori316.infchest.common.tiles.TileUtil;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -36,18 +35,16 @@ import java.util.function.Supplier;
 public abstract class BlockInfChest extends BaseEntityBlock {
     public static final String name = InfChest.modID;
     public final BlockItem itemBlock;
-    protected final MapCodec<? extends BlockInfChest> blockCodec;
 
     public BlockInfChest(Supplier<? extends BlockInfChest> instanceSupplier) {
         super(Block.Properties.of()
             .mapColor(MapColor.METAL)
-            .pushReaction(PushReaction.BLOCK)
+            .pushReaction(PushReaction.IMMOVEABLE)
             .strength(1.0f)
             .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false)
             .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(InfChest.modID, name)))
         );
         itemBlock = new ItemInfChest(this);
-        this.blockCodec = simpleCodec(p -> instanceSupplier.get());
     }
 
     @Override
@@ -110,8 +107,4 @@ public abstract class BlockInfChest extends BaseEntityBlock {
             .ifPresent(tag -> BlockItem.setBlockEntityData(stack, entity.getType(), tag));
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return this.blockCodec;
-    }
 }
