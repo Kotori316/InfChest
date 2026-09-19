@@ -2,18 +2,18 @@ package com.kotori316.infchest.data.neoforge;
 
 import com.kotori316.infchest.data.common.IngredientProvider;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 
-public record IngredientProviderNeoForge(HolderLookup.Provider provider) implements IngredientProvider {
+public record IngredientProviderNeoForge(BootstrapContextAccess context) implements IngredientProvider {
     @Override
     public HolderGetter<Item> items() {
-        return provider.lookupOrThrow(Registries.ITEM);
+        return context.lookup(Registries.ITEM);
     }
 
     @Override

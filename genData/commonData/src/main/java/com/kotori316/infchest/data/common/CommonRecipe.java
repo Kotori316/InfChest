@@ -1,18 +1,19 @@
 package com.kotori316.infchest.data.common;
 
 import com.kotori316.infchest.common.InfChest;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 
 public final class CommonRecipe extends RecipeProvider {
 
     private final IngredientProvider provider;
 
-    public CommonRecipe(HolderLookup.Provider lookup, RecipeOutput output, IngredientProvider provider) {
-        super(lookup, output);
+    public CommonRecipe(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput, IngredientProvider provider) {
+        super(recipeOutput, advancementOutput);
         this.provider = provider;
     }
 

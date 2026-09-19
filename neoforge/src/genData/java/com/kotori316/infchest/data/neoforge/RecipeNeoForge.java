@@ -1,27 +1,24 @@
 package com.kotori316.infchest.data.neoforge;
 
 import com.kotori316.infchest.data.common.CommonRecipe;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.core.registries.MultiRegistryBootstrap;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Registry;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Set;
 
-public final class RecipeNeoForge extends RecipeProvider.Runner {
-
-    public RecipeNeoForge(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> providerCompletableFuture) {
-        super(packOutput, providerCompletableFuture);
+public final class RecipeNeoForge implements MultiRegistryBootstrap {
+    @Override
+    public Set<ResourceKey<? extends Registry<?>>> requestedRegistries() {
+        return Set.of(Registries.RECIPE, Registries.ADVANCEMENT);
     }
 
     @Override
-    protected RecipeProvider createRecipeProvider(HolderLookup.Provider holderLookup, RecipeOutput recipeOutput) {
-        var provider = new IngredientProviderNeoForge(holderLookup);
-        return new CommonRecipe(holderLookup, recipeOutput, provider);
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
+    public void run(BootstrapGetter registries) {
+        var recipeContext = registries.get(Registries.RECIPE);
+        var provider = new IngredientProviderNeoForge(recipeContext);
+        var recipeProvider = new CommonRecipe(recipeContext, registries.get(Registries.ADVANCEMENT), provider);
+        recipeProvider.buildRecipes();
     }
 }

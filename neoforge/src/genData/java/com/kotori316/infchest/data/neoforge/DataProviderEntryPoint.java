@@ -2,6 +2,8 @@ package com.kotori316.infchest.data.neoforge;
 
 import com.kotori316.infchest.common.InfChest;
 import net.minecraft.DetectedVersion;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.network.chat.Component;
@@ -20,7 +22,7 @@ public final class DataProviderEntryPoint {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Server event) {
         InfChest.LOGGER.info("Start Server Data provider");
-        event.createProvider(RecipeNeoForge::new);
+        event.createReloadableRegistryObjects(new RegistrySetBuilder().add(new RecipeNeoForge()));
     }
 
     @SubscribeEvent
@@ -30,14 +32,12 @@ public final class DataProviderEntryPoint {
         event.createProvider(PackMetadataGenerator::new)
             .add(PackMetadataSection.CLIENT_TYPE, new PackMetadataSection(Component.literal("Inf Chest"), DetectedVersion.BUILT_IN.packVersion(PackType.CLIENT_RESOURCES).minorRange()));
         var lootTableProvider = new LootTableProvider(
-            event.getGenerator().getPackOutput(),
             Set.of(),
             List.of(
                 new LootTableProvider.SubProviderEntry(LootSubProvider::new, LootContextParamSets.BLOCK)
-            ),
-            event.getLookupProvider()
+            )
         );
-        event.addProvider(lootTableProvider);
+        event.createReloadableRegistryObjects(new RegistrySetBuilder().add(Registries.LOOT_TABLE, lootTableProvider));
         event.createProvider(StateAndModelProvider::new);
         event.createProvider(LangProvider::new);
     }
