@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public final class BlockInfChestNeoForge extends BlockInfChest {
     public BlockInfChestNeoForge() {
-        super(BlockInfChestNeoForge::new);
+        super();
     }
 
     @Override

@@ -86,7 +86,7 @@ public final class InfChestStorage extends SnapshotParticipant<TileInfChest.Ches
     }
 
     public static void register() {
-        ItemStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, context) -> {
+        ItemStorage.SIDED.registerForBlocks((_, _, _, blockEntity, _) -> {
             if (blockEntity instanceof TileInfChestFabric chest) return new InfChestStorage(chest);
             else return null;
         }, InfChest.accessor.CHEST());

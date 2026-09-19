@@ -22,13 +22,14 @@ public class BlockDeque extends BaseEntityBlock {
     public final BlockItem itemBlock;
 
     public BlockDeque() {
+        var identifier = Identifier.fromNamespaceAndPath(InfChest.modID, name);
         super(Block.Properties.of()
             .mapColor(MapColor.METAL)
             .pushReaction(PushReaction.IMMOVEABLE)
             .strength(1.0f)
-            .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(InfChest.modID, name)))
+            .setId(ResourceKey.create(Registries.BLOCK, identifier))
         );
-        itemBlock = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(InfChest.modID, name))).useBlockDescriptionPrefix());
+        itemBlock = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, identifier)).useBlockDescriptionPrefix());
     }
 
     @Override

@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -30,21 +31,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public abstract class BlockInfChest extends BaseEntityBlock {
     public static final String name = InfChest.modID;
     public final BlockItem itemBlock;
 
-    public BlockInfChest(Supplier<? extends BlockInfChest> instanceSupplier) {
+    public BlockInfChest() {
+        var identifier = Identifier.fromNamespaceAndPath(InfChest.modID, name);
         super(Block.Properties.of()
             .mapColor(MapColor.METAL)
             .pushReaction(PushReaction.IMMOVEABLE)
             .strength(1.0f)
-            .isValidSpawn((blockState, blockGetter, blockPos, entityType) -> false)
-            .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(InfChest.modID, name)))
+            .isValidSpawn((_, _, _, _) -> false)
+            .setId(ResourceKey.create(Registries.BLOCK, identifier))
         );
-        itemBlock = new ItemInfChest(this);
+        itemBlock = new ItemInfChest(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, identifier)).useBlockDescriptionPrefix());
     }
 
     @Override

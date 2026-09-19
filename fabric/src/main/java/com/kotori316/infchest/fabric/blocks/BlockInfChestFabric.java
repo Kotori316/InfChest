@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public final class BlockInfChestFabric extends BlockInfChest {
     public BlockInfChestFabric() {
-        super(BlockInfChestFabric::new);
+        super();
     }
 
     @Override

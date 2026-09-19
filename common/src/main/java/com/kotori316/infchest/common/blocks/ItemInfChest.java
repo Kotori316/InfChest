@@ -1,15 +1,12 @@
 package com.kotori316.infchest.common.blocks;
 
-import com.kotori316.infchest.common.InfChest;
 import com.kotori316.infchest.common.tiles.TileInfChest;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -26,8 +23,8 @@ import java.util.function.Predicate;
 
 final class ItemInfChest extends BlockItem {
 
-    ItemInfChest(BlockInfChest block) {
-        super(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(InfChest.modID, BlockInfChest.name))).useBlockDescriptionPrefix());
+    ItemInfChest(BlockInfChest block, Properties properties) {
+        super(block, properties);
     }
 
     @Override
