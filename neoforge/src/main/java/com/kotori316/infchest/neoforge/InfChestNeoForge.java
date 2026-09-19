@@ -8,7 +8,6 @@ import com.kotori316.infchest.common.guis.ContainerInfChest;
 import com.kotori316.infchest.common.guis.GuiInfChest;
 import com.kotori316.infchest.common.tiles.TileDeque;
 import com.kotori316.infchest.common.tiles.TileInfChest;
-import com.kotori316.infchest.neoforge.blocks.BlockDequeNeoForge;
 import com.kotori316.infchest.neoforge.blocks.BlockInfChestNeoForge;
 import com.kotori316.infchest.neoforge.integration.AE2InfChestIntegration;
 import com.kotori316.infchest.neoforge.packets.PacketHandler;
@@ -54,7 +53,7 @@ public final class InfChestNeoForge {
     public static class Register implements InfChest.TypeAccessor {
         public static final BlockInfChestNeoForge CHEST = new BlockInfChestNeoForge();
         public static final BlockEntityType<TileInfChestNeoForge> INF_CHEST_TYPE = new BlockEntityType<>(TileInfChestNeoForge::new, CHEST);
-        public static final BlockDequeNeoForge DEQUE = new BlockDequeNeoForge();
+        public static final BlockDeque DEQUE = new BlockDeque();
         public static final BlockEntityType<TileDeque> DEQUE_TYPE = new BlockEntityType<>(TileDeque::new, DEQUE);
         public static final MenuType<ContainerInfChest> INF_CHEST_CONTAINER_TYPE = IMenuTypeExtension.create(ContainerInfChest::create);
 

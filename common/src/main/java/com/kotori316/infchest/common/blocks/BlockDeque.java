@@ -17,13 +17,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
-import java.util.function.Supplier;
-
 public class BlockDeque extends BaseEntityBlock {
     public static final String name = "deque";
     public final BlockItem itemBlock;
 
-    protected BlockDeque(Supplier<? extends BlockDeque> instanceSupplier) {
+    public BlockDeque() {
         super(Block.Properties.of()
             .mapColor(MapColor.METAL)
             .pushReaction(PushReaction.IMMOVEABLE)
@@ -31,10 +29,6 @@ public class BlockDeque extends BaseEntityBlock {
             .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(InfChest.modID, name)))
         );
         itemBlock = new BlockItem(this, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(InfChest.modID, name))).useBlockDescriptionPrefix());
-    }
-
-    public BlockDeque() {
-        this(BlockDeque::new);
     }
 
     @Override
