@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "26.2" ]
+    branches: [ "26.3" ]
   pull_request:
-    branches: [ "26.2" ]
+    branches: [ "26.3" ]
 
 permissions:
   contents: read
@@ -23,8 +23,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - platform: forge
-            data: runRunDataGenData
+          # Forge does not support 26.3 yet
+          # - platform: forge
+          #   data: runRunDataGenData
           - platform: fabric
             data: runData
           - platform: neoforge
