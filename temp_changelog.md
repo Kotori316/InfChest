@@ -1,3 +1,11 @@
+# Version 26.3.1
+
+2026-09-22
+
+* Update for Forge
+* Refactoring
+* Use Ender Chest tag in recipe for Fabric
+
 # Version 26.3.0
 
 2026-09-19
