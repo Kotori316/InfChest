@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "b": "minecraft:beacon",
-    "e": "minecraft:ender_chest",
+    "e": "#c:chests/ender",
     "i": {
       "fabric:type": "fabric:any",
       "ingredients": [

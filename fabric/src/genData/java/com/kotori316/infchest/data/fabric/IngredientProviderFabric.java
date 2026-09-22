@@ -18,7 +18,7 @@ public record IngredientProviderFabric(HolderLookup.Provider provider) implement
 
     @Override
     public Ingredient enderChest() {
-        return Ingredient.of(Items.ENDER_CHEST);
+        return Ingredient.of(items().getOrThrow(ConventionalItemTags.ENDER_CHESTS));
     }
 
     @Override
