@@ -133,7 +133,7 @@ public final class InfChestNeoForge {
 
         @SubscribeEvent
         public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-            event.registerBlockEntity(Capabilities.Item.BLOCK, Register.INF_CHEST_TYPE, TileInfChestNeoForge::getCapability);
+            event.registerBlockEntity(Capabilities.Item.BLOCK, Register.INF_CHEST_TYPE, TileInfChestNeoForge.CAPABILITY_PROVIDER);
         }
 
         @SubscribeEvent
