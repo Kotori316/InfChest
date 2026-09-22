@@ -28,10 +28,10 @@ publishMods {
 
 fun getReleaseJarFiles(): List<Provider<RegularFile>> {
     val list = mutableListOf<Provider<RegularFile>>()
-    /*if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
+    if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
         list.add(project(":forge").tasks.named("jar", AbstractArchiveTask::class).flatMap { it.archiveFile })
         list.add(project(":forge").tasks.named("sourcesJar", AbstractArchiveTask::class).flatMap { it.archiveFile })
-    }*/
+    }
     if (!(System.getenv("DISABLE_FABRIC") ?: "false").toBoolean()) {
         list.add(project(":fabric").tasks.named("jar", AbstractArchiveTask::class).flatMap({ it.archiveFile }))
         list.add(
