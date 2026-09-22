@@ -34,10 +34,9 @@ include("commonTest")
 include("genData:commonData")
 include("dependency")
 include("publish-all")
-// Forge does not support 26.3 yet
-// if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
-//     include("forge")
-// }
+if (!(System.getenv("DISABLE_FORGE") ?: "false").toBoolean()) {
+    include("forge")
+}
 if (!(System.getenv("DISABLE_FABRIC") ?: "false").toBoolean()) {
     include("fabric")
 }

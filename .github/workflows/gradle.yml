@@ -23,9 +23,8 @@ jobs:
     strategy:
       matrix:
         include:
-          # Forge does not support 26.3 yet
-          # - platform: forge
-          #   data: runRunDataGenData
+          - platform: forge
+            data: runRunDataGenData
           - platform: fabric
             data: runData
           - platform: neoforge
