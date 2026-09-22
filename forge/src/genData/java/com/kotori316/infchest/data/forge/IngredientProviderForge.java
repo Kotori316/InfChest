@@ -2,17 +2,17 @@ package com.kotori316.infchest.data.forge;
 
 import com.kotori316.infchest.data.common.IngredientProvider;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContextAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ingredients.CompoundIngredient;
 
-public record IngredientProviderForge(HolderLookup.Provider provider) implements IngredientProvider {
+public record IngredientProviderForge(BootstrapContextAccess context) implements IngredientProvider {
     @Override
     public HolderGetter<Item> items() {
-        return provider.lookupOrThrow(Registries.ITEM);
+        return context.lookup(Registries.ITEM);
     }
 
     @Override

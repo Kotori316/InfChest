@@ -1,27 +1,23 @@
 package com.kotori316.infchest.data.forge;
 
 import com.kotori316.infchest.data.common.CommonRecipe;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraftforge.common.data.ForgeRecipeProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.MultiRegistryBootstrap;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Set;
 
-public final class RecipeForge extends ForgeRecipeProvider.Runner {
-    public RecipeForge(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pRegistries) {
-        super(pOutput, pRegistries);
+public final class RecipeForge implements MultiRegistryBootstrap {
+    @Override
+    public Set<ResourceKey<? extends Registry<?>>> requestedRegistries() {
+        return Set.of(Registries.RECIPE, Registries.ADVANCEMENT);
     }
 
     @Override
-    protected RecipeProvider createRecipeProvider(HolderLookup.Provider holderLookup, RecipeOutput recipeOutput) {
-        var provider = new IngredientProviderForge(holderLookup);
-        return new CommonRecipe(holderLookup, recipeOutput, provider);
-    }
-
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
+    public void run(BootstrapGetter registries) {
+        var recipeContext = registries.get(Registries.RECIPE);
+        var provider = new IngredientProviderForge(recipeContext);
+        new CommonRecipe(recipeContext, registries.get(Registries.ADVANCEMENT), provider).buildRecipes();
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public final class BlockInfChestForge extends BlockInfChest {
     public BlockInfChestForge() {
-        super(BlockInfChestForge::new);
+        super();
     }
 
     @Override
