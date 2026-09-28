@@ -13,7 +13,7 @@ neo_version = "26.3.0.16-beta"
 # Forge
 forge_version = "26.3-66.0.3"
 # Mod dependencies
-ae2_forge = "15.4.10"
+ae2_forge = "15.4.11"
 ae2_fabric = "15.4.11"
 ae2_neoforge = "19.2.0-beta"
 jade_forge_id = "4978952"
