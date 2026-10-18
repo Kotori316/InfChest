@@ -84,6 +84,7 @@ neoForge {
             loadedMods = listOf(
                 mods["data"]
             )
+            environment("DATA_GENERATION_MODE", "server")
         }
         val clientDataDir = project.file("runs/clientData")
         val commonProject = project.project(":common")
@@ -102,6 +103,7 @@ neoForge {
             loadedMods = listOf(
                 mods["data"]
             )
+            environment("DATA_GENERATION_MODE", "client")
         }
     }
 
