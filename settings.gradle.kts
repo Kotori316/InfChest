@@ -19,7 +19,7 @@ pluginManagement {
         }
         maven {
             name = "Kotori316 Plugin"
-            url = uri("https://storage.googleapis.com/kotori316-maven-storage/maven/")
+            url = uri("https://maven.kotori316.com")
         }
     }
 }
