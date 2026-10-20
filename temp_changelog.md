@@ -1,3 +1,9 @@
+# Version 26.3.2
+
+2026-10-20
+
+* Update for latest platform
+
 # Version 26.3.1
 
 2026-09-22
