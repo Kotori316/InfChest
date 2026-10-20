@@ -18,7 +18,7 @@ public record IngredientProviderNeoForge(BootstrapContextAccess context) impleme
 
     @Override
     public Ingredient enderChest() {
-        return Ingredient.of(items().getOrThrow(Tags.Items.CHESTS_ENDER));
+        return Ingredient.of(items().getOrThrow(Tags.BlockItems.CHESTS_ENDER.item()));
     }
 
     @Override
@@ -41,6 +41,6 @@ public record IngredientProviderNeoForge(BootstrapContextAccess context) impleme
 
     @Override
     public Ingredient chests() {
-        return Ingredient.of(items().getOrThrow(Tags.Items.CHESTS));
+        return Ingredient.of(items().getOrThrow(Tags.BlockItems.CHESTS.item()));
     }
 }
