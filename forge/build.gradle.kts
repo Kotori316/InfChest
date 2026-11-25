@@ -107,7 +107,7 @@ dependencies {
     compileOnly(project(":common"))
     testCompileOnly(project(":common"))
     // Mixin
-    annotationProcessor("net.minecraftforge:eventbus-validator:7.0.6")
+    annotationProcessor("net.minecraftforge:eventbus-validator:7.0.7")
 
     compileOnly(libs.ae2.forge)
     compileOnly(libs.jade.forge)
